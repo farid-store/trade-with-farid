@@ -3,39 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farid Gold Killer | Kuasai XAU/USD Real-Time</title>
+  <title>Farid Gold Killer | Kuasai XAU/USD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Tema Fintech Modern: Deep Dark & Neon Blue */
-      --primary: #2962FF; /* TradingView Blue */
-      --primary-hover: #1E4EDB;
-      --primary-glow: rgba(41, 98, 255, 0.25);
-      --bg-main: #0B0E14; /* Deep Slate/Navy */
-      --bg-card: #131722; /* TV Card Dark */
-      --bg-elevated: #1E222D;
-      --border: #2A2E39;
-      --text-main: #F3F4F6;
-      --text-muted: #9CA3AF;
-      --up-color: #089981;
-      --down-color: #F23645;
-      
-      --font-display: 'Outfit', sans-serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --gold: #C9A84C;
+      --gold-light: #F0CC6E;
+      --gold-dim: #7a6230;
+      --black: #080808;
+      --surface: #0f0f0f;
+      --surface-2: #161616;
+      --surface-3: #1e1e1e;
+      --border: rgba(201,168,76,0.15);
+      --text: #f0ede6;
+      --muted: #7a7570;
+      --red: #c0392b;
+      --green: #27ae60;
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg-main);
-      color: var(--text-main);
-      font-family: var(--font-body);
-      font-weight: 400;
-      line-height: 1.6;
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.65;
       overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
     }
 
     /* ── NAV ── */
@@ -46,85 +55,107 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 5%;
-      background: rgba(11, 14, 20, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 20px 48px;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
 
     .nav-logo {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: var(--text-main);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--gold);
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
-    .nav-logo span { color: var(--primary); }
+    .nav-logo span { color: var(--text); }
 
     .nav-links {
       display: flex;
-      gap: 32px;
+      gap: 36px;
       list-style: none;
     }
     .nav-links a {
-      color: var(--text-muted);
+      color: var(--muted);
       text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       transition: color 0.2s;
     }
-    .nav-links a:hover { color: var(--text-main); }
+    .nav-links a:hover { color: var(--gold); }
 
     .nav-cta {
-      background: var(--primary);
-      color: #fff;
+      background: var(--gold);
+      color: #000;
       padding: 10px 24px;
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 0.9rem;
-      border-radius: 6px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       text-decoration: none;
+      border: none;
+      cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 14px var(--primary-glow);
     }
     .nav-cta:hover {
-      background: var(--primary-hover);
+      background: var(--gold-light);
       transform: translateY(-1px);
-    }
-
-    /* ── REALTIME TICKER WIDGET ── */
-    .ticker-wrapper {
-      margin-top: 70px; /* Offset for fixed nav */
-      border-bottom: 1px solid var(--border);
-      height: 46px;
     }
 
     /* ── HERO ── */
     .hero {
-      min-height: 90vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 40px;
-      padding: 60px 5%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 48px 80px;
       position: relative;
+      overflow: hidden;
     }
 
-    .hero-content { z-index: 2; }
-    
+    /* Gold radial glow background */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 900px; height: 900px;
+      right: -200px; top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Candlestick art */
+    .hero-candles {
+      position: absolute;
+      right: 48px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .candle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .wick { width: 2px; background: currentColor; }
+    .body-c { width: 20px; border-radius: 1px; }
+    .candle.bull { color: var(--green); }
+    .candle.bear { color: var(--red); }
+
     .hero-eyebrow {
-      font-family: var(--font-display);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 2px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: 20px;
+      color: var(--gold);
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -132,250 +163,557 @@
     .hero-eyebrow::before {
       content: '';
       display: block;
-      width: 30px; height: 2px;
-      background: var(--primary);
+      width: 40px; height: 1px;
+      background: var(--gold);
     }
 
     .hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(3rem, 5vw, 4.5rem);
-      line-height: 1.1;
-      font-weight: 900;
-      color: var(--text-main);
-      margin-bottom: 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      line-height: 0.92;
+      letter-spacing: 2px;
+      color: var(--text);
+      max-width: 800px;
+      margin-bottom: 12px;
     }
-    .hero h1 .accent { color: var(--primary); }
+    .hero h1 .accent { color: var(--gold); }
 
     .hero-sub {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 90%;
-      margin-bottom: 40px;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: var(--muted);
+      max-width: 540px;
+      margin: 28px 0 48px;
+      font-weight: 400;
     }
 
     .hero-actions {
       display: flex;
-      gap: 16px;
+      gap: 20px;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-      padding: 16px 32px;
-      font-weight: 600;
-      border-radius: 8px;
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+      padding: 18px 40px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       text-decoration: none;
-      transition: all 0.2s;
-      box-shadow: 0 8px 24px var(--primary-glow);
+      display: inline-block;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px var(--primary-glow); }
+    .btn-gold::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-110%) skewX(-15deg);
+      transition: transform 0.35s;
+    }
+    .btn-gold:hover::before { transform: translateX(110%) skewX(-15deg); }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.35); }
 
     .btn-outline {
       border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 16px 32px;
+      color: var(--muted);
+      padding: 18px 40px;
+      font-family: 'Syne', sans-serif;
       font-weight: 600;
-      border-radius: 8px;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       text-decoration: none;
-      background: var(--bg-card);
-      transition: all 0.2s;
+      display: inline-block;
+      transition: all 0.25s;
     }
-    .btn-outline:hover { border-color: var(--text-muted); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-    .hero-widget {
-      height: 450px;
-      border-radius: 12px;
+    /* ── TRADINGVIEW TICKER STRIP ── */
+    .ticker-wrapper {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      height: 46px;
       overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
     /* ── STATS BAR ── */
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      background: var(--bg-card);
     }
     .stat-item {
-      padding: 40px 5%;
+      padding: 48px 40px;
       border-right: 1px solid var(--border);
-      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
     .stat-item:last-child { border-right: none; }
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--gold);
+      transition: width 0.4s;
+    }
+    .stat-item:hover::before { width: 100%; }
     .stat-num {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--text-main);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--gold);
+      line-height: 1;
     }
     .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 4px;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      color: var(--muted);
+      margin-top: 8px;
     }
 
     /* ── SECTION BASE ── */
-    section { padding: 100px 5%; }
-    .section-header { text-align: center; margin-bottom: 60px; }
+    section { padding: 120px 48px; }
     .section-eyebrow {
-      font-family: var(--font-display);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 2px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: 12px;
+      color: var(--gold);
+      margin-bottom: 20px;
     }
     h2.section-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.2;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
     }
+    h2.section-title .accent { color: var(--gold); }
 
     /* ── STRATEGY SECTION ── */
+    .strategy {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
     .strategy-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 60px;
+      gap: 80px;
       align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    
-    .tv-advanced-chart {
-      height: 500px;
-      border-radius: 12px;
+    .strategy-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.8;
+    }
+    .pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .pillar {
+      display: flex;
+      gap: 28px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .pillar:first-child { padding-top: 0; }
+    .pillar:last-child { border-bottom: none; padding-bottom: 0; }
+    .pillar:hover .pillar-num { color: var(--gold-light); }
+    .pillar-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: var(--gold-dim);
+      line-height: 1;
+      min-width: 48px;
+      transition: color 0.2s;
+    }
+    .pillar-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .pillar-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── TRADINGVIEW ADVANCED CHART ── */
+    .chart-visual-wrapper {
+      width: 100%;
+      height: 450px;
+      border-radius: 4px;
       overflow: hidden;
       border: 1px solid var(--border);
+      background: var(--surface-3);
     }
-
-    .pillars { display: flex; flex-direction: column; gap: 24px; }
-    .pillar {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 24px;
-      border-radius: 12px;
-      display: flex;
-      gap: 20px;
-      transition: transform 0.2s;
-    }
-    .pillar:hover { transform: translateX(8px); border-color: var(--primary); }
-    .pillar-num {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--primary);
-      opacity: 0.8;
-    }
-    .pillar-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
-    .pillar-body { font-size: 0.9rem; color: var(--text-muted); }
 
     /* ── FEATURES ── */
+    .features-wrap { max-width: 1200px; margin: 0 auto; }
     .features-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 2px;
+      margin-top: 64px;
     }
     .feature-card {
-      background: var(--bg-card);
-      padding: 32px;
-      border-radius: 12px;
+      background: var(--surface-2);
+      padding: 44px 36px;
       border: 1px solid var(--border);
       transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
     }
-    .feature-card:hover {
-      background: var(--bg-elevated);
-      border-color: var(--text-muted);
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0);
+      transition: transform 0.4s;
     }
+    .feature-card:hover::before { transform: scaleX(1); }
+    .feature-card:hover { background: var(--surface-3); }
     .feature-icon {
-      width: 40px; height: 40px;
-      color: var(--primary);
-      margin-bottom: 20px;
+      width: 48px; height: 48px;
+      margin-bottom: 24px;
+      color: var(--gold);
+    }
+    .feature-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+    .feature-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.75;
     }
 
-    /* ── PROOF & LIVE GAUGE ── */
-    .proof-container {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 32px;
-    }
+    /* ── TESTIMONIALS ── */
+    .testimonials-section { background: var(--surface); }
     .testi-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 64px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .testi-card {
-      background: var(--bg-card);
+      background: var(--surface-3);
       border: 1px solid var(--border);
-      padding: 28px;
-      border-radius: 12px;
+      padding: 32px;
+      transition: border-color 0.3s;
     }
-    .tv-gauge-container {
-      height: 400px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
+    .testi-card:hover { border-color: var(--gold-dim); }
+    .testi-stars {
+      color: var(--gold);
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
     }
-
-    /* ── HOW IT WORKS ── */
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+    .testi-quote {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 24px;
+      font-style: italic;
     }
-    .step {
-      background: var(--bg-card);
-      padding: 32px 24px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      text-align: center;
-      position: relative;
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    .step-num {
-      width: 48px; height: 48px;
-      background: rgba(41, 98, 255, 0.1);
-      color: var(--primary);
+    .testi-avatar {
+      width: 44px; height: 44px;
       border-radius: 50%;
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      font-weight: 700;
+      background: var(--surface-2);
+      border: 2px solid var(--gold-dim);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 20px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .testi-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .testi-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
     }
 
-    /* ── JOIN SECTION ── */
+    /* Proof screenshots placeholder */
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 48px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .proof-card {
+      aspect-ratio: 3/4;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .proof-card:hover { border-color: var(--gold-dim); transform: scale(1.02); }
+    .proof-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .proof-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .proof-icon { font-size: 2rem; opacity: 0.4; }
+    .proof-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    /* Fake MT5 profit card */
+    .proof-mt5 {
+      padding: 24px;
+      text-align: left;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+    .mt5-header {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .mt5-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 0.75rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+    }
+    .mt5-row .val { font-family: 'Syne', sans-serif; font-weight: 600; }
+    .mt5-row .val.pos { color: var(--green); }
+    .mt5-row .val.neg { color: var(--red); }
+    .mt5-total {
+      margin-top: 12px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--green);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-wrap { max-width: 1200px; margin: 0 auto; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 72px;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), var(--gold-dim), var(--border));
+    }
+    .step {
+      padding: 0 32px;
+      padding-top: 0;
+      position: relative;
+    }
+    .step-num {
+      width: 56px; height: 56px;
+      background: var(--gold);
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+    .step-body {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── IB / JOIN SECTION ── */
     .join-section {
-      background: var(--bg-card);
+      background: var(--surface);
       border-top: 1px solid var(--border);
     }
-    .cta-card {
-      max-width: 800px;
+    .join-inner {
+      max-width: 1200px;
       margin: 0 auto;
-      text-align: center;
-      background: var(--bg-elevated);
-      padding: 60px 40px;
-      border-radius: 16px;
-      border: 1px solid var(--primary);
-      box-shadow: 0 20px 50px var(--primary-glow);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
     }
-    .btn-wa {
-      background: #089981; /* TV Green / WA Green */
-      color: #fff;
-      padding: 16px 32px;
-      font-weight: 600;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-flex;
+    .join-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .benefit-row {
+      display: flex;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .benefit-row:last-child { border-bottom: none; }
+    .benefit-check {
+      width: 24px; height: 24px;
+      border: 1px solid var(--gold);
+      display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 16px;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 2px;
     }
-    .btn-wa:hover { background: #067a67; }
+    .benefit-text {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .benefit-text strong { color: var(--gold); font-weight: 600; }
+
+    /* CTA Card */
+    .cta-card {
+      background: var(--surface-3);
+      border: 1px solid var(--gold-dim);
+      padding: 48px 40px;
+      position: sticky;
+      top: 100px;
+    }
+    .cta-card-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .cta-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    .cta-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.75;
+    }
+    .cta-card .btn-gold { width: 100%; text-align: center; display: block; }
+    .cta-divider {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 20px 0;
+      position: relative;
+    }
+    .cta-divider::before, .cta-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%; height: 1px;
+      background: var(--border);
+      width: 40%;
+    }
+    .cta-divider::before { left: 0; }
+    .cta-divider::after { right: 0; }
+    .btn-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px;
+      background: #25D366;
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-wa:hover { background: #1ebe5a; transform: translateY(-1px); }
+
+    /* Risk disclaimer */
+    .risk-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.6;
+      padding: 0 4px;
+    }
 
     /* ── FAQ ── */
     .faq-wrap { max-width: 800px; margin: 0 auto; }
@@ -386,291 +724,680 @@
       width: 100%;
       background: none;
       border: none;
-      color: var(--text-main);
-      font-family: var(--font-body);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
       font-weight: 600;
-      font-size: 1.05rem;
+      font-size: 1rem;
       text-align: left;
-      padding: 24px 0;
+      padding: 28px 0;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
     }
+    .faq-q:hover { color: var(--gold); }
+    .faq-arrow {
+      width: 24px; height: 24px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+      font-size: 1rem;
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(45deg); }
     .faq-a {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease;
-      font-size: 0.95rem;
-      color: var(--text-muted);
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.8;
     }
-    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 24px; }
+    .faq-item.open .faq-a { max-height: 300px; padding-bottom: 28px; }
 
     /* ── FOOTER ── */
     footer {
+      background: var(--surface);
       border-top: 1px solid var(--border);
-      padding: 60px 5% 30px;
-      text-align: center;
-      color: var(--text-muted);
+      padding: 80px 48px 40px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      padding-bottom: 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer-brand p {
       font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-top: 16px;
+      max-width: 300px;
+    }
+    .footer-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .footer-disclaimer {
+      font-size: 0.72rem;
+      color: var(--muted);
+      opacity: 0.6;
+      max-width: 800px;
+      line-height: 1.7;
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
     }
 
-    @media (max-width: 1024px) {
-      .hero { grid-template-columns: 1fr; text-align: center; padding-top: 100px; }
-      .hero-eyebrow { justify-content: center; }
-      .hero-actions { justify-content: center; }
-      .strategy-grid { grid-template-columns: 1fr; }
-      .features-grid { grid-template-columns: 1fr; }
-      .proof-container { grid-template-columns: 1fr; }
-      .steps { grid-template-columns: 1fr 1fr; }
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    @media (max-width: 600px) {
-      .steps { grid-template-columns: 1fr; }
+    .fade-up { animation: fadeUp 0.7s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.25s; }
+    .delay-3 { animation-delay: 0.4s; }
+    .delay-4 { animation-delay: 0.55s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section { padding: 80px 24px; }
+      .hero { padding: 120px 24px 60px; }
+      .hero-candles { display: none; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .strategy-grid { grid-template-columns: 1fr; gap: 48px; }
+      .features-grid { grid-template-columns: 1fr; }
       .testi-grid { grid-template-columns: 1fr; }
+      .proof-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .steps::before { display: none; }
+      .step { padding: 0; }
+      .join-inner { grid-template-columns: 1fr; }
+      .cta-card { position: static; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 3.5rem; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .stat-item { padding: 32px 20px; }
+      .proof-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="#" class="nav-logo">FARID<span>GOLD KILLER</span></a>
+  <a href="#" class="nav-logo"><span>FARID</span> GOLD<span> KILLER</span></a>
   <ul class="nav-links">
     <li><a href="#strategy">Strategi</a></li>
-    <li><a href="#features">Fitur</a></li>
-    <li><a href="#results">Live Data</a></li>
+    <li><a href="#results">Bukti</a></li>
+    <li><a href="#how">Cara Kerja</a></li>
+    <li><a href="#faq">FAQ</a></li>
   </ul>
   <a href="#join" class="nav-cta">Join Komunitas</a>
 </nav>
 
-<div class="ticker-wrapper">
+<section class="hero">
+  <div class="hero-candles" aria-hidden="true">
+    <div class="candle bull"><div class="wick" style="height:40px"></div><div class="body-c" style="height:60px;background:currentColor"></div><div class="wick" style="height:20px"></div></div>
+    <div class="candle bear"><div class="wick" style="height:30px"></div><div class="body-c" style="height:80px;background:currentColor"></div><div class="wick" style="height:15px"></div></div>
+    <div class="candle bull"><div class="wick" style="height:50px"></div><div class="body-c" style="height:120px;background:currentColor"></div><div class="wick" style="height:30px"></div></div>
+    <div class="candle bull"><div class="wick" style="height:20px"></div><div class="body-c" style="height:90px;background:currentColor"></div><div class="wick" style="height:10px"></div></div>
+    <div class="candle bear"><div class="wick" style="height:35px"></div><div class="body-c" style="height:50px;background:currentColor"></div><div class="wick" style="height:25px"></div></div>
+    <div class="candle bull"><div class="wick" style="height:60px"></div><div class="body-c" style="height:150px;background:currentColor"></div><div class="wick" style="height:40px"></div></div>
+    <div class="candle bear"><div class="wick" style="height:25px"></div><div class="body-c" style="height:70px;background:currentColor"></div><div class="wick" style="height:20px"></div></div>
+    <div class="candle bull"><div class="wick" style="height:45px"></div><div class="body-c" style="height:100px;background:currentColor"></div><div class="wick" style="height:35px"></div></div>
+  </div>
+
+  <div class="hero-eyebrow fade-up">XAU / USD · BREAKOUT TEKAN · SMART MONEY CONCEPT</div>
+
+  <h1 class="fade-up delay-1">
+    KUASAI<br>PASAR <span class="accent">EMAS</span><br>BERSAMA KAMI
+  </h1>
+
+  <p class="hero-sub fade-up delay-2">
+    Komunitas trading XAU/USD berbasis Price Action murni, pemetaan Supply & Demand presisi, dan eksekusi Breakout Tekan. Tanpa indikator lagging. Tanpa sinyal buta.
+  </p>
+
+  <div class="hero-actions fade-up delay-3">
+    <a href="#join" class="btn-gold">Daftar Komunitas Sekarang</a>
+    <a href="#strategy" class="btn-outline">Lihat Strategi →</a>
+  </div>
+</section>
+
+<div class="ticker-wrapper" aria-label="Market data">
   <div class="tradingview-widget-container">
     <div class="tradingview-widget-container__widget"></div>
     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
     {
     "symbols": [
-      { "proName": "OANDA:XAUUSD", "title": "Gold" },
-      { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
-      { "proName": "FX:EURUSD", "title": "EUR/USD" },
-      { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
-      { "proName": "IDX:COMPOSITE", "title": "IHSG" }
+      {
+        "proName": "OANDA:XAUUSD",
+        "title": "XAU/USD"
+      },
+      {
+        "proName": "FX:EURUSD",
+        "title": "EUR/USD"
+      },
+      {
+        "proName": "FX:GBPUSD",
+        "title": "GBP/USD"
+      },
+      {
+        "proName": "FX:USDJPY",
+        "title": "USD/JPY"
+      },
+      {
+        "proName": "TVC:DXY",
+        "title": "DXY"
+      },
+      {
+        "proName": "OANDA:XAGUSD",
+        "title": "XAG/USD"
+      },
+      {
+        "proName": "BITSTAMP:BTCUSD",
+        "title": "BTC/USD"
+      }
     ],
     "showSymbolLogo": true,
+    "colorTheme": "dark",
     "isTransparent": true,
     "displayMode": "adaptive",
-    "colorTheme": "dark",
     "locale": "id"
   }
     </script>
   </div>
   </div>
 
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-eyebrow">XAU/USD · Smart Money Concept</div>
-    <h1>KUASAI PASAR <span class="accent">EMAS</span> BERSAMA KAMI</h1>
-    <p class="hero-sub">
-      Komunitas trading berbasis Price Action murni, pemetaan Supply & Demand presisi, dan eksekusi Breakout Tekan. Tanpa indikator lagging. Pantau pasar secara real-time.
-    </p>
-    <div class="hero-actions">
-      <a href="#join" class="btn-primary">Daftar Sekarang</a>
-      <a href="#strategy" class="btn-outline">Lihat Strategi</a>
-    </div>
-  </div>
-  
-  <div class="hero-widget">
-    <div class="tradingview-widget-container">
-      <div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-      {
-      "symbol": "OANDA:XAUUSD",
-      "width": "100%",
-      "height": "100%",
-      "locale": "id",
-      "dateRange": "1D",
-      "colorTheme": "dark",
-      "isTransparent": true,
-      "autosize": true,
-      "largeChartUrl": ""
-    }
-      </script>
-    </div>
-    </div>
-</section>
-
 <div class="stats-bar">
   <div class="stat-item">
-    <div class="stat-num">1.2K+</div>
+    <div class="stat-num">1.200+</div>
     <div class="stat-label">Member Aktif</div>
   </div>
   <div class="stat-item">
     <div class="stat-num">78%</div>
-    <div class="stat-label">Win Rate</div>
+    <div class="stat-label">Win Rate Rata-rata</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">3 Thn</div>
-    <div class="stat-label">Pengalaman</div>
+    <div class="stat-num">3 Tahun</div>
+    <div class="stat-label">Pengalaman di Market</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">1:3</div>
-    <div class="stat-label">Risk-Reward</div>
+    <div class="stat-num">1:3+</div>
+    <div class="stat-label">Risk-Reward Ratio</div>
   </div>
 </div>
 
-<section id="strategy">
+<section class="strategy" id="strategy">
   <div class="strategy-grid">
     <div>
-      <div class="section-eyebrow">Metodologi Analisa</div>
-      <h2 class="section-title" style="margin-bottom: 20px;">BACA JEJAK <span class="accent">INSTITUSI</span></h2>
-      <p style="color: var(--text-muted); margin-bottom: 40px;">
-        Farid Gold Killer tidak mengandalkan indikator lagging. Kami membaca pasar murni melalui pergerakan harga dan struktur likuiditas.
+      <div class="section-eyebrow">Metodologi Kami</div>
+      <h2 class="section-title">BACA JEJAK<br><span class="accent">MARKET MAKER</span></h2>
+      <p class="strategy-desc">
+        Farid Gold Killer tidak mengandalkan indikator lagging. Kami membaca pasar secara murni melalui pergerakan harga, volume, dan struktur likuiditas — persis seperti yang dilakukan big player dan bank-bank dunia.
       </p>
-      <div class="pillars">
-        <div class="pillar">
-          <div class="pillar-num">01</div>
-          <div>
-            <div class="pillar-title">Supply & Demand Zone</div>
-            <div class="pillar-body">Identifikasi area order bank besar sebagai titik entry & exit presisi.</div>
-          </div>
+      <br><br>
+      <div class="chart-visual-wrapper">
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          {
+          "symbol": "OANDA:XAUUSD",
+          "width": "100%",
+          "height": "100%",
+          "locale": "id",
+          "dateRange": "1D",
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "autosize": true,
+          "largeChartUrl": ""
+        }
+          </script>
         </div>
-        <div class="pillar">
-          <div class="pillar-num">02</div>
-          <div>
-            <div class="pillar-title">Breakout Tekan</div>
-            <div class="pillar-body">Eksekusi agresif mengikuti arah Smart Money saat struktur harga terkonfirmasi.</div>
-          </div>
+        </div>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-num">01</div>
+        <div>
+          <div class="pillar-title">Supply & Demand Zone</div>
+          <div class="pillar-body">Kami identifikasi area di mana bank dan institusi besar meninggalkan jejak order mereka. Zona ini menjadi titik entry & exit paling presisi tanpa indikator apapun.</div>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">02</div>
+        <div>
+          <div class="pillar-title">Price Action Konfirmasi</div>
+          <div class="pillar-body">Entry hanya dilakukan setelah ada konfirmasi candlestick seperti Pin Bar, Engulfing, atau Inside Bar di atas zona kritis. Zero noise, high probability.</div>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">03</div>
+        <div>
+          <div class="pillar-title">Breakout Tekan</div>
+          <div class="pillar-body">Strategi andalan kami. Ketika struktur harga terkonfirmasi breakout dengan momentum tinggi, kami eksekusi agresif mengikuti arah Smart Money — bukan melawan.</div>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">04</div>
+        <div>
+          <div class="pillar-title">Risk Management Ketat</div>
+          <div class="pillar-body">Max risk 1-2% per trade. Stop Loss wajib. Target minimal 1:3 RRR. Tanpa Money Management yang benar, strategi terbaik pun akan hancur.</div>
         </div>
       </div>
     </div>
-    
-    <div class="tv-advanced-chart">
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-        {
-        "autosize": true,
-        "symbol": "OANDA:XAUUSD",
-        "interval": "60",
-        "timezone": "Asia/Jakarta",
-        "theme": "dark",
-        "style": "1",
-        "locale": "id",
-        "enable_publishing": false,
-        "backgroundColor": "#131722",
-        "gridColor": "#2A2E39",
-        "hide_top_toolbar": true,
-        "hide_legend": false,
-        "save_image": false,
-        "container_id": "tradingview_advanced"
-      }
-        </script>
-      </div>
-      </div>
   </div>
 </section>
 
-<section id="results" style="background: var(--bg-card); border-top: 1px solid var(--border);">
-  <div class="section-header">
-    <div class="section-eyebrow">Validasi Data</div>
-    <h2 class="section-title">BUKTI & <span class="accent">LIVE SIGNAL</span></h2>
+<section id="features">
+  <div class="features-wrap">
+    <div class="section-eyebrow">Yang Kamu Dapatkan</div>
+    <h2 class="section-title">SEMUA YANG KAMU<br>BUTUHKAN UNTUK <span class="accent">PROFIT</span></h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 3v18h18M7 16l4-8 4 4 4-6"/>
+        </svg>
+        <div class="feature-title">Daily Market Analysis</div>
+        <div class="feature-body">Analisis XAU/USD harian, termasuk level Support & Resistance kritis, bias arah, dan setup potential yang wajib dicermati sebelum market buka.</div>
+      </div>
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <div class="feature-title">Live Grup Komunitas</div>
+        <div class="feature-body">Bergabung dengan 1.200+ trader aktif di grup Telegram eksklusif. Diskusi setup, sharing profit, dan alert real-time ketika ada opportunity menarik.</div>
+      </div>
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.89L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
+        </svg>
+        <div class="feature-title">Live Trading Session</div>
+        <div class="feature-body">Sesi trading live setiap minggu bersama Farid. Lihat langsung proses pembacaan chart, eksekusi order di MT4/MT5, dan pengelolaan trade secara real-time.</div>
+      </div>
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        <div class="feature-title">Materi Edukasi Lengkap</div>
+        <div class="feature-body">Library video edukasi dari level dasar (apa itu lot, spread, margin) sampai advanced (multi-timeframe analysis, institutional order flow, SMC).</div>
+      </div>
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        <div class="feature-title">Setup Alert Presisi</div>
+        <div class="feature-body">Notifikasi langsung ketika harga mendekati zona kritis. Termasuk level entry, SL, dan TP yang sudah dikalkulasi — kamu tinggal eksekusi sesuai MM-mu.</div>
+      </div>
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="feature-title">Akses Broker via IB Link</div>
+        <div class="feature-body">Daftar broker terpercaya (regulasi FCA, ASIC, CySEC) via IB link kami. Nikmati spread lebih rendah, cashback, dan bonus khusus member komunitas.</div>
+      </div>
+    </div>
   </div>
-  
-  <div class="proof-container">
+</section>
+
+<section class="testimonials-section" id="results">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-eyebrow">Bukti Nyata</div>
+    <h2 class="section-title">KATA MEREKA &<br><span class="accent">HASIL NYATA</span></h2>
+
     <div class="testi-grid">
       <div class="testi-card">
-        <div style="color:var(--primary); margin-bottom:12px;">★★★★★</div>
-        <p style="color:var(--text-muted); font-style:italic; margin-bottom:16px;">"Setelah belajar konsep Breakout Tekan di komunitas ini, winrate saya naik drastis. Sekarang profit konsisten."</p>
-        <strong>Ahmad R.</strong> <span style="font-size:0.8rem; color:var(--text-muted);">· Jakarta</span>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Dulu saya nyangkut terus di XAU karena sering melawan tren. Setelah belajar konsep Breakout Tekan di komunitas ini, winrate saya naik drastis. Sekarang profit konsisten tiap bulan."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AR</div>
+          <div>
+            <div class="testi-name">Ahmad R.</div>
+            <div class="testi-meta">Member sejak 2023 · Jakarta</div>
+          </div>
+        </div>
       </div>
       <div class="testi-card">
-        <div style="color:var(--primary); margin-bottom:12px;">★★★★★</div>
-        <p style="color:var(--text-muted); font-style:italic; margin-bottom:16px;">"Live trading session-nya priceless. Lihat eksekusi langsung MT5. Dalam 3 bulan modal saya sudah 2x."</p>
-        <strong>Reza W.</strong> <span style="font-size:0.8rem; color:var(--text-muted);">· Bandung</span>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Yang paling saya suka adalah daily analysis-nya. Langsung tahu mau trading ke arah mana hari itu. Setup-nya jelas, level-nya presisi. Dari 10 trade, rata-rata 7-8 kena target."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">DS</div>
+          <div>
+            <div class="testi-name">Dian S.</div>
+            <div class="testi-meta">Member sejak 2024 · Surabaya</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Live trading session-nya priceless. Nonton langsung gimana Farid baca chart, eksekusi, manage trade. Beda banget sama cuma baca teori. Dalam 3 bulan modal saya sudah 2x."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">RW</div>
+          <div>
+            <div class="testi-name">Reza W.</div>
+            <div class="testi-meta">Member sejak 2023 · Bandung</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="tv-gauge-container">
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-        {
-        "interval": "15m",
-        "width": "100%",
-        "isTransparent": true,
-        "height": "100%",
-        "symbol": "OANDA:XAUUSD",
-        "showIntervalTabs": true,
-        "displayMode": "single",
-        "locale": "id",
-        "colorTheme": "dark"
-      }
-        </script>
+    <div style="margin-top:60px;">
+      <div class="section-eyebrow" style="margin-bottom:16px;">Bukti Profit & Live Technical Analysis</div>
+      <div class="proof-grid">
+        <div class="proof-card proof-mt5">
+          <div class="mt5-header">MT5 · Profit Screenshot</div>
+          <div class="mt5-row"><span>XAU/USD</span><span class="val pos">+$342.50</span></div>
+          <div class="mt5-row"><span>Lot Size</span><span class="val">0.50</span></div>
+          <div class="mt5-row"><span>Open</span><span class="val">2,341.20</span></div>
+          <div class="mt5-row"><span>Close</span><span class="val">2,373.90</span></div>
+          <div class="mt5-row"><span>Duration</span><span class="val">4h 22m</span></div>
+          <div class="mt5-total">+$342.50</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · BUY · CLOSED</div>
+        </div>
+
+        <div class="proof-card" style="padding: 0; background: var(--surface-3); border-color: var(--border);">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+            {
+            "interval": "15m",
+            "width": "100%",
+            "isTransparent": true,
+            "height": "100%",
+            "symbol": "OANDA:XAUUSD",
+            "showIntervalTabs": true,
+            "displayMode": "single",
+            "locale": "id",
+            "colorTheme": "dark"
+          }
+            </script>
+          </div>
+          </div>
+
+        <div class="proof-card proof-mt5">
+          <div class="mt5-header">MT5 · Profit Screenshot</div>
+          <div class="mt5-row"><span>XAU/USD</span><span class="val pos">+$891.00</span></div>
+          <div class="mt5-row"><span>Lot Size</span><span class="val">1.00</span></div>
+          <div class="mt5-row"><span>Open</span><span class="val">2,298.50</span></div>
+          <div class="mt5-row"><span>Close</span><span class="val">2,387.60</span></div>
+          <div class="mt5-row"><span>Duration</span><span class="val">2d 1h</span></div>
+          <div class="mt5-total">+$891.00</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · BUY · CLOSED</div>
+        </div>
+
+        <div class="proof-card" style="padding: 0;">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+            {
+            "symbol": "OANDA:XAUUSD",
+            "width": "100%",
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "locale": "id"
+          }
+            </script>
+          </div>
+          </div>
       </div>
-      </div>
+      <p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:20px;opacity:0.7;">
+        ⚠️ Hasil trading bervariasi. Past performance tidak menjamin hasil di masa depan. Selalu gunakan manajemen risiko yang tepat.
+      </p>
+    </div>
   </div>
 </section>
 
 <section id="how">
-  <div class="section-header">
-    <div class="section-eyebrow">Langkah Mudah</div>
-    <h2 class="section-title">CARA <span class="accent">BERGABUNG</span></h2>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="step-num">1</div><strong>Daftar via IB</strong><p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Buka akun di broker rekanan terpercaya kami.</p></div>
-    <div class="step"><div class="step-num">2</div><strong>Join Telegram</strong><p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Kirim bukti akun untuk akses grup eksklusif.</p></div>
-    <div class="step"><div class="step-num">3</div><strong>Edukasi Dasar</strong><p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Pelajari video materi SMC & Breakout Tekan.</p></div>
-    <div class="step"><div class="step-num">4</div><strong>Eksekusi</strong><p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Ikuti live session dan mulai hasilkan profit.</p></div>
+  <div class="how-wrap">
+    <div class="section-eyebrow">Cara Bergabung</div>
+    <h2 class="section-title">4 LANGKAH MULAI<br><span class="accent">TRADING BERSAMA KAMI</span></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Daftar via Link IB</div>
+        <div class="step-body">Klik tombol "Daftar via IB" dan buka akun di broker rekanan kami. Proses verifikasi cepat, deposit fleksibel mulai $100.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Join Grup Telegram</div>
+        <div class="step-body">Setelah akun aktif, kirim screenshot ke admin dan dapatkan akses eksklusif ke grup komunitas Farid Gold Killer.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Pelajari Materi Dasar</div>
+        <div class="step-body">Akses library edukasi. Pelajari konsep Supply & Demand, Price Action, dan Breakout Tekan sebelum mulai live trading.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Trade & Berkembang</div>
+        <div class="step-body">Ikuti daily analysis, join live session mingguan, dan eksekusi setup dengan risk management ketat. Konsistensi adalah kunci.</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="join-section" id="join">
-  <div class="cta-card">
-    <div class="section-eyebrow">Akses Premium Gratis</div>
-    <h2 class="section-title" style="margin-bottom:20px;">FARID GOLD KILLER</h2>
-    <p style="color:var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;">
-      Bergabung dengan 1.200+ trader aktif. Dapatkan analisa harian, edukasi, dan mentoring langsung via pendaftaran IB kami.
-    </p>
+  <div class="join-inner">
     <div>
-      <a href="#" class="btn-primary" style="display:inline-block; margin-right: 16px;">Daftar Broker Sekarang</a>
-      <a href="#" class="btn-wa">Chat Admin WA</a>
+      <div class="section-eyebrow">Bergabung Sekarang</div>
+      <h2 class="section-title">AKSES PENUH<br><span class="accent">KOMUNITAS PREMIUM</span></h2>
+      <div class="join-benefits">
+        <div class="benefit-row">
+          <div class="benefit-check">✓</div>
+          <div class="benefit-text"><strong>Daily XAU/USD Analysis</strong> — Setup lengkap dengan level entry, SL, dan TP setiap hari trading</div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-check">✓</div>
+          <div class="benefit-text"><strong>Live Trading Mingguan</strong> — Sesi bersama Farid langsung di MT5, lihat eksekusi nyata</div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-check">✓</div>
+          <div class="benefit-text"><strong>Alert Setup Real-time</strong> — Notifikasi Telegram ketika ada high-probability setup terbentuk</div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-check">✓</div>
+          <div class="benefit-text"><strong>Materi Edukasi Lengkap</strong> — Video SMC, Supply & Demand, Multi-TF Analysis, Risk Management</div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-check">✓</div>
+          <div class="benefit-text"><strong>Broker Spread Rendah via IB</strong> — Akses spread kompetitif dan cashback eksklusif member komunitas</div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-check">✓</div>
+          <div class="benefit-text"><strong>Support 1-on-1</strong> — Review trade, koreksi kesalahan analisa, dan mentoring personal</div>
+        </div>
+      </div>
     </div>
-    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 24px; opacity: 0.7;">
-      ⚠️ Trading memiliki risiko tinggi. Pastikan manajemen keuangan (MM) Anda disiplin.
-    </p>
+
+    <div>
+      <div class="cta-card">
+        <div class="cta-card-label">Akses Komunitas</div>
+        <h3>FARID GOLD<br>KILLER</h3>
+        <p>Bergabung dengan 1.200+ trader aktif. Akses gratis melalui pendaftaran broker via IB link kami — daftar akun, deposit, dan langsung masuk komunitas.</p>
+        <a href="https://LINK-IB-BROKER-ANDA.com" target="_blank" rel="noopener" class="btn-gold">
+          🚀 &nbsp;Daftar via IB Link Broker
+        </a>
+        <div class="cta-divider">atau hubungi admin</div>
+        <a href="https://wa.me/6281234567890?text=Halo%20Farid%20Gold%20Killer%2C%20saya%20ingin%20bergabung%20komunitas" target="_blank" rel="noopener" class="btn-wa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Hubungi via WhatsApp
+        </a>
+        <div class="risk-note">
+          ⚠️ Trading forex & komoditas memiliki risiko tinggi. Hanya gunakan modal yang siap Anda rugikan. Komunitas ini bersifat edukatif, bukan jaminan profit.
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="faq">
   <div class="faq-wrap">
-    <div class="section-header">
-      <h2 class="section-title">FAQ</h2>
-    </div>
+    <div class="section-eyebrow">Pertanyaan Umum</div>
+    <h2 class="section-title" style="margin-bottom:64px;">FAQ</h2>
+
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Apakah cocok untuk pemula? <span>+</span></button>
-      <div class="faq-a">Ya, kami menyediakan materi dari dasar hingga manajemen risiko tingkat lanjut.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Apakah komunitas ini cocok untuk trader pemula?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Ya, komunitas ini cocok untuk semua level. Kami menyediakan materi dari dasar (apa itu lot, pip, spread, margin) hingga analisa tingkat lanjut. Yang penting adalah komitmen untuk belajar dan disiplin dalam manajemen risiko.</div>
     </div>
+
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Berapa modal minimal? <span>+</span></button>
-      <div class="faq-a">Disarankan minimal $500 untuk manajemen risiko yang sehat, tapi Anda bisa mulai dengan akun demo terlebih dahulu.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Berapa modal minimal untuk mulai trading XAU/USD?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Kami merekomendasikan minimal $500 untuk bisa trading XAU/USD dengan lot size yang wajar dan risk management yang benar. Namun untuk belajar dan demo trading, Anda bisa mulai tanpa modal dulu.</div>
     </div>
+
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Apakah ini grup sinyal? <span>+</span></button>
-      <div class="faq-a">Ini adalah komunitas EDUKASI. Kami memberikan analisa (bukan sinyal buta) agar Anda menjadi trader mandiri.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Broker apa yang digunakan dan apakah aman?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Kami hanya merekomendasikan broker yang memiliki regulasi internasional terpercaya (FCA, ASIC, CySEC, atau CFTC). Broker rekanan kami sudah terverifikasi, memiliki track record baik, dan proses withdrawal yang lancar.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Apakah ada biaya membership komunitas?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Akses komunitas dasar GRATIS melalui pendaftaran broker via IB link kami. Ini adalah model IB (Introducing Broker) yang umum — Anda trading seperti biasa, kami mendapat komisi dari broker, dan Anda mendapat benefit komunitas premium.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Apakah ini sinyal trading atau edukasi?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Ini adalah komunitas EDUKASI, bukan signal provider. Kami mengajarkan cara membaca dan menganalisa pasar sendiri. Tujuan kami adalah membuat Anda menjadi trader independen — bukan bergantung pada sinyal orang lain selamanya.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        MT4 atau MT5? Platform apa yang sebaiknya digunakan?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Kami merekomendasikan MetaTrader 5 (MT5) karena memiliki lebih banyak fitur, timeframe lebih lengkap, dan depth of market yang membantu dalam membaca order flow. Namun MT4 juga masih sangat relevan dan kami support keduanya.</div>
     </div>
   </div>
 </section>
 
 <footer>
-  <div>© 2026 Farid Gold Killer. All rights reserved.</div>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--gold);">FARID GOLD KILLER</div>
+      <p>Komunitas trading XAU/USD berbasis Price Action dan Smart Money Concept. Didirikan untuk membantu trader Indonesia profit secara konsisten dan independen.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Navigasi</div>
+      <ul class="footer-links">
+        <li><a href="#strategy">Strategi</a></li>
+        <li><a href="#features">Fitur</a></li>
+        <li><a href="#results">Bukti Nyata</a></li>
+        <li><a href="#how">Cara Bergabung</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Broker & Platform</div>
+      <ul class="footer-links">
+        <li><a href="https://LINK-IB-BROKER-ANDA.com" target="_blank">Daftar Broker via IB</a></li>
+        <li><a href="#" target="_blank">Download MetaTrader 5</a></li>
+        <li><a href="#" target="_blank">Download MetaTrader 4</a></li>
+        <li><a href="#" target="_blank">TradingView Gratis</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Kontak</div>
+      <ul class="footer-links">
+        <li><a href="https://wa.me/6281234567890" target="_blank">WhatsApp Admin</a></li>
+        <li><a href="https://t.me/faridgoldkiller" target="_blank">Telegram Komunitas</a></li>
+        <li><a href="https://instagram.com/faridgoldkiller" target="_blank">Instagram</a></li>
+        <li><a href="https://youtube.com/@faridgoldkiller" target="_blank">YouTube Channel</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Farid Gold Killer. All rights reserved.</span>
+    <span style="color:var(--gold-dim);">XAU/USD · BREAKOUT TEKAN · SMART MONEY CONCEPT</span>
+  </div>
+  <div class="footer-disclaimer">
+    <strong>DISCLAIMER RISIKO:</strong> Trading forex, komoditas, dan instrumen keuangan lainnya mengandung risiko kehilangan modal yang sangat tinggi dan mungkin tidak cocok untuk semua investor. Pastikan Anda memahami sepenuhnya risiko yang terlibat sebelum bertransaksi. Performa masa lalu tidak menjamin hasil di masa depan. Seluruh konten di website ini bersifat edukatif dan bukan merupakan saran investasi atau rekomendasi keuangan. Farid Gold Killer bukan perusahaan sekuritas dan tidak memberikan layanan manajemen investasi. Selalu konsultasikan dengan penasihat keuangan profesional sebelum membuat keputusan investasi.
+  </div>
 </footer>
 
 <script>
+  // FAQ Toggle
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');
     document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+
+  // Intersection Observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feature-card, .testi-card, .stat-item, .pillar, .step, .proof-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Smooth nav highlight
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(8,8,8,0.97)';
+    } else {
+      nav.style.background = 'rgba(8,8,8,0.85)';
+    }
+  });
 </script>
 </body>
 </html>
