@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FGK Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #F0CC6E;
+      --gold-dim: #5a4a20;
+      --black: #070707;
+      --surface: #0f0f0f;
+      --surface-2: #141414;
+      --surface-3: #1a1a1a;
+      --surface-4: #202020;
+      --border: rgba(201,168,76,0.12);
+      --border-focus: rgba(201,168,76,0.5);
+      --text: #ede9df;
+      --muted: #6b6560;
+      --green: #27ae60;
+      --red: #c0392b;
+      --blue: #2980b9;
+      --sidebar-w: 260px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      display: flex;
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+      overflow-y: auto;
+    }
+    .sidebar-brand {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-brand .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+    }
+    .sidebar-brand .sub {
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .sidebar-section-label {
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 20px 24px 8px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 24px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+      user-select: none;
+    }
+    .nav-item:hover { color: var(--text); background: var(--surface-2); }
+    .nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(201,168,76,0.06); }
+    .nav-item .icon { width: 16px; height: 16px; opacity: 0.8; flex-shrink: 0; }
+    .nav-item.active .icon { opacity: 1; }
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .status-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .status-dot.err { background: var(--red); }
+    .status-dot.idle { background: var(--muted); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .topbar-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .btn {
+      padding: 8px 18px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary { background: var(--gold); color: #000; }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface-3); color: var(--muted); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--gold-dim); color: var(--text); }
+    .btn-danger { background: rgba(192,57,43,0.15); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }
+    .btn-danger:hover { background: rgba(192,57,43,0.25); }
+    .btn-sm { padding: 5px 12px; font-size: 0.65rem; }
+
+    /* ── CONTENT ── */
+    .content { padding: 40px; flex: 1; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── JSONBIN CONFIG ── */
+    .config-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 28px 32px;
+      margin-bottom: 32px;
+    }
+    .config-card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .config-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    input[type="text"], input[type="url"], input[type="number"], input[type="password"],
+    textarea, select {
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      width: 100%;
+      transition: border-color 0.2s;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--border-focus); }
+    input[type="password"] { font-family: 'DM Mono', monospace; letter-spacing: 2px; }
+    textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+    select option { background: var(--surface-3); }
+    input[type="color"] {
+      width: 48px; height: 36px;
+      padding: 2px;
+      border: 1px solid var(--border);
+      background: var(--surface-3);
+      cursor: pointer;
+    }
+    input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .field-row { display: flex; align-items: center; gap: 10px; }
+    .field-hint {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── SECTION CARD ── */
+    .section-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .section-card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .section-card-header:hover { background: var(--surface-3); }
+    .section-card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-card-badge {
+      font-size: 0.6rem;
+      background: rgba(201,168,76,0.15);
+      color: var(--gold);
+      padding: 2px 8px;
+      letter-spacing: 1px;
+    }
+    .section-card-toggle { color: var(--muted); font-size: 1rem; transition: transform 0.3s; }
+    .section-card.collapsed .section-card-toggle { transform: rotate(-90deg); }
+    .section-card-body { padding: 24px; display: block; }
+    .section-card.collapsed .section-card-body { display: none; }
+
+    /* ── GRID HELPERS ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* ── REPEATER ── */
+    .repeater { display: flex; flex-direction: column; gap: 12px; }
+    .repeater-item {
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      padding: 20px;
+      position: relative;
+    }
+    .repeater-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .repeater-item-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      color: var(--gold-dim);
+    }
+    .repeater-actions { display: flex; gap: 6px; }
+
+    /* ── STAR RATING ── */
+    .star-picker { display: flex; gap: 6px; }
+    .star-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.15s;
+      padding: 0;
+    }
+    .star-btn.active { color: var(--gold); }
+
+    /* ── TOAST ── */
+    .toast-container {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      display: flex; flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+    .toast {
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s ease;
+      min-width: 260px;
+    }
+    .toast.success { border-color: rgba(39,174,96,0.4); }
+    .toast.error { border-color: rgba(192,57,43,0.4); }
+    .toast-icon { font-size: 1rem; }
+    @keyframes toastIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── PREVIEW MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface-2);
+      border: 1px solid var(--gold-dim);
+      padding: 36px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    /* ── JSON PREVIEW ── */
+    .json-preview {
+      background: var(--black);
+      border: 1px solid var(--border);
+      padding: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      max-height: 400px;
+      overflow-y: auto;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .json-key { color: var(--gold); }
+    .json-str { color: #7ec8a0; }
+    .json-num { color: #5ba4e0; }
+    .json-bool { color: #e07b5b; }
+
+    /* ── TICKER TABLE ── */
+    .ticker-table { width: 100%; border-collapse: collapse; }
+    .ticker-table th {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .ticker-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .ticker-table tr:last-child td { border-bottom: none; }
+    .ticker-table tr:hover td { background: var(--surface-3); }
+    .ticker-table input { width: 100%; }
+
+    /* ── PROOF GRID ── */
+    .proof-upload-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .proof-slot {
+      aspect-ratio: 3/4;
+      background: var(--surface-3);
+      border: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .proof-slot:hover { border-color: var(--gold-dim); }
+    .proof-slot .slot-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: var(--gold-dim);
+    }
+    .proof-slot .slot-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 1px; }
+    .proof-preview {
+      width: 100%; height: 100px;
+      object-fit: cover;
+      border-radius: 2px;
+      margin-bottom: 4px;
+      display: none;
+    }
+
+    /* ── SAVE INDICATOR ── */
+    .save-pulse {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .save-pulse.saving { color: var(--gold); }
+    .save-pulse.saved { color: var(--green); }
+    .save-pulse.error { color: var(--red); }
+
+    /* ── COLOR PICKER GROUP ── */
+    .color-group { display: flex; align-items: center; gap: 10px; }
+    .color-hex {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      width: 110px;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    /* Tag badge */
+    .badge {
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      padding: 2px 8px;
+      display: inline-block;
+    }
+    .badge-gold { background: rgba(201,168,76,0.15); color: var(--gold); }
+    .badge-green { background: rgba(39,174,96,0.15); color: var(--green); }
+    .badge-red { background: rgba(192,57,43,0.15); color: var(--red); }
+
+    @media (max-width: 900px) {
+      .sidebar { width: 200px; }
+      .main { margin-left: 200px; }
+      .content { padding: 20px; }
+      .grid-4 { grid-template-columns: 1fr 1fr; }
+      .proof-upload-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">FGK Admin</div>
+    <div class="sub">Landing Page CMS</div>
+  </div>
+
+  <div class="sidebar-section-label">Pengaturan</div>
+  <div class="nav-item active" onclick="switchTab('tab-jsonbin', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+    JSONBin API
+  </div>
+
+  <div class="sidebar-section-label">Konten Halaman</div>
+  <div class="nav-item" onclick="switchTab('tab-hero', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18"/></svg>
+    Hero & Branding
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-ticker', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+    Ticker & Stats
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-strategy', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Strategi & Chart
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-features', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+    Fitur (6 Kartu)
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-testimonials', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+    Testimoni
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-proof', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    Bukti Profit
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-steps', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    Cara Bergabung
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-cta', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    CTA & IB Link
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-faq', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+    FAQ
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-footer', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20h16M4 4h16M9 4v16M15 4v16"/></svg>
+    Footer & Kontak
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-theme', this)">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    Tema & Warna
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="save-pulse idle" id="globalStatus">
+      <span class="status-dot idle" id="statusDot"></span>
+      <span id="statusText">Belum terhubung</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">JSONBin API Config</div>
+    <div class="topbar-right">
+      <button class="btn btn-secondary" onclick="loadFromBin()">⬇ Load dari JSONBin</button>
+      <button class="btn btn-secondary" onclick="showJsonPreview()">{ } Preview JSON</button>
+      <button class="btn btn-primary" onclick="saveToBin()">⬆ Simpan ke JSONBin</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ════════════════════════════════════
+         TAB: JSONBIN CONFIG
+    ════════════════════════════════════ -->
+    <div class="tab-panel active" id="tab-jsonbin">
+      <div class="config-card">
+        <div class="config-card-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+          Konfigurasi JSONBin.io
+        </div>
+        <div class="config-row">
+          <div class="field" style="margin-bottom:0">
+            <label>Master Key (X-Master-Key)</label>
+            <input type="password" id="masterKey" placeholder="$2b$10$..." />
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Access Key (X-Access-Key) — opsional</label>
+            <input type="password" id="accessKey" placeholder="$2b$10$..." />
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Bin ID</label>
+            <input type="text" id="binId" placeholder="64a1b2c3d4e5f6..." />
+          </div>
+          <button class="btn btn-primary" onclick="testConnection()" style="white-space:nowrap;height:40px;align-self:end;">Test Koneksi</button>
+        </div>
+        <div style="margin-top:16px;" class="field-hint">
+          💡 Buat akun gratis di <strong>jsonbin.io</strong> → Buat Bin baru → Salin Bin ID dan Master Key di sini. Landing page akan membaca data dari Bin ini secara otomatis.
+        </div>
+        <hr class="divider"/>
+        <div class="grid-2" style="margin-top:0;">
+          <div>
+            <div class="field-hint" style="margin-bottom:8px;"><strong style="color:var(--text);">Cara setup di Landing Page:</strong></div>
+            <div class="json-preview" style="font-size:0.72rem;max-height:120px;">// Di index.html, tambahkan:
+const JSONBIN_ID   = "PASTE_BIN_ID_DISINI";
+const JSONBIN_KEY  = "PASTE_ACCESS_KEY_DISINI";
+// Halaman akan auto-fetch saat load</div>
+          </div>
+          <div>
+            <div class="field-hint" style="margin-bottom:8px;"><strong style="color:var(--text);">Elemen yang dikontrol JSONBin:</strong></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:4px;">
+              <span class="badge badge-gold">Hero Text</span>
+              <span class="badge badge-gold">Stats</span>
+              <span class="badge badge-gold">Ticker</span>
+              <span class="badge badge-gold">Strategi</span>
+              <span class="badge badge-gold">Fitur</span>
+              <span class="badge badge-gold">Testimoni</span>
+              <span class="badge badge-gold">Bukti Profit</span>
+              <span class="badge badge-gold">Steps</span>
+              <span class="badge badge-gold">IB Link</span>
+              <span class="badge badge-gold">WA Link</span>
+              <span class="badge badge-gold">FAQ</span>
+              <span class="badge badge-gold">Footer</span>
+              <span class="badge badge-gold">Warna</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick status -->
+      <div class="config-card" style="padding:20px 32px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+          <div>
+            <div class="config-card-title" style="margin-bottom:6px;">Status Terakhir</div>
+            <div id="connectionDetail" class="field-hint">Belum melakukan koneksi. Isi API Key dan Bin ID, lalu klik "Test Koneksi".</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="exportJson()">⬇ Export JSON</button>
+            <button class="btn btn-secondary" onclick="importJsonFile()">⬆ Import JSON</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)"/>
+            <button class="btn btn-danger btn-sm" onclick="resetToDefault()" style="height:36px;">Reset Default</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: HERO
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-hero">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Hero Section <span class="section-card-badge">Utama</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div>
+              <div class="field"><label>Teks Eyebrow (kecil di atas judul)</label><input type="text" id="hero_eyebrow" placeholder="XAU/USD · BREAKOUT TEKAN · SMART MONEY CONCEPT"/></div>
+              <div class="field"><label>Judul Baris 1</label><input type="text" id="hero_title1" placeholder="KUASAI"/></div>
+              <div class="field"><label>Judul Baris 2 (warna emas)</label><input type="text" id="hero_title2" placeholder="PASAR EMAS"/></div>
+              <div class="field"><label>Judul Baris 3</label><input type="text" id="hero_title3" placeholder="BERSAMA KAMI"/></div>
+            </div>
+            <div>
+              <div class="field"><label>Subjudul / Deskripsi Hero</label><textarea id="hero_sub" rows="4" placeholder="Deskripsi singkat komunitas..."></textarea></div>
+              <div class="field"><label>Teks Tombol Utama (CTA)</label><input type="text" id="hero_btn_text" placeholder="Daftar Komunitas Sekarang"/></div>
+              <div class="field"><label>Teks Tombol Kedua</label><input type="text" id="hero_btn2_text" placeholder="Lihat Strategi →"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Navbar <span class="section-card-badge">Branding</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Nama Brand (bagian putih)</label><input type="text" id="brand_name_white" placeholder="FARID"/></div>
+            <div class="field"><label>Nama Brand (bagian emas)</label><input type="text" id="brand_name_gold" placeholder="GOLD KILLER"/></div>
+          </div>
+          <div class="grid-3">
+            <div class="field"><label>Link Nav 1</label><input type="text" id="nav_link1" placeholder="Strategi"/></div>
+            <div class="field"><label>Link Nav 2</label><input type="text" id="nav_link2" placeholder="Bukti"/></div>
+            <div class="field"><label>Link Nav 3</label><input type="text" id="nav_link3" placeholder="Cara Kerja"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: TICKER & STATS
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-ticker">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Stats Bar (4 Angka) <span class="section-card-badge">Statistik</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-4" id="statsContainer">
+            <!-- generated -->
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Ticker Strip (harga pasangan) <span class="section-card-badge">Market</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="field-row" style="margin-bottom:16px;">
+            <input type="checkbox" id="ticker_enabled"/>
+            <label for="ticker_enabled" style="text-transform:none;letter-spacing:0;font-size:0.88rem;cursor:pointer;">Tampilkan Ticker Strip</label>
+          </div>
+          <table class="ticker-table">
+            <thead>
+              <tr>
+                <th>Simbol</th>
+                <th>Harga Display</th>
+                <th>Perubahan (%)</th>
+                <th>Arah</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tickerTableBody">
+              <!-- generated -->
+            </tbody>
+          </table>
+          <div style="margin-top:12px;">
+            <button class="btn btn-secondary btn-sm" onclick="addTickerRow()">+ Tambah Pasangan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: STRATEGY
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-strategy">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Chart Display (XAU Mini Chart)</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-3">
+            <div class="field"><label>Harga Tampil (Display)</label><input type="text" id="chart_price" placeholder="$2,374.50"/></div>
+            <div class="field"><label>Perubahan Harga</label><input type="text" id="chart_change" placeholder="▲ +$28.30 (1.24%) hari ini"/></div>
+            <div class="field"><label>Label Chart</label><input type="text" id="chart_label" placeholder="XAU/USD · H4 · Live Analysis"/></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Level Resistance</label><input type="text" id="chart_resistance" placeholder="$2,387"/></div>
+            <div class="field"><label>Level Support</label><input type="text" id="chart_support" placeholder="$2,350"/></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">4 Pilar Strategi <span class="section-card-badge">Konten</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="repeater" id="pillarsContainer">
+            <!-- generated -->
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Judul Section Strategi</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Eyebrow Text</label><input type="text" id="strat_eyebrow" placeholder="Metodologi Kami"/></div>
+            <div class="field"><label>Judul Baris 1</label><input type="text" id="strat_title1" placeholder="BACA JEJAK"/></div>
+          </div>
+          <div class="field"><label>Judul Baris 2 (aksen emas)</label><input type="text" id="strat_title2" placeholder="MARKET MAKER"/></div>
+          <div class="field"><label>Deskripsi</label><textarea id="strat_desc" rows="3" placeholder="Farid Gold Killer tidak mengandalkan indikator lagging..."></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: FEATURES
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-features">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Header Section Fitur</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Eyebrow</label><input type="text" id="feat_eyebrow" placeholder="Yang Kamu Dapatkan"/></div>
+            <div class="field"><label>Judul Baris 1</label><input type="text" id="feat_title1" placeholder="SEMUA YANG KAMU"/></div>
+          </div>
+          <div class="field"><label>Judul Baris 2 (aksen)</label><input type="text" id="feat_title2" placeholder="BUTUHKAN UNTUK PROFIT"/></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">6 Kartu Fitur <span class="section-card-badge">Konten</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="repeater" id="featuresContainer">
+            <!-- generated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: TESTIMONIALS
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-testimonials">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Header Section</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Eyebrow</label><input type="text" id="testi_eyebrow" placeholder="Bukti Nyata"/></div>
+            <div class="field"><label>Judul Baris 1</label><input type="text" id="testi_title1" placeholder="KATA MEREKA &"/></div>
+          </div>
+          <div class="field"><label>Judul Baris 2 (aksen)</label><input type="text" id="testi_title2" placeholder="HASIL NYATA"/></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Testimoni Member <span class="section-card-badge">3 Kartu</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="repeater" id="testiContainer">
+            <!-- generated -->
+          </div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="addTestimoni()">+ Tambah Testimoni</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: PROOF
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-proof">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Header Section Bukti</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Eyebrow</label><input type="text" id="proof_eyebrow" placeholder="Screenshot Hasil Nyata Member"/></div>
+            <div class="field"><label>Catatan bawah</label><input type="text" id="proof_note" placeholder="⚠️ Hasil trading bervariasi..."/></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">4 Slot Bukti Profit <span class="section-card-badge">Gambar / MT5 Data</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="field-hint" style="margin-bottom:20px;">Masukkan URL gambar (dari Imgur, CDN, atau hosting gambar lain) untuk setiap slot. Kosongkan untuk tampilkan placeholder.</div>
+          <div id="proofSlotsContainer">
+            <!-- generated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: STEPS
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-steps">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Header Section</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Eyebrow</label><input type="text" id="steps_eyebrow" placeholder="Cara Bergabung"/></div>
+            <div class="field"><label>Judul Baris 1</label><input type="text" id="steps_title1" placeholder="4 LANGKAH MULAI"/></div>
+          </div>
+          <div class="field"><label>Judul Baris 2 (aksen)</label><input type="text" id="steps_title2" placeholder="TRADING BERSAMA KAMI"/></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">4 Langkah / Steps <span class="section-card-badge">Konten</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="repeater" id="stepsContainer">
+            <!-- generated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: CTA
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-cta">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Link Penting <span class="section-card-badge">IB & WA</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="field"><label>URL IB Broker (link daftar akun)</label><input type="url" id="ib_link" placeholder="https://link-broker-ib-anda.com/?ref=farid"/></div>
+          <div class="field"><label>Nomor WhatsApp (format internasional, tanpa +)</label><input type="text" id="wa_number" placeholder="6281234567890"/></div>
+          <div class="field"><label>Teks Pre-filled WA Message</label><textarea id="wa_message" rows="2" placeholder="Halo Farid Gold Killer, saya ingin bergabung komunitas"></textarea></div>
+          <div class="field"><label>Teks Tombol IB</label><input type="text" id="ib_btn_text" placeholder="🚀 Daftar via IB Link Broker"/></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">CTA Card Konten</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Label Atas Card</label><input type="text" id="cta_label" placeholder="Akses Komunitas"/></div>
+            <div class="field"><label>Judul Card Baris 1</label><input type="text" id="cta_title1" placeholder="FARID GOLD"/></div>
+          </div>
+          <div class="field"><label>Judul Card Baris 2</label><input type="text" id="cta_title2" placeholder="KILLER"/></div>
+          <div class="field"><label>Deskripsi</label><textarea id="cta_desc" rows="3"></textarea></div>
+          <hr class="divider"/>
+          <div class="field-hint" style="margin-bottom:12px;"><strong style="color:var(--text);">6 Benefit (checklist) di Join Section:</strong></div>
+          <div id="benefitsContainer" class="repeater">
+            <!-- generated -->
+          </div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="addBenefit()">+ Tambah Benefit</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Header Join Section</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Eyebrow</label><input type="text" id="join_eyebrow" placeholder="Bergabung Sekarang"/></div>
+            <div class="field"><label>Judul Baris 1</label><input type="text" id="join_title1" placeholder="AKSES PENUH"/></div>
+          </div>
+          <div class="field"><label>Judul Baris 2 (aksen)</label><input type="text" id="join_title2" placeholder="KOMUNITAS PREMIUM"/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: FAQ
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-faq">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">FAQ Items <span class="section-card-badge">Add / Remove</span></div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="repeater" id="faqContainer">
+            <!-- generated -->
+          </div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="addFaq()">+ Tambah FAQ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: FOOTER
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-footer">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Sosial Media & Link</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div class="field"><label>Telegram Komunitas</label><input type="url" id="footer_telegram" placeholder="https://t.me/faridgoldkiller"/></div>
+            <div class="field"><label>Instagram</label><input type="url" id="footer_instagram" placeholder="https://instagram.com/faridgoldkiller"/></div>
+            <div class="field"><label>YouTube Channel</label><input type="url" id="footer_youtube" placeholder="https://youtube.com/@faridgoldkiller"/></div>
+            <div class="field"><label>WhatsApp Admin</label><input type="url" id="footer_whatsapp" placeholder="https://wa.me/6281234567890"/></div>
+          </div>
+          <hr class="divider"/>
+          <div class="grid-2">
+            <div class="field"><label>Link IB Broker (Footer)</label><input type="url" id="footer_ib" placeholder="https://link-broker.com"/></div>
+            <div class="field"><label>Link Download MT5</label><input type="url" id="footer_mt5" placeholder="https://metatrader5.com/download"/></div>
+            <div class="field"><label>Link Download MT4</label><input type="url" id="footer_mt4" placeholder="https://metatrader4.com/download"/></div>
+            <div class="field"><label>Link TradingView</label><input type="url" id="footer_tv" placeholder="https://tradingview.com"/></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Teks Footer & Disclaimer</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="field"><label>Copyright Text</label><input type="text" id="footer_copyright" placeholder="© 2026 Farid Gold Killer. All rights reserved."/></div>
+          <div class="field"><label>Tagline Footer Kanan</label><input type="text" id="footer_tagline" placeholder="XAU/USD · BREAKOUT TEKAN · SMART MONEY CONCEPT"/></div>
+          <div class="field"><label>Deskripsi Brand Footer</label><textarea id="footer_brand_desc" rows="3"></textarea></div>
+          <div class="field"><label>Disclaimer Risiko (teks penuh)</label><textarea id="footer_disclaimer" rows="5"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB: TEMA
+    ════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-theme">
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Palet Warna</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div>
+              <div class="field">
+                <label>Warna Utama (Gold)</label>
+                <div class="color-group">
+                  <input type="color" id="color_gold" value="#C9A84C" oninput="syncColorHex('color_gold','color_gold_hex')"/>
+                  <input type="text" class="color-hex" id="color_gold_hex" value="#C9A84C" oninput="syncColorPicker('color_gold_hex','color_gold')"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Warna Gold Hover/Light</label>
+                <div class="color-group">
+                  <input type="color" id="color_gold_light" value="#F0CC6E" oninput="syncColorHex('color_gold_light','color_gold_light_hex')"/>
+                  <input type="text" class="color-hex" id="color_gold_light_hex" value="#F0CC6E" oninput="syncColorPicker('color_gold_light_hex','color_gold_light')"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Background Utama</label>
+                <div class="color-group">
+                  <input type="color" id="color_bg" value="#080808" oninput="syncColorHex('color_bg','color_bg_hex')"/>
+                  <input type="text" class="color-hex" id="color_bg_hex" value="#080808" oninput="syncColorPicker('color_bg_hex','color_bg')"/>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="field">
+                <label>Warna Profit / Positif</label>
+                <div class="color-group">
+                  <input type="color" id="color_green" value="#27ae60" oninput="syncColorHex('color_green','color_green_hex')"/>
+                  <input type="text" class="color-hex" id="color_green_hex" value="#27ae60" oninput="syncColorPicker('color_green_hex','color_green')"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Warna Loss / Negatif</label>
+                <div class="color-group">
+                  <input type="color" id="color_red" value="#c0392b" oninput="syncColorHex('color_red','color_red_hex')"/>
+                  <input type="text" class="color-hex" id="color_red_hex" value="#c0392b" oninput="syncColorPicker('color_red_hex','color_red')"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Warna Teks Utama</label>
+                <div class="color-group">
+                  <input type="color" id="color_text" value="#f0ede6" oninput="syncColorHex('color_text','color_text_hex')"/>
+                  <input type="text" class="color-hex" id="color_text_hex" value="#f0ede6" oninput="syncColorPicker('color_text_hex','color_text')"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header" onclick="toggleCard(this)">
+          <div class="section-card-title">Opsi Lanjutan</div>
+          <span class="section-card-toggle">▼</span>
+        </div>
+        <div class="section-card-body">
+          <div class="grid-2">
+            <div>
+              <div class="field field-row">
+                <input type="checkbox" id="show_ticker" checked/>
+                <label for="show_ticker" style="text-transform:none;letter-spacing:0;cursor:pointer;">Tampilkan Ticker Strip</label>
+              </div>
+              <div class="field field-row">
+                <input type="checkbox" id="show_candles" checked/>
+                <label for="show_candles" style="text-transform:none;letter-spacing:0;cursor:pointer;">Tampilkan Dekorasi Candlestick Hero</label>
+              </div>
+              <div class="field field-row">
+                <input type="checkbox" id="show_noise" checked/>
+                <label for="show_noise" style="text-transform:none;letter-spacing:0;cursor:pointer;">Tampilkan Noise Texture Overlay</label>
+              </div>
+            </div>
+            <div>
+              <div class="field"><label>Meta Title (SEO)</label><input type="text" id="meta_title" placeholder="Farid Gold Killer | Kuasai XAU/USD"/></div>
+              <div class="field"><label>Meta Description (SEO)</label><textarea id="meta_desc" rows="2" placeholder="Komunitas trading XAU/USD berbasis Price Action..."></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- ── TOAST CONTAINER ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ── JSON PREVIEW MODAL ── -->
+<div class="modal-overlay" id="jsonModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Preview JSON</div>
+    <div class="field-hint" style="margin-bottom:16px;">Data ini akan disimpan ke JSONBin dan dibaca oleh landing page.</div>
+    <div class="json-preview" id="jsonPreviewContent"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;">
+      <button class="btn btn-primary" onclick="copyJson()">Copy JSON</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// DEFAULT DATA
+// ════════════════════════════════════════════════
+const DEFAULT_DATA = {
+  hero: {
+    eyebrow: "XAU / USD · BREAKOUT TEKAN · SMART MONEY CONCEPT",
+    title1: "KUASAI", title2: "PASAR EMAS", title3: "BERSAMA KAMI",
+    sub: "Komunitas trading XAU/USD berbasis Price Action murni, pemetaan Supply & Demand presisi, dan eksekusi Breakout Tekan. Tanpa indikator lagging. Tanpa sinyal buta.",
+    btn_text: "Daftar Komunitas Sekarang", btn2_text: "Lihat Strategi →"
+  },
+  brand: { name_white: "FARID", name_gold: "GOLD KILLER", nav1: "Strategi", nav2: "Bukti", nav3: "Cara Kerja" },
+  stats: [
+    { num: "1.200+", label: "Member Aktif" }, { num: "78%", label: "Win Rate Rata-rata" },
+    { num: "3 Tahun", label: "Pengalaman di Market" }, { num: "1:3+", label: "Risk-Reward Ratio" }
+  ],
+  ticker: {
+    enabled: true,
+    items: [
+      { sym: "XAU/USD", price: "2.374.50", change: "+1.24%", dir: "up" },
+      { sym: "EUR/USD", price: "1.0821", change: "-0.12%", dir: "down" },
+      { sym: "GBP/USD", price: "1.2694", change: "+0.31%", dir: "up" },
+      { sym: "USD/JPY", price: "153.42", change: "-0.08%", dir: "down" },
+      { sym: "DXY", price: "104.87", change: "-0.19%", dir: "down" },
+      { sym: "XAG/USD", price: "28.14", change: "+0.87%", dir: "up" },
+    ]
+  },
+  strategy: {
+    eyebrow: "Metodologi Kami", title1: "BACA JEJAK", title2: "MARKET MAKER",
+    desc: "Farid Gold Killer tidak mengandalkan indikator lagging. Kami membaca pasar secara murni melalui pergerakan harga, volume, dan struktur likuiditas — persis seperti yang dilakukan big player dan bank-bank dunia.",
+    chart: { price: "$2,374.50", change: "▲ +$28.30 (1.24%) hari ini", label: "XAU/USD · H4 · Live Analysis", resistance: "$2,387", support: "$2,350" },
+    pillars: [
+      { title: "Supply & Demand Zone", body: "Kami identifikasi area di mana bank dan institusi besar meninggalkan jejak order mereka. Zona ini menjadi titik entry & exit paling presisi tanpa indikator apapun." },
+      { title: "Price Action Konfirmasi", body: "Entry hanya dilakukan setelah ada konfirmasi candlestick seperti Pin Bar, Engulfing, atau Inside Bar di atas zona kritis. Zero noise, high probability." },
+      { title: "Breakout Tekan", body: "Strategi andalan kami. Ketika struktur harga terkonfirmasi breakout dengan momentum tinggi, kami eksekusi agresif mengikuti arah Smart Money — bukan melawan." },
+      { title: "Risk Management Ketat", body: "Max risk 1-2% per trade. Stop Loss wajib. Target minimal 1:3 RRR. Tanpa Money Management yang benar, strategi terbaik pun akan hancur." }
+    ]
+  },
+  features: {
+    eyebrow: "Yang Kamu Dapatkan", title1: "SEMUA YANG KAMU", title2: "BUTUHKAN UNTUK PROFIT",
+    items: [
+      { title: "Daily Market Analysis", body: "Analisis XAU/USD harian, termasuk level Support & Resistance kritis, bias arah, dan setup potential yang wajib dicermati sebelum market buka." },
+      { title: "Live Grup Komunitas", body: "Bergabung dengan 1.200+ trader aktif di grup Telegram eksklusif. Diskusi setup, sharing profit, dan alert real-time ketika ada opportunity menarik." },
+      { title: "Live Trading Session", body: "Sesi trading live setiap minggu bersama Farid. Lihat langsung proses pembacaan chart, eksekusi order di MT4/MT5, dan pengelolaan trade secara real-time." },
+      { title: "Materi Edukasi Lengkap", body: "Library video edukasi dari level dasar (apa itu lot, spread, margin) sampai advanced (multi-timeframe analysis, institutional order flow, SMC)." },
+      { title: "Setup Alert Presisi", body: "Notifikasi langsung ketika harga mendekati zona kritis. Termasuk level entry, SL, dan TP yang sudah dikalkulasi — kamu tinggal eksekusi sesuai MM-mu." },
+      { title: "Akses Broker via IB Link", body: "Daftar broker terpercaya (regulasi FCA, ASIC, CySEC) via IB link kami. Nikmati spread lebih rendah, cashback, dan bonus khusus member komunitas." }
+    ]
+  },
+  testimonials: {
+    eyebrow: "Bukti Nyata", title1: "KATA MEREKA &", title2: "HASIL NYATA",
+    items: [
+      { name: "Ahmad R.", meta: "Member sejak 2023 · Jakarta", stars: 5, quote: "Dulu saya nyangkut terus di XAU karena sering melawan tren. Setelah belajar konsep Breakout Tekan di komunitas ini, winrate saya naik drastis. Sekarang profit konsisten tiap bulan." },
+      { name: "Dian S.", meta: "Member sejak 2024 · Surabaya", stars: 5, quote: "Yang paling saya suka adalah daily analysis-nya. Langsung tahu mau trading ke arah mana hari itu. Setup-nya jelas, level-nya presisi. Dari 10 trade, rata-rata 7-8 kena target." },
+      { name: "Reza W.", meta: "Member sejak 2023 · Bandung", stars: 5, quote: "Live trading session-nya priceless. Nonton langsung gimana Farid baca chart, eksekusi, manage trade. Beda banget sama cuma baca teori. Dalam 3 bulan modal saya sudah 2x." }
+    ]
+  },
+  proof: {
+    eyebrow: "Screenshot Hasil Nyata Member",
+    note: "⚠️ Hasil trading bervariasi. Past performance tidak menjamin hasil di masa depan. Selalu gunakan manajemen risiko yang tepat.",
+    slots: [
+      { type: "mt5", pair: "XAU/USD", profit: "+$342.50", lot: "0.50", open: "2,341.20", close: "2,373.90", duration: "4h 22m", image: "" },
+      { type: "image", label: "Bukti Profit Member #2", image: "" },
+      { type: "mt5", pair: "XAU/USD", profit: "+$891.00", lot: "1.00", open: "2,298.50", close: "2,387.60", duration: "2d 1h", image: "" },
+      { type: "image", label: "Analisa TradingView Member #4", image: "" }
+    ]
+  },
+  steps: {
+    eyebrow: "Cara Bergabung", title1: "4 LANGKAH MULAI", title2: "TRADING BERSAMA KAMI",
+    items: [
+      { title: "Daftar via Link IB", body: "Klik tombol \"Daftar via IB\" dan buka akun di broker rekanan kami. Proses verifikasi cepat, deposit fleksibel mulai $100." },
+      { title: "Join Grup Telegram", body: "Setelah akun aktif, kirim screenshot ke admin dan dapatkan akses eksklusif ke grup komunitas Farid Gold Killer." },
+      { title: "Pelajari Materi Dasar", body: "Akses library edukasi. Pelajari konsep Supply & Demand, Price Action, dan Breakout Tekan sebelum mulai live trading." },
+      { title: "Trade & Berkembang", body: "Ikuti daily analysis, join live session mingguan, dan eksekusi setup dengan risk management ketat. Konsistensi adalah kunci." }
+    ]
+  },
+  cta: {
+    ib_link: "https://LINK-IB-BROKER-ANDA.com", wa_number: "6281234567890",
+    wa_message: "Halo Farid Gold Killer, saya ingin bergabung komunitas",
+    ib_btn_text: "🚀 Daftar via IB Link Broker",
+    label: "Akses Komunitas", title1: "FARID GOLD", title2: "KILLER",
+    desc: "Bergabung dengan 1.200+ trader aktif. Akses gratis melalui pendaftaran broker via IB link kami — daftar akun, deposit, dan langsung masuk komunitas.",
+    join_eyebrow: "Bergabung Sekarang", join_title1: "AKSES PENUH", join_title2: "KOMUNITAS PREMIUM",
+    benefits: [
+      { text: "<strong>Daily XAU/USD Analysis</strong> — Setup lengkap dengan level entry, SL, dan TP setiap hari trading" },
+      { text: "<strong>Live Trading Mingguan</strong> — Sesi bersama Farid langsung di MT5, lihat eksekusi nyata" },
+      { text: "<strong>Alert Setup Real-time</strong> — Notifikasi Telegram ketika ada high-probability setup terbentuk" },
+      { text: "<strong>Materi Edukasi Lengkap</strong> — Video SMC, Supply & Demand, Multi-TF Analysis, Risk Management" },
+      { text: "<strong>Broker Spread Rendah via IB</strong> — Akses spread kompetitif dan cashback eksklusif member komunitas" },
+      { text: "<strong>Support 1-on-1</strong> — Review trade, koreksi kesalahan analisa, dan mentoring personal" }
+    ]
+  },
+  faq: [
+    { q: "Apakah komunitas ini cocok untuk trader pemula?", a: "Ya, komunitas ini cocok untuk semua level. Kami menyediakan materi dari dasar (apa itu lot, pip, spread, margin) hingga analisa tingkat lanjut." },
+    { q: "Berapa modal minimal untuk mulai trading XAU/USD?", a: "Kami merekomendasikan minimal $500 untuk bisa trading XAU/USD dengan lot size yang wajar dan risk management yang benar." },
+    { q: "Broker apa yang digunakan dan apakah aman?", a: "Kami hanya merekomendasikan broker yang memiliki regulasi internasional terpercaya (FCA, ASIC, CySEC, atau CFTC)." },
+    { q: "Apakah ada biaya membership komunitas?", a: "Akses komunitas dasar GRATIS melalui pendaftaran broker via IB link kami. Model IB (Introducing Broker) yang umum." },
+    { q: "Apakah ini sinyal trading atau edukasi?", a: "Ini adalah komunitas EDUKASI, bukan signal provider. Kami mengajarkan cara membaca dan menganalisa pasar sendiri." },
+    { q: "MT4 atau MT5? Platform apa yang sebaiknya digunakan?", a: "Kami merekomendasikan MetaTrader 5 (MT5) karena memiliki lebih banyak fitur, timeframe lebih lengkap, dan depth of market." }
+  ],
+  footer: {
+    telegram: "https://t.me/faridgoldkiller", instagram: "https://instagram.com/faridgoldkiller",
+    youtube: "https://youtube.com/@faridgoldkiller", whatsapp: "https://wa.me/6281234567890",
+    ib: "https://LINK-IB-BROKER-ANDA.com", mt5: "https://metatrader5.com/download",
+    mt4: "https://metatrader4.com/download", tv: "https://tradingview.com",
+    copyright: "© 2026 Farid Gold Killer. All rights reserved.",
+    tagline: "XAU/USD · BREAKOUT TEKAN · SMART MONEY CONCEPT",
+    brand_desc: "Komunitas trading XAU/USD berbasis Price Action dan Smart Money Concept. Didirikan untuk membantu trader Indonesia profit secara konsisten dan independen.",
+    disclaimer: "DISCLAIMER RISIKO: Trading forex, komoditas, dan instrumen keuangan lainnya mengandung risiko kehilangan modal yang sangat tinggi dan mungkin tidak cocok untuk semua investor. Pastikan Anda memahami sepenuhnya risiko yang terlibat sebelum bertransaksi. Performa masa lalu tidak menjamin hasil di masa depan."
+  },
+  theme: {
+    color_gold: "#C9A84C", color_gold_light: "#F0CC6E", color_bg: "#080808",
+    color_green: "#27ae60", color_red: "#c0392b", color_text: "#f0ede6",
+    show_ticker: true, show_candles: true, show_noise: true,
+    meta_title: "Farid Gold Killer | Kuasai XAU/USD",
+    meta_desc: "Komunitas trading XAU/USD berbasis Price Action dan Smart Money Concept."
+  }
+};
+
+let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+// ════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════
+function switchTab(tabId, navEl) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  navEl.classList.add('active');
+  const labels = {
+    'tab-jsonbin': 'JSONBin API Config', 'tab-hero': 'Hero & Branding',
+    'tab-ticker': 'Ticker & Stats', 'tab-strategy': 'Strategi & Chart',
+    'tab-features': 'Fitur (6 Kartu)', 'tab-testimonials': 'Testimoni',
+    'tab-proof': 'Bukti Profit', 'tab-steps': 'Cara Bergabung',
+    'tab-cta': 'CTA & IB Link', 'tab-faq': 'FAQ',
+    'tab-footer': 'Footer & Kontak', 'tab-theme': 'Tema & Warna'
+  };
+  document.getElementById('topbarTitle').textContent = labels[tabId] || tabId;
+}
+
+function toggleCard(header) {
+  header.closest('.section-card').classList.toggle('collapsed');
+}
+
+// ════════════════════════════════════════════════
+// RENDER DYNAMIC SECTIONS
+// ════════════════════════════════════════════════
+function renderStats() {
+  const c = document.getElementById('statsContainer');
+  c.innerHTML = appData.stats.map((s, i) => `
+    <div>
+      <div class="field"><label>Angka #${i+1}</label><input type="text" value="${s.num}" oninput="appData.stats[${i}].num=this.value"/></div>
+      <div class="field"><label>Label #${i+1}</label><input type="text" value="${s.label}" oninput="appData.stats[${i}].label=this.value"/></div>
+    </div>
+  `).join('');
+}
+
+function renderTicker() {
+  document.getElementById('ticker_enabled').checked = appData.ticker.enabled;
+  const tbody = document.getElementById('tickerTableBody');
+  tbody.innerHTML = appData.ticker.items.map((t, i) => `
+    <tr>
+      <td><input type="text" value="${t.sym}" oninput="appData.ticker.items[${i}].sym=this.value" style="width:110px"/></td>
+      <td><input type="text" value="${t.price}" oninput="appData.ticker.items[${i}].price=this.value" style="width:100px"/></td>
+      <td><input type="text" value="${t.change}" oninput="appData.ticker.items[${i}].change=this.value" style="width:80px"/></td>
+      <td>
+        <select onchange="appData.ticker.items[${i}].dir=this.value" style="width:80px">
+          <option value="up" ${t.dir==='up'?'selected':''}>▲ Up</option>
+          <option value="down" ${t.dir==='down'?'selected':''}>▼ Down</option>
+        </select>
+      </td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeTickerRow(${i})">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+function addTickerRow() {
+  appData.ticker.items.push({ sym: "NEW/USD", price: "0.00", change: "+0.00%", dir: "up" });
+  renderTicker();
+}
+function removeTickerRow(i) { appData.ticker.items.splice(i, 1); renderTicker(); }
+
+function renderPillars() {
+  const c = document.getElementById('pillarsContainer');
+  c.innerHTML = appData.strategy.pillars.map((p, i) => `
+    <div class="repeater-item">
+      <div class="repeater-item-header">
+        <span class="repeater-item-num">0${i+1}</span>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Judul Pilar</label><input type="text" value="${p.title}" oninput="appData.strategy.pillars[${i}].title=this.value"/></div>
+        <div class="field"><label>Isi / Deskripsi</label><textarea oninput="appData.strategy.pillars[${i}].body=this.value" rows="3">${p.body}</textarea></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderFeatures() {
+  const c = document.getElementById('featuresContainer');
+  c.innerHTML = appData.features.items.map((f, i) => `
+    <div class="repeater-item">
+      <div class="repeater-item-header">
+        <span class="repeater-item-num">Kartu ${i+1}</span>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Judul</label><input type="text" value="${f.title}" oninput="appData.features.items[${i}].title=this.value"/></div>
+        <div class="field"><label>Deskripsi</label><textarea oninput="appData.features.items[${i}].body=this.value" rows="3">${f.body}</textarea></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTestimoni() {
+  const c = document.getElementById('testiContainer');
+  c.innerHTML = appData.testimonials.items.map((t, i) => `
+    <div class="repeater-item">
+      <div class="repeater-item-header">
+        <span class="repeater-item-num">Testimoni ${i+1}</span>
+        <div class="repeater-actions">
+          <button class="btn btn-danger btn-sm" onclick="removeTestimoni(${i})">✕ Hapus</button>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="field"><label>Nama</label><input type="text" value="${t.name}" oninput="appData.testimonials.items[${i}].name=this.value"/></div>
+          <div class="field"><label>Meta (kota, tahun)</label><input type="text" value="${t.meta}" oninput="appData.testimonials.items[${i}].meta=this.value"/></div>
+          <div class="field">
+            <label>Rating Bintang</label>
+            <div class="star-picker">
+              ${[1,2,3,4,5].map(s => `<button class="star-btn ${s<=t.stars?'active':''}" onclick="setStars(${i},${s})" data-testi="${i}" data-star="${s}">★</button>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="field"><label>Kutipan Testimoni</label><textarea oninput="appData.testimonials.items[${i}].quote=this.value" rows="5">${t.quote}</textarea></div>
+      </div>
+    </div>
+  `).join('');
+}
+function setStars(ti, stars) {
+  appData.testimonials.items[ti].stars = stars;
+  renderTestimoni();
+}
+function addTestimoni() {
+  appData.testimonials.items.push({ name: "Nama Member", meta: "Member sejak 2025 · Kota", stars: 5, quote: "Testimoni member baru..." });
+  renderTestimoni();
+}
+function removeTestimoni(i) { appData.testimonials.items.splice(i, 1); renderTestimoni(); }
+
+function renderProofSlots() {
+  const c = document.getElementById('proofSlotsContainer');
+  c.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+      ${appData.proof.slots.map((s, i) => `
+        <div style="background:var(--surface-3);border:1px solid var(--border);padding:20px;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">SLOT ${i+1} — ${s.type.toUpperCase()}</div>
+          <div class="field">
+            <label>Tipe Slot</label>
+            <select onchange="appData.proof.slots[${i}].type=this.value;renderProofSlots()">
+              <option value="mt5" ${s.type==='mt5'?'selected':''}>MT5 Data Card</option>
+              <option value="image" ${s.type==='image'?'selected':''}>Foto / Screenshot</option>
+            </select>
+          </div>
+          ${s.type==='image' ? `
+            <div class="field"><label>Label Placeholder</label><input type="text" value="${s.label||''}" oninput="appData.proof.slots[${i}].label=this.value"/></div>
+            <div class="field"><label>URL Gambar (Imgur / CDN)</label><input type="url" value="${s.image||''}" placeholder="https://i.imgur.com/..." oninput="appData.proof.slots[${i}].image=this.value"/></div>
+          ` : `
+            <div class="grid-2">
+              <div class="field"><label>Pair</label><input type="text" value="${s.pair||'XAU/USD'}" oninput="appData.proof.slots[${i}].pair=this.value"/></div>
+              <div class="field"><label>Profit Display</label><input type="text" value="${s.profit||'+$0.00'}" oninput="appData.proof.slots[${i}].profit=this.value"/></div>
+              <div class="field"><label>Lot Size</label><input type="text" value="${s.lot||'0.01'}" oninput="appData.proof.slots[${i}].lot=this.value"/></div>
+              <div class="field"><label>Harga Open</label><input type="text" value="${s.open||''}" oninput="appData.proof.slots[${i}].open=this.value"/></div>
+              <div class="field"><label>Harga Close</label><input type="text" value="${s.close||''}" oninput="appData.proof.slots[${i}].close=this.value"/></div>
+              <div class="field"><label>Durasi Trade</label><input type="text" value="${s.duration||''}" oninput="appData.proof.slots[${i}].duration=this.value"/></div>
+            </div>
+            <div class="field"><label>URL Gambar (opsional, override MT5 card)</label><input type="url" value="${s.image||''}" placeholder="https://i.imgur.com/..." oninput="appData.proof.slots[${i}].image=this.value"/></div>
+          `}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderSteps() {
+  const c = document.getElementById('stepsContainer');
+  c.innerHTML = appData.steps.items.map((s, i) => `
+    <div class="repeater-item">
+      <div class="repeater-item-header"><span class="repeater-item-num">Langkah 0${i+1}</span></div>
+      <div class="grid-2">
+        <div class="field"><label>Judul</label><input type="text" value="${s.title}" oninput="appData.steps.items[${i}].title=this.value"/></div>
+        <div class="field"><label>Deskripsi</label><textarea oninput="appData.steps.items[${i}].body=this.value" rows="3">${s.body}</textarea></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderBenefits() {
+  const c = document.getElementById('benefitsContainer');
+  c.innerHTML = appData.cta.benefits.map((b, i) => `
+    <div class="repeater-item" style="padding:14px 16px;">
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input type="text" value="${b.text}" oninput="appData.cta.benefits[${i}].text=this.value" style="flex:1"/>
+        <button class="btn btn-danger btn-sm" onclick="removeBenefit(${i})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+function addBenefit() { appData.cta.benefits.push({ text: "Benefit baru..." }); renderBenefits(); }
+function removeBenefit(i) { appData.cta.benefits.splice(i, 1); renderBenefits(); }
+
+function renderFaq() {
+  const c = document.getElementById('faqContainer');
+  c.innerHTML = appData.faq.map((f, i) => `
+    <div class="repeater-item">
+      <div class="repeater-item-header">
+        <span class="repeater-item-num">FAQ ${i+1}</span>
+        <div class="repeater-actions">
+          <button class="btn btn-danger btn-sm" onclick="removeFaq(${i})">✕ Hapus</button>
+        </div>
+      </div>
+      <div class="field"><label>Pertanyaan</label><input type="text" value="${f.q}" oninput="appData.faq[${i}].q=this.value"/></div>
+      <div class="field"><label>Jawaban</label><textarea oninput="appData.faq[${i}].a=this.value" rows="3">${f.a}</textarea></div>
+    </div>
+  `).join('');
+}
+function addFaq() { appData.faq.push({ q: "Pertanyaan baru?", a: "Jawaban..." }); renderFaq(); }
+function removeFaq(i) { appData.faq.splice(i, 1); renderFaq(); }
+
+// ════════════════════════════════════════════════
+// BIND SIMPLE FIELDS
+// ════════════════════════════════════════════════
+function bindFields() {
+  const binds = [
+    // hero
+    ['hero_eyebrow','hero.eyebrow'],['hero_title1','hero.title1'],['hero_title2','hero.title2'],
+    ['hero_title3','hero.title3'],['hero_sub','hero.sub'],['hero_btn_text','hero.btn_text'],
+    ['hero_btn2_text','hero.btn2_text'],
+    // brand
+    ['brand_name_white','brand.name_white'],['brand_name_gold','brand.name_gold'],
+    ['nav_link1','brand.nav1'],['nav_link2','brand.nav2'],['nav_link3','brand.nav3'],
+    // strategy
+    ['strat_eyebrow','strategy.eyebrow'],['strat_title1','strategy.title1'],
+    ['strat_title2','strategy.title2'],['strat_desc','strategy.desc'],
+    ['chart_price','strategy.chart.price'],['chart_change','strategy.chart.change'],
+    ['chart_label','strategy.chart.label'],['chart_resistance','strategy.chart.resistance'],
+    ['chart_support','strategy.chart.support'],
+    // features
+    ['feat_eyebrow','features.eyebrow'],['feat_title1','features.title1'],['feat_title2','features.title2'],
+    // testi
+    ['testi_eyebrow','testimonials.eyebrow'],['testi_title1','testimonials.title1'],['testi_title2','testimonials.title2'],
+    // proof
+    ['proof_eyebrow','proof.eyebrow'],['proof_note','proof.note'],
+    // steps
+    ['steps_eyebrow','steps.eyebrow'],['steps_title1','steps.title1'],['steps_title2','steps.title2'],
+    // cta
+    ['ib_link','cta.ib_link'],['wa_number','cta.wa_number'],['wa_message','cta.wa_message'],
+    ['ib_btn_text','cta.ib_btn_text'],['cta_label','cta.label'],['cta_title1','cta.title1'],
+    ['cta_title2','cta.title2'],['cta_desc','cta.desc'],
+    ['join_eyebrow','cta.join_eyebrow'],['join_title1','cta.join_title1'],['join_title2','cta.join_title2'],
+    // footer
+    ['footer_telegram','footer.telegram'],['footer_instagram','footer.instagram'],
+    ['footer_youtube','footer.youtube'],['footer_whatsapp','footer.whatsapp'],
+    ['footer_ib','footer.ib'],['footer_mt5','footer.mt5'],['footer_mt4','footer.mt4'],
+    ['footer_tv','footer.tv'],['footer_copyright','footer.copyright'],
+    ['footer_tagline','footer.tagline'],['footer_brand_desc','footer.brand_desc'],
+    ['footer_disclaimer','footer.disclaimer'],
+    // theme colors
+    ['color_gold_hex','theme.color_gold'],['color_gold_light_hex','theme.color_gold_light'],
+    ['color_bg_hex','theme.color_bg'],['color_green_hex','theme.color_green'],
+    ['color_red_hex','theme.color_red'],['color_text_hex','theme.color_text'],
+    ['meta_title','theme.meta_title'],['meta_desc','theme.meta_desc'],
+  ];
+  binds.forEach(([id, path]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const keys = path.split('.');
+    let val = appData;
+    keys.forEach(k => val = val?.[k]);
+    el.value = val ?? '';
+    el.addEventListener('input', () => {
+      let obj = appData;
+      keys.slice(0,-1).forEach(k => obj = obj[k]);
+      obj[keys[keys.length-1]] = el.value;
+    });
+  });
+  // Checkboxes
+  const checks = [
+    ['show_ticker','theme.show_ticker'],['show_candles','theme.show_candles'],
+    ['show_noise','theme.show_noise'],['ticker_enabled','ticker.enabled'],
+  ];
+  checks.forEach(([id, path]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const keys = path.split('.');
+    let val = appData;
+    keys.forEach(k => val = val?.[k]);
+    el.checked = !!val;
+    el.addEventListener('change', () => {
+      let obj = appData;
+      keys.slice(0,-1).forEach(k => obj = obj[k]);
+      obj[keys[keys.length-1]] = el.checked;
+    });
+  });
+  // Color pickers sync
+  const colors = [
+    ['color_gold','color_gold_hex','theme.color_gold'],
+    ['color_gold_light','color_gold_light_hex','theme.color_gold_light'],
+    ['color_bg','color_bg_hex','theme.color_bg'],
+    ['color_green','color_green_hex','theme.color_green'],
+    ['color_red','color_red_hex','theme.color_red'],
+    ['color_text','color_text_hex','theme.color_text'],
+  ];
+  colors.forEach(([pickId, hexId, path]) => {
+    const pick = document.getElementById(pickId);
+    if (!pick) return;
+    const keys = path.split('.');
+    let val = appData;
+    keys.forEach(k => val = val?.[k]);
+    pick.value = val ?? '#000000';
+  });
+}
+
+function syncColorHex(pickId, hexId) {
+  document.getElementById(hexId).value = document.getElementById(pickId).value;
+  document.getElementById(hexId).dispatchEvent(new Event('input'));
+}
+function syncColorPicker(hexId, pickId) {
+  const v = document.getElementById(hexId).value;
+  if (/^#[0-9A-Fa-f]{6}$/.test(v)) document.getElementById(pickId).value = v;
+  document.getElementById(hexId).dispatchEvent(new Event('input'));
+}
+
+// ════════════════════════════════════════════════
+// POPULATE ALL FROM appData
+// ════════════════════════════════════════════════
+function populateAll() {
+  bindFields();
+  renderStats();
+  renderTicker();
+  renderPillars();
+  renderFeatures();
+  renderTestimoni();
+  renderProofSlots();
+  renderSteps();
+  renderBenefits();
+  renderFaq();
+}
+
+// ════════════════════════════════════════════════
+// COLLECT appData FROM INPUTS (for save)
+// ════════════════════════════════════════════════
+function collectData() {
+  // All oninput bindings update appData live, so just return it
+  return appData;
+}
+
+// ════════════════════════════════════════════════
+// JSONBIN API
+// ════════════════════════════════════════════════
+function getApiHeaders() {
+  const mk = document.getElementById('masterKey').value.trim();
+  const ak = document.getElementById('accessKey').value.trim();
+  const h = { 'Content-Type': 'application/json', 'X-Master-Key': mk };
+  if (ak) h['X-Access-Key'] = ak;
+  return h;
+}
+
+async function testConnection() {
+  const binId = document.getElementById('binId').value.trim();
+  if (!binId) { toast('Isi Bin ID terlebih dahulu', 'error'); return; }
+  setStatus('saving', 'Menghubungkan...');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: getApiHeaders() });
+    if (res.ok) {
+      setStatus('ok', 'Terhubung');
+      document.getElementById('connectionDetail').textContent = `✅ Koneksi berhasil! Bin ID: ${binId} — Klik "Load dari JSONBin" untuk memuat data.`;
+      toast('Koneksi JSONBin berhasil!', 'success');
+    } else {
+      const err = await res.json();
+      setStatus('err', 'Error ' + res.status);
+      document.getElementById('connectionDetail').textContent = `❌ Error ${res.status}: ${err.message || 'Cek API Key dan Bin ID'}`;
+      toast('Koneksi gagal: ' + (err.message || res.status), 'error');
+    }
+  } catch(e) {
+    setStatus('err', 'Network Error');
+    document.getElementById('connectionDetail').textContent = '❌ Network error. Pastikan koneksi internet aktif.';
+    toast('Network error', 'error');
+  }
+}
+
+async function loadFromBin() {
+  const binId = document.getElementById('binId').value.trim();
+  if (!binId) { toast('Isi Bin ID terlebih dahulu', 'error'); return; }
+  setStatus('saving', 'Memuat...');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: getApiHeaders() });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    appData = { ...DEFAULT_DATA, ...json.record };
+    populateAll();
+    setStatus('ok', 'Data dimuat');
+    toast('Data berhasil dimuat dari JSONBin!', 'success');
+  } catch(e) {
+    setStatus('err', 'Load gagal');
+    toast('Gagal load: ' + e.message, 'error');
+  }
+}
+
+async function saveToBin() {
+  const binId = document.getElementById('binId').value.trim();
+  if (!binId) { toast('Isi Bin ID terlebih dahulu', 'error'); return; }
+  setStatus('saving', 'Menyimpan...');
+  try {
+    const data = collectData();
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+      method: 'PUT',
+      headers: getApiHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    setStatus('ok', 'Tersimpan ✓');
+    toast('Data berhasil disimpan ke JSONBin!', 'success');
+  } catch(e) {
+    setStatus('err', 'Simpan gagal');
+    toast('Gagal simpan: ' + e.message, 'error');
+  }
+}
+
+// ════════════════════════════════════════════════
+// IMPORT / EXPORT
+// ════════════════════════════════════════════════
+function exportJson() {
+  const data = collectData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'fgk-config.json';
+  a.click();
+  toast('JSON diekspor!', 'success');
+}
+
+function importJsonFile() { document.getElementById('importFile').click(); }
+
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const json = JSON.parse(ev.target.result);
+      appData = { ...DEFAULT_DATA, ...json };
+      populateAll();
+      toast('JSON berhasil diimport!', 'success');
+    } catch { toast('File JSON tidak valid', 'error'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function resetToDefault() {
+  if (!confirm('Reset semua data ke default? Perubahan yang belum disimpan akan hilang.')) return;
+  appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  populateAll();
+  toast('Data direset ke default', 'success');
+}
+
+// ════════════════════════════════════════════════
+// JSON PREVIEW MODAL
+// ════════════════════════════════════════════════
+function showJsonPreview() {
+  const data = collectData();
+  const str = JSON.stringify(data, null, 2);
+  const highlighted = str
+    .replace(/("[\w_]+"):/g, '<span class="json-key">$1</span>:')
+    .replace(/: (".*?")/g, ': <span class="json-str">$1</span>')
+    .replace(/: (\d+\.?\d*)/g, ': <span class="json-num">$1</span>')
+    .replace(/: (true|false)/g, ': <span class="json-bool">$1</span>');
+  document.getElementById('jsonPreviewContent').innerHTML = highlighted;
+  document.getElementById('jsonModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('jsonModal').classList.remove('open'); }
+
+async function copyJson() {
+  const data = collectData();
+  await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+  toast('JSON disalin ke clipboard!', 'success');
+}
+
+// ════════════════════════════════════════════════
+// STATUS & TOAST
+// ════════════════════════════════════════════════
+function setStatus(type, text) {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  const wrap = document.getElementById('globalStatus');
+  dot.className = 'status-dot ' + (type==='ok'?'ok':type==='saving'?'idle':'err');
+  txt.textContent = text;
+  wrap.className = 'save-pulse ' + type;
+}
+
+function toast(msg, type = 'success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${type==='success'?'✅':'❌'}</span> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; t.style.transition = '0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// Close modal on overlay click
+document.getElementById('jsonModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // Load saved API config from localStorage
+  const saved = localStorage.getItem('fgk_api_config');
+  if (saved) {
+    try {
+      const cfg = JSON.parse(saved);
+      if (cfg.masterKey) document.getElementById('masterKey').value = cfg.masterKey;
+      if (cfg.accessKey) document.getElementById('accessKey').value = cfg.accessKey;
+      if (cfg.binId) document.getElementById('binId').value = cfg.binId;
+    } catch(e) {}
+  }
+  // Save API config to localStorage on change
+  ['masterKey','accessKey','binId'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      localStorage.setItem('fgk_api_config', JSON.stringify({
+        masterKey: document.getElementById('masterKey').value,
+        accessKey: document.getElementById('accessKey').value,
+        binId: document.getElementById('binId').value,
+      }));
+    });
+  });
+  populateAll();
+  setStatus('idle', 'Siap');
+  toast('Admin panel siap digunakan', 'success');
+});
+</script>
+</body>
+</html>
