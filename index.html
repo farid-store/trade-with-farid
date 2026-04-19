@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farid Gold Killer | Kuasai XAU/USD</title>
+  <title id="meta-title">Farid Gold Killer | Kuasai XAU/USD</title>
+  <meta name="description" id="meta-desc" content="Komunitas trading XAU/USD berbasis Price Action dan Smart Money Concept.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -45,7 +46,9 @@
       pointer-events: none;
       z-index: 9999;
       opacity: 0.5;
+      transition: opacity 0.3s;
     }
+    body.no-noise::before { display: none !important; }
 
     /* ── NAV ── */
     nav {
@@ -115,7 +118,6 @@
       overflow: hidden;
     }
 
-    /* Gold radial glow background */
     .hero::after {
       content: '';
       position: absolute;
@@ -126,7 +128,6 @@
       pointer-events: none;
     }
 
-    /* Candlestick art */
     .hero-candles {
       position: absolute;
       right: 48px;
@@ -235,14 +236,34 @@
     }
     .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-    /* ── TRADINGVIEW TICKER STRIP ── */
-    .ticker-wrapper {
+    /* ── LIVE TICKER ── */
+    .ticker-strip {
       background: var(--surface);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      height: 46px;
+      padding: 14px 0;
       overflow: hidden;
+      white-space: nowrap;
     }
+    .ticker-track {
+      display: inline-flex;
+      gap: 60px;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-item {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ticker-item .sym { color: var(--gold); font-weight: 700; }
+    .ticker-item .up { color: var(--green); }
+    .ticker-item .dn { color: var(--red); }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     /* ── STATS BAR ── */
     .stats-bar {
@@ -358,15 +379,54 @@
       line-height: 1.7;
     }
 
-    /* ── TRADINGVIEW ADVANCED CHART ── */
-    .chart-visual-wrapper {
-      width: 100%;
-      height: 450px;
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid var(--border);
+    /* ── CHART VISUAL ── */
+    .chart-visual {
+      position: relative;
+      padding: 40px;
       background: var(--surface-3);
+      border: 1px solid var(--border);
     }
+    .chart-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .chart-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .chart-change {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 32px;
+    }
+    .mini-chart { width: 100%; height: 140px; }
+    .chart-zones {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .zone {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .zone-line { flex: 1; height: 1px; }
+    .zone-line.res { background: rgba(192,57,43,0.5); }
+    .zone-line.sup { background: rgba(39,174,96,0.5); }
+    .zone-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .zone-dot.res { background: var(--red); }
+    .zone-dot.sup { background: var(--green); }
 
     /* ── FEATURES ── */
     .features-wrap { max-width: 1200px; margin: 0 auto; }
@@ -444,11 +504,7 @@
       margin-bottom: 24px;
       font-style: italic;
     }
-    .testi-author {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .testi-author { display: flex; align-items: center; gap: 14px; }
     .testi-avatar {
       width: 44px; height: 44px;
       border-radius: 50%;
@@ -463,17 +519,10 @@
       color: var(--gold);
       flex-shrink: 0;
     }
-    .testi-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-    .testi-meta {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
+    .testi-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+    .testi-meta { font-size: 0.75rem; color: var(--muted); }
 
-    /* Proof screenshots placeholder */
+    /* ── PROOF ── */
     .proof-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -496,11 +545,7 @@
       transition: all 0.3s;
     }
     .proof-card:hover { border-color: var(--gold-dim); transform: scale(1.02); }
-    .proof-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .proof-card img { width: 100%; height: 100%; object-fit: cover; }
     .proof-placeholder {
       display: flex;
       flex-direction: column;
@@ -517,7 +562,6 @@
       text-transform: uppercase;
       color: var(--muted);
     }
-    /* Fake MT5 profit card */
     .proof-mt5 {
       padding: 24px;
       text-align: left;
@@ -591,13 +635,9 @@
       font-size: 1rem;
       margin-bottom: 12px;
     }
-    .step-body {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
+    .step-body { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
 
-    /* ── IB / JOIN SECTION ── */
+    /* ── JOIN / IB SECTION ── */
     .join-section {
       background: var(--surface);
       border-top: 1px solid var(--border);
@@ -610,11 +650,7 @@
       gap: 80px;
       align-items: start;
     }
-    .join-benefits {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+    .join-benefits { display: flex; flex-direction: column; gap: 0; }
     .benefit-row {
       display: flex;
       gap: 20px;
@@ -634,11 +670,7 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
-    .benefit-text {
-      font-size: 0.95rem;
-      color: var(--text);
-      line-height: 1.6;
-    }
+    .benefit-text { font-size: 0.95rem; color: var(--text); line-height: 1.6; }
     .benefit-text strong { color: var(--gold); font-weight: 600; }
 
     /* CTA Card */
@@ -704,8 +736,6 @@
       transition: all 0.2s;
     }
     .btn-wa:hover { background: #1ebe5a; transform: translateY(-1px); }
-
-    /* Risk disclaimer */
     .risk-note {
       font-size: 0.72rem;
       color: var(--muted);
@@ -717,9 +747,7 @@
 
     /* ── FAQ ── */
     .faq-wrap { max-width: 800px; margin: 0 auto; }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-    }
+    .faq-item { border-bottom: 1px solid var(--border); }
     .faq-q {
       width: 100%;
       background: none;
@@ -823,7 +851,6 @@
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.25s; }
     .delay-3 { animation-delay: 0.4s; }
-    .delay-4 { animation-delay: 0.55s; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
@@ -831,7 +858,7 @@
       .nav-links { display: none; }
       section { padding: 80px 24px; }
       .hero { padding: 120px 24px 60px; }
-      .hero-candles { display: none; }
+      .hero-candles { display: none !important; }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
       .strategy-grid { grid-template-columns: 1fr; gap: 48px; }
       .features-grid { grid-template-columns: 1fr; }
@@ -859,18 +886,18 @@
 <body>
 
 <nav>
-  <a href="#" class="nav-logo"><span>FARID</span> GOLD<span> KILLER</span></a>
+  <a href="#" class="nav-logo"><span id="brand-white">FARID</span> <span id="brand-gold" style="color:var(--gold);">GOLD KILLER</span></a>
   <ul class="nav-links">
-    <li><a href="#strategy">Strategi</a></li>
-    <li><a href="#results">Bukti</a></li>
-    <li><a href="#how">Cara Kerja</a></li>
+    <li><a href="#strategy" id="nav-link1">Strategi</a></li>
+    <li><a href="#results" id="nav-link2">Bukti</a></li>
+    <li><a href="#how" id="nav-link3">Cara Kerja</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
-  <a href="#join" class="nav-cta">Join Komunitas</a>
+  <a href="#join" class="nav-cta" id="nav-cta-btn">Join Komunitas</a>
 </nav>
 
 <section class="hero">
-  <div class="hero-candles" aria-hidden="true">
+  <div class="hero-candles" id="hero-candles-wrap" aria-hidden="true">
     <div class="candle bull"><div class="wick" style="height:40px"></div><div class="body-c" style="height:60px;background:currentColor"></div><div class="wick" style="height:20px"></div></div>
     <div class="candle bear"><div class="wick" style="height:30px"></div><div class="body-c" style="height:80px;background:currentColor"></div><div class="wick" style="height:15px"></div></div>
     <div class="candle bull"><div class="wick" style="height:50px"></div><div class="body-c" style="height:120px;background:currentColor"></div><div class="wick" style="height:30px"></div></div>
@@ -881,299 +908,114 @@
     <div class="candle bull"><div class="wick" style="height:45px"></div><div class="body-c" style="height:100px;background:currentColor"></div><div class="wick" style="height:35px"></div></div>
   </div>
 
-  <div class="hero-eyebrow fade-up">XAU / USD · BREAKOUT TEKAN · SMART MONEY CONCEPT</div>
-
-  <h1 class="fade-up delay-1">
-    KUASAI<br>PASAR <span class="accent">EMAS</span><br>BERSAMA KAMI
-  </h1>
-
-  <p class="hero-sub fade-up delay-2">
-    Komunitas trading XAU/USD berbasis Price Action murni, pemetaan Supply & Demand presisi, dan eksekusi Breakout Tekan. Tanpa indikator lagging. Tanpa sinyal buta.
-  </p>
+  <div class="hero-eyebrow fade-up" id="hero-eyebrow">XAU / USD · BREAKOUT TEKAN · SMART MONEY CONCEPT</div>
+  <h1 class="fade-up delay-1" id="hero-title">KUASAI<br>PASAR <span class="accent">EMAS</span><br>BERSAMA KAMI</h1>
+  <p class="hero-sub fade-up delay-2" id="hero-sub">Komunitas trading XAU/USD berbasis Price Action murni, pemetaan Supply & Demand presisi, dan eksekusi Breakout Tekan. Tanpa indikator lagging. Tanpa sinyal buta.</p>
 
   <div class="hero-actions fade-up delay-3">
-    <a href="#join" class="btn-gold">Daftar Komunitas Sekarang</a>
-    <a href="#strategy" class="btn-outline">Lihat Strategi →</a>
+    <a href="#join" class="btn-gold" id="hero-btn1">Daftar Komunitas Sekarang</a>
+    <a href="#strategy" class="btn-outline" id="hero-btn2">Lihat Strategi →</a>
   </div>
 </section>
 
-<div class="ticker-wrapper" aria-label="Market data">
-  <div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-    {
-    "symbols": [
-      {
-        "proName": "OANDA:XAUUSD",
-        "title": "XAU/USD"
-      },
-      {
-        "proName": "FX:EURUSD",
-        "title": "EUR/USD"
-      },
-      {
-        "proName": "FX:GBPUSD",
-        "title": "GBP/USD"
-      },
-      {
-        "proName": "FX:USDJPY",
-        "title": "USD/JPY"
-      },
-      {
-        "proName": "TVC:DXY",
-        "title": "DXY"
-      },
-      {
-        "proName": "OANDA:XAGUSD",
-        "title": "XAG/USD"
-      },
-      {
-        "proName": "BITSTAMP:BTCUSD",
-        "title": "BTC/USD"
-      }
-    ],
-    "showSymbolLogo": true,
-    "colorTheme": "dark",
-    "isTransparent": true,
-    "displayMode": "adaptive",
-    "locale": "id"
-  }
-    </script>
+<div class="ticker-strip" id="ticker-wrap" aria-label="Market data">
+  <div class="ticker-track" id="ticker-track">
+    <span class="ticker-item"><span class="sym">XAU/USD</span> 2.374.50 <span class="up">▲ +1.24%</span></span>
+    <span class="ticker-item"><span class="sym">EUR/USD</span> 1.0821 <span class="dn">▼ -0.12%</span></span>
+    <span class="ticker-item"><span class="sym">GBP/USD</span> 1.2694 <span class="up">▲ +0.31%</span></span>
+    <span class="ticker-item"><span class="sym">USD/JPY</span> 153.42 <span class="dn">▼ -0.08%</span></span>
+    <span class="ticker-item"><span class="sym">DXY</span> 104.87 <span class="dn">▼ -0.19%</span></span>
+    <span class="ticker-item"><span class="sym">XAG/USD</span> 28.14 <span class="up">▲ +0.87%</span></span>
+    
+    <span class="ticker-item"><span class="sym">XAU/USD</span> 2.374.50 <span class="up">▲ +1.24%</span></span>
+    <span class="ticker-item"><span class="sym">EUR/USD</span> 1.0821 <span class="dn">▼ -0.12%</span></span>
+    <span class="ticker-item"><span class="sym">GBP/USD</span> 1.2694 <span class="up">▲ +0.31%</span></span>
+    <span class="ticker-item"><span class="sym">USD/JPY</span> 153.42 <span class="dn">▼ -0.08%</span></span>
+    <span class="ticker-item"><span class="sym">DXY</span> 104.87 <span class="dn">▼ -0.19%</span></span>
+    <span class="ticker-item"><span class="sym">XAG/USD</span> 28.14 <span class="up">▲ +0.87%</span></span>
   </div>
-  </div>
+</div>
 
-<div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-num">1.200+</div>
-    <div class="stat-label">Member Aktif</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">78%</div>
-    <div class="stat-label">Win Rate Rata-rata</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">3 Tahun</div>
-    <div class="stat-label">Pengalaman di Market</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">1:3+</div>
-    <div class="stat-label">Risk-Reward Ratio</div>
-  </div>
+<div class="stats-bar" id="stats-container">
+  <div class="stat-item"><div class="stat-num">1.200+</div><div class="stat-label">Member Aktif</div></div>
+  <div class="stat-item"><div class="stat-num">78%</div><div class="stat-label">Win Rate Rata-rata</div></div>
+  <div class="stat-item"><div class="stat-num">3 Tahun</div><div class="stat-label">Pengalaman di Market</div></div>
+  <div class="stat-item"><div class="stat-num">1:3+</div><div class="stat-label">Risk-Reward Ratio</div></div>
 </div>
 
 <section class="strategy" id="strategy">
   <div class="strategy-grid">
     <div>
-      <div class="section-eyebrow">Metodologi Kami</div>
-      <h2 class="section-title">BACA JEJAK<br><span class="accent">MARKET MAKER</span></h2>
-      <p class="strategy-desc">
-        Farid Gold Killer tidak mengandalkan indikator lagging. Kami membaca pasar secara murni melalui pergerakan harga, volume, dan struktur likuiditas — persis seperti yang dilakukan big player dan bank-bank dunia.
-      </p>
+      <div class="section-eyebrow" id="strat-eyebrow">Metodologi Kami</div>
+      <h2 class="section-title" id="strat-title">BACA JEJAK<br><span class="accent">MARKET MAKER</span></h2>
+      <p class="strategy-desc" id="strat-desc">Farid Gold Killer tidak mengandalkan indikator lagging. Kami membaca pasar secara murni melalui pergerakan harga, volume, dan struktur likuiditas — persis seperti yang dilakukan big player dan bank-bank dunia.</p>
       <br><br>
-      <div class="chart-visual-wrapper">
-        <div class="tradingview-widget-container">
-          <div class="tradingview-widget-container__widget"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-          {
-          "symbol": "OANDA:XAUUSD",
-          "width": "100%",
-          "height": "100%",
-          "locale": "id",
-          "dateRange": "1D",
-          "colorTheme": "dark",
-          "isTransparent": true,
-          "autosize": true,
-          "largeChartUrl": ""
-        }
-          </script>
+      <div class="chart-visual">
+        <div class="chart-label" id="chart-label">XAU/USD · H4 · Live Analysis</div>
+        <div class="chart-price" id="chart-price">$2,374.50</div>
+        <div class="chart-change" id="chart-change">▲ +$28.30 (1.24%) hari ini</div>
+        <svg class="mini-chart" viewBox="0 0 400 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="35" x2="400" y2="35" stroke="rgba(255,255,255,0.04)" stroke-dasharray="4 4"/>
+          <line x1="0" y1="70" x2="400" y2="70" stroke="rgba(255,255,255,0.04)" stroke-dasharray="4 4"/>
+          <line x1="0" y1="105" x2="400" y2="105" stroke="rgba(255,255,255,0.04)" stroke-dasharray="4 4"/>
+          <path d="M0,110 L30,95 L60,100 L90,80 L120,85 L150,65 L180,70 L210,50 L240,55 L270,40 L300,45 L330,25 L360,30 L390,15 L400,10 L400,140 L0,140 Z" fill="url(#chartGrad)" opacity="0.3"/>
+          <path d="M0,110 L30,95 L60,100 L90,80 L120,85 L150,65 L180,70 L210,50 L240,55 L270,40 L300,45 L330,25 L360,30 L390,15" stroke="var(--gold)" stroke-width="2" fill="none"/>
+          <line x1="0" y1="20" x2="400" y2="20" stroke="rgba(192,57,43,0.5)" stroke-dasharray="6 4"/>
+          <line x1="0" y1="90" x2="400" y2="90" stroke="rgba(39,174,96,0.5)" stroke-dasharray="6 4"/>
+          <circle cx="390" cy="15" r="5" fill="var(--gold)"/>
+          <circle cx="390" cy="15" r="10" fill="rgba(201,168,76,0.2)"/>
+          <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--gold)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>
+        </svg>
+        <div class="chart-zones">
+          <div class="zone"><div class="zone-dot res"></div><div class="zone-line res"></div><span id="chart-res">Resistance: $2,387</span></div>
+          <div class="zone"><div class="zone-dot sup"></div><div class="zone-line sup"></div><span id="chart-sup">Support: $2,350</span></div>
         </div>
-        </div>
+      </div>
     </div>
-    <div class="pillars">
-      <div class="pillar">
-        <div class="pillar-num">01</div>
-        <div>
-          <div class="pillar-title">Supply & Demand Zone</div>
-          <div class="pillar-body">Kami identifikasi area di mana bank dan institusi besar meninggalkan jejak order mereka. Zona ini menjadi titik entry & exit paling presisi tanpa indikator apapun.</div>
-        </div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-num">02</div>
-        <div>
-          <div class="pillar-title">Price Action Konfirmasi</div>
-          <div class="pillar-body">Entry hanya dilakukan setelah ada konfirmasi candlestick seperti Pin Bar, Engulfing, atau Inside Bar di atas zona kritis. Zero noise, high probability.</div>
-        </div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-num">03</div>
-        <div>
-          <div class="pillar-title">Breakout Tekan</div>
-          <div class="pillar-body">Strategi andalan kami. Ketika struktur harga terkonfirmasi breakout dengan momentum tinggi, kami eksekusi agresif mengikuti arah Smart Money — bukan melawan.</div>
-        </div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-num">04</div>
-        <div>
-          <div class="pillar-title">Risk Management Ketat</div>
-          <div class="pillar-body">Max risk 1-2% per trade. Stop Loss wajib. Target minimal 1:3 RRR. Tanpa Money Management yang benar, strategi terbaik pun akan hancur.</div>
-        </div>
-      </div>
+    <div class="pillars" id="pillars-container">
+      <div class="pillar"><div class="pillar-num">01</div><div><div class="pillar-title">Supply & Demand Zone</div><div class="pillar-body">Kami identifikasi area di mana bank dan institusi besar meninggalkan jejak order mereka. Zona ini menjadi titik entry & exit paling presisi tanpa indikator apapun.</div></div></div>
+      <div class="pillar"><div class="pillar-num">02</div><div><div class="pillar-title">Price Action Konfirmasi</div><div class="pillar-body">Entry hanya dilakukan setelah ada konfirmasi candlestick seperti Pin Bar, Engulfing, atau Inside Bar di atas zona kritis. Zero noise, high probability.</div></div></div>
+      <div class="pillar"><div class="pillar-num">03</div><div><div class="pillar-title">Breakout Tekan</div><div class="pillar-body">Strategi andalan kami. Ketika struktur harga terkonfirmasi breakout dengan momentum tinggi, kami eksekusi agresif mengikuti arah Smart Money — bukan melawan.</div></div></div>
+      <div class="pillar"><div class="pillar-num">04</div><div><div class="pillar-title">Risk Management Ketat</div><div class="pillar-body">Max risk 1-2% per trade. Stop Loss wajib. Target minimal 1:3 RRR. Tanpa Money Management yang benar, strategi terbaik pun akan hancur.</div></div></div>
     </div>
   </div>
 </section>
 
 <section id="features">
   <div class="features-wrap">
-    <div class="section-eyebrow">Yang Kamu Dapatkan</div>
-    <h2 class="section-title">SEMUA YANG KAMU<br>BUTUHKAN UNTUK <span class="accent">PROFIT</span></h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M3 3v18h18M7 16l4-8 4 4 4-6"/>
-        </svg>
-        <div class="feature-title">Daily Market Analysis</div>
-        <div class="feature-body">Analisis XAU/USD harian, termasuk level Support & Resistance kritis, bias arah, dan setup potential yang wajib dicermati sebelum market buka.</div>
-      </div>
-      <div class="feature-card">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-        </svg>
-        <div class="feature-title">Live Grup Komunitas</div>
-        <div class="feature-body">Bergabung dengan 1.200+ trader aktif di grup Telegram eksklusif. Diskusi setup, sharing profit, dan alert real-time ketika ada opportunity menarik.</div>
-      </div>
-      <div class="feature-card">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.89L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
-        </svg>
-        <div class="feature-title">Live Trading Session</div>
-        <div class="feature-body">Sesi trading live setiap minggu bersama Farid. Lihat langsung proses pembacaan chart, eksekusi order di MT4/MT5, dan pengelolaan trade secara real-time.</div>
-      </div>
-      <div class="feature-card">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-        </svg>
-        <div class="feature-title">Materi Edukasi Lengkap</div>
-        <div class="feature-body">Library video edukasi dari level dasar (apa itu lot, spread, margin) sampai advanced (multi-timeframe analysis, institutional order flow, SMC).</div>
-      </div>
-      <div class="feature-card">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-        </svg>
-        <div class="feature-title">Setup Alert Presisi</div>
-        <div class="feature-body">Notifikasi langsung ketika harga mendekati zona kritis. Termasuk level entry, SL, dan TP yang sudah dikalkulasi — kamu tinggal eksekusi sesuai MM-mu.</div>
-      </div>
-      <div class="feature-card">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        <div class="feature-title">Akses Broker via IB Link</div>
-        <div class="feature-body">Daftar broker terpercaya (regulasi FCA, ASIC, CySEC) via IB link kami. Nikmati spread lebih rendah, cashback, dan bonus khusus member komunitas.</div>
-      </div>
+    <div class="section-eyebrow" id="feat-eyebrow">Yang Kamu Dapatkan</div>
+    <h2 class="section-title" id="feat-title">SEMUA YANG KAMU<br>BUTUHKAN UNTUK <span class="accent">PROFIT</span></h2>
+    <div class="features-grid" id="features-container">
+      <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18M7 16l4-8 4 4 4-6"/></svg><div class="feature-title">Daily Market Analysis</div><div class="feature-body">Analisis XAU/USD harian, termasuk level Support & Resistance kritis, bias arah, dan setup potential yang wajib dicermati sebelum market buka.</div></div>
+      <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg><div class="feature-title">Live Grup Komunitas</div><div class="feature-body">Bergabung dengan 1.200+ trader aktif di grup Telegram eksklusif. Diskusi setup, sharing profit, dan alert real-time ketika ada opportunity menarik.</div></div>
+      <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.89L15 14M3 8a2 2 0 012-2h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg><div class="feature-title">Live Trading Session</div><div class="feature-body">Sesi trading live setiap minggu bersama Farid. Lihat langsung proses pembacaan chart, eksekusi order di MT4/MT5, dan pengelolaan trade secara real-time.</div></div>
+      <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><div class="feature-title">Materi Edukasi Lengkap</div><div class="feature-body">Library video edukasi dari level dasar (apa itu lot, spread, margin) sampai advanced (multi-timeframe analysis, institutional order flow, SMC).</div></div>
+      <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg><div class="feature-title">Setup Alert Presisi</div><div class="feature-body">Notifikasi langsung ketika harga mendekati zona kritis. Termasuk level entry, SL, dan TP yang sudah dikalkulasi — kamu tinggal eksekusi sesuai MM-mu.</div></div>
+      <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div class="feature-title">Akses Broker via IB Link</div><div class="feature-body">Daftar broker terpercaya (regulasi FCA, ASIC, CySEC) via IB link kami. Nikmati spread lebih rendah, cashback, dan bonus khusus member komunitas.</div></div>
     </div>
   </div>
 </section>
 
 <section class="testimonials-section" id="results">
   <div style="max-width:1200px;margin:0 auto;">
-    <div class="section-eyebrow">Bukti Nyata</div>
-    <h2 class="section-title">KATA MEREKA &<br><span class="accent">HASIL NYATA</span></h2>
+    <div class="section-eyebrow" id="testi-eyebrow">Bukti Nyata</div>
+    <h2 class="section-title" id="testi-title">KATA MEREKA &<br><span class="accent">HASIL NYATA</span></h2>
 
-    <div class="testi-grid">
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Dulu saya nyangkut terus di XAU karena sering melawan tren. Setelah belajar konsep Breakout Tekan di komunitas ini, winrate saya naik drastis. Sekarang profit konsisten tiap bulan."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">AR</div>
-          <div>
-            <div class="testi-name">Ahmad R.</div>
-            <div class="testi-meta">Member sejak 2023 · Jakarta</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Yang paling saya suka adalah daily analysis-nya. Langsung tahu mau trading ke arah mana hari itu. Setup-nya jelas, level-nya presisi. Dari 10 trade, rata-rata 7-8 kena target."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">DS</div>
-          <div>
-            <div class="testi-name">Dian S.</div>
-            <div class="testi-meta">Member sejak 2024 · Surabaya</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Live trading session-nya priceless. Nonton langsung gimana Farid baca chart, eksekusi, manage trade. Beda banget sama cuma baca teori. Dalam 3 bulan modal saya sudah 2x."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">RW</div>
-          <div>
-            <div class="testi-name">Reza W.</div>
-            <div class="testi-meta">Member sejak 2023 · Bandung</div>
-          </div>
-        </div>
-      </div>
+    <div class="testi-grid" id="testi-container">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Dulu saya nyangkut terus di XAU karena sering melawan tren. Setelah belajar konsep Breakout Tekan di komunitas ini, winrate saya naik drastis. Sekarang profit konsisten tiap bulan."</p><div class="testi-author"><div class="testi-avatar">AR</div><div><div class="testi-name">Ahmad R.</div><div class="testi-meta">Member sejak 2023 · Jakarta</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Yang paling saya suka adalah daily analysis-nya. Langsung tahu mau trading ke arah mana hari itu. Setup-nya jelas, level-nya presisi. Dari 10 trade, rata-rata 7-8 kena target."</p><div class="testi-author"><div class="testi-avatar">DS</div><div><div class="testi-name">Dian S.</div><div class="testi-meta">Member sejak 2024 · Surabaya</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Live trading session-nya priceless. Nonton langsung gimana Farid baca chart, eksekusi, manage trade. Beda banget sama cuma baca teori. Dalam 3 bulan modal saya sudah 2x."</p><div class="testi-author"><div class="testi-avatar">RW</div><div><div class="testi-name">Reza W.</div><div class="testi-meta">Member sejak 2023 · Bandung</div></div></div></div>
     </div>
 
     <div style="margin-top:60px;">
-      <div class="section-eyebrow" style="margin-bottom:16px;">Bukti Profit & Live Technical Analysis</div>
-      <div class="proof-grid">
-        <div class="proof-card proof-mt5">
-          <div class="mt5-header">MT5 · Profit Screenshot</div>
-          <div class="mt5-row"><span>XAU/USD</span><span class="val pos">+$342.50</span></div>
-          <div class="mt5-row"><span>Lot Size</span><span class="val">0.50</span></div>
-          <div class="mt5-row"><span>Open</span><span class="val">2,341.20</span></div>
-          <div class="mt5-row"><span>Close</span><span class="val">2,373.90</span></div>
-          <div class="mt5-row"><span>Duration</span><span class="val">4h 22m</span></div>
-          <div class="mt5-total">+$342.50</div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · BUY · CLOSED</div>
-        </div>
-
-        <div class="proof-card" style="padding: 0; background: var(--surface-3); border-color: var(--border);">
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-            {
-            "interval": "15m",
-            "width": "100%",
-            "isTransparent": true,
-            "height": "100%",
-            "symbol": "OANDA:XAUUSD",
-            "showIntervalTabs": true,
-            "displayMode": "single",
-            "locale": "id",
-            "colorTheme": "dark"
-          }
-            </script>
-          </div>
-          </div>
-
-        <div class="proof-card proof-mt5">
-          <div class="mt5-header">MT5 · Profit Screenshot</div>
-          <div class="mt5-row"><span>XAU/USD</span><span class="val pos">+$891.00</span></div>
-          <div class="mt5-row"><span>Lot Size</span><span class="val">1.00</span></div>
-          <div class="mt5-row"><span>Open</span><span class="val">2,298.50</span></div>
-          <div class="mt5-row"><span>Close</span><span class="val">2,387.60</span></div>
-          <div class="mt5-row"><span>Duration</span><span class="val">2d 1h</span></div>
-          <div class="mt5-total">+$891.00</div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · BUY · CLOSED</div>
-        </div>
-
-        <div class="proof-card" style="padding: 0;">
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-            {
-            "symbol": "OANDA:XAUUSD",
-            "width": "100%",
-            "colorTheme": "dark",
-            "isTransparent": true,
-            "locale": "id"
-          }
-            </script>
-          </div>
-          </div>
+      <div class="section-eyebrow" style="margin-bottom:16px;" id="proof-eyebrow">Screenshot Hasil Nyata Member</div>
+      <div class="proof-grid" id="proof-container">
+        <div class="proof-card proof-mt5"><div class="mt5-header">MT5 · Profit Screenshot</div><div class="mt5-row"><span>XAU/USD</span><span class="val pos">+$342.50</span></div><div class="mt5-row"><span>Lot Size</span><span class="val">0.50</span></div><div class="mt5-row"><span>Open</span><span class="val">2,341.20</span></div><div class="mt5-row"><span>Close</span><span class="val">2,373.90</span></div><div class="mt5-row"><span>Duration</span><span class="val">4h 22m</span></div><div class="mt5-total">+$342.50</div><div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · BUY · CLOSED</div></div>
+        <div class="proof-card"><div class="proof-placeholder"><div class="proof-icon">📸</div><div class="proof-label">Foto Bukti Profit<br>Member #2</div></div></div>
+        <div class="proof-card proof-mt5"><div class="mt5-header">MT5 · Profit Screenshot</div><div class="mt5-row"><span>XAU/USD</span><span class="val pos">+$891.00</span></div><div class="mt5-row"><span>Lot Size</span><span class="val">1.00</span></div><div class="mt5-row"><span>Open</span><span class="val">2,298.50</span></div><div class="mt5-row"><span>Close</span><span class="val">2,387.60</span></div><div class="mt5-row"><span>Duration</span><span class="val">2d 1h</span></div><div class="mt5-total">+$891.00</div><div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · BUY · CLOSED</div></div>
+        <div class="proof-card"><div class="proof-placeholder"><div class="proof-icon">📊</div><div class="proof-label">Analisa TradingView<br>Member #4</div></div></div>
       </div>
-      <p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:20px;opacity:0.7;">
+      <p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:20px;opacity:0.7;" id="proof-note">
         ⚠️ Hasil trading bervariasi. Past performance tidak menjamin hasil di masa depan. Selalu gunakan manajemen risiko yang tepat.
       </p>
     </div>
@@ -1182,29 +1024,13 @@
 
 <section id="how">
   <div class="how-wrap">
-    <div class="section-eyebrow">Cara Bergabung</div>
-    <h2 class="section-title">4 LANGKAH MULAI<br><span class="accent">TRADING BERSAMA KAMI</span></h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-title">Daftar via Link IB</div>
-        <div class="step-body">Klik tombol "Daftar via IB" dan buka akun di broker rekanan kami. Proses verifikasi cepat, deposit fleksibel mulai $100.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-title">Join Grup Telegram</div>
-        <div class="step-body">Setelah akun aktif, kirim screenshot ke admin dan dapatkan akses eksklusif ke grup komunitas Farid Gold Killer.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-title">Pelajari Materi Dasar</div>
-        <div class="step-body">Akses library edukasi. Pelajari konsep Supply & Demand, Price Action, dan Breakout Tekan sebelum mulai live trading.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-title">Trade & Berkembang</div>
-        <div class="step-body">Ikuti daily analysis, join live session mingguan, dan eksekusi setup dengan risk management ketat. Konsistensi adalah kunci.</div>
-      </div>
+    <div class="section-eyebrow" id="steps-eyebrow">Cara Bergabung</div>
+    <h2 class="section-title" id="steps-title">4 LANGKAH MULAI<br><span class="accent">TRADING BERSAMA KAMI</span></h2>
+    <div class="steps" id="steps-container">
+      <div class="step"><div class="step-num">01</div><div class="step-title">Daftar via Link IB</div><div class="step-body">Klik tombol "Daftar via IB" dan buka akun di broker rekanan kami. Proses verifikasi cepat, deposit fleksibel mulai $100.</div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-title">Join Grup Telegram</div><div class="step-body">Setelah akun aktif, kirim screenshot ke admin dan dapatkan akses eksklusif ke grup komunitas Farid Gold Killer.</div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-title">Pelajari Materi Dasar</div><div class="step-body">Akses library edukasi. Pelajari konsep Supply & Demand, Price Action, dan Breakout Tekan sebelum mulai live trading.</div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-title">Trade & Berkembang</div><div class="step-body">Ikuti daily analysis, join live session mingguan, dan eksekusi setup dengan risk management ketat. Konsistensi adalah kunci.</div></div>
     </div>
   </div>
 </section>
@@ -1212,52 +1038,33 @@
 <section class="join-section" id="join">
   <div class="join-inner">
     <div>
-      <div class="section-eyebrow">Bergabung Sekarang</div>
-      <h2 class="section-title">AKSES PENUH<br><span class="accent">KOMUNITAS PREMIUM</span></h2>
-      <div class="join-benefits">
-        <div class="benefit-row">
-          <div class="benefit-check">✓</div>
-          <div class="benefit-text"><strong>Daily XAU/USD Analysis</strong> — Setup lengkap dengan level entry, SL, dan TP setiap hari trading</div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-check">✓</div>
-          <div class="benefit-text"><strong>Live Trading Mingguan</strong> — Sesi bersama Farid langsung di MT5, lihat eksekusi nyata</div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-check">✓</div>
-          <div class="benefit-text"><strong>Alert Setup Real-time</strong> — Notifikasi Telegram ketika ada high-probability setup terbentuk</div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-check">✓</div>
-          <div class="benefit-text"><strong>Materi Edukasi Lengkap</strong> — Video SMC, Supply & Demand, Multi-TF Analysis, Risk Management</div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-check">✓</div>
-          <div class="benefit-text"><strong>Broker Spread Rendah via IB</strong> — Akses spread kompetitif dan cashback eksklusif member komunitas</div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-check">✓</div>
-          <div class="benefit-text"><strong>Support 1-on-1</strong> — Review trade, koreksi kesalahan analisa, dan mentoring personal</div>
-        </div>
+      <div class="section-eyebrow" id="join-eyebrow">Bergabung Sekarang</div>
+      <h2 class="section-title" id="join-title">AKSES PENUH<br><span class="accent">KOMUNITAS PREMIUM</span></h2>
+      <div class="join-benefits" id="benefits-container">
+        <div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text"><strong>Daily XAU/USD Analysis</strong> — Setup lengkap dengan level entry, SL, dan TP setiap hari trading</div></div>
+        <div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text"><strong>Live Trading Mingguan</strong> — Sesi bersama Farid langsung di MT5, lihat eksekusi nyata</div></div>
+        <div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text"><strong>Alert Setup Real-time</strong> — Notifikasi Telegram ketika ada high-probability setup terbentuk</div></div>
+        <div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text"><strong>Materi Edukasi Lengkap</strong> — Video SMC, Supply & Demand, Multi-TF Analysis, Risk Management</div></div>
+        <div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text"><strong>Broker Spread Rendah via IB</strong> — Akses spread kompetitif dan cashback eksklusif member komunitas</div></div>
+        <div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text"><strong>Support 1-on-1</strong> — Review trade, koreksi kesalahan analisa, dan mentoring personal</div></div>
       </div>
     </div>
 
     <div>
       <div class="cta-card">
-        <div class="cta-card-label">Akses Komunitas</div>
-        <h3>FARID GOLD<br>KILLER</h3>
-        <p>Bergabung dengan 1.200+ trader aktif. Akses gratis melalui pendaftaran broker via IB link kami — daftar akun, deposit, dan langsung masuk komunitas.</p>
-        <a href="https://LINK-IB-BROKER-ANDA.com" target="_blank" rel="noopener" class="btn-gold">
-          🚀 &nbsp;Daftar via IB Link Broker
+        <div class="cta-card-label" id="cta-label">Akses Komunitas</div>
+        <h3 id="cta-title">FARID GOLD<br>KILLER</h3>
+        <p id="cta-desc">Bergabung dengan 1.200+ trader aktif. Akses gratis melalui pendaftaran broker via IB link kami — daftar akun, deposit, dan langsung masuk komunitas.</p>
+        
+        <a href="#" target="_blank" rel="noopener" class="btn-gold" id="cta-btn-ib">
+          🚀 &nbsp;<span id="cta-btn-text">Daftar via IB Link Broker</span>
         </a>
         <div class="cta-divider">atau hubungi admin</div>
-        <a href="https://wa.me/6281234567890?text=Halo%20Farid%20Gold%20Killer%2C%20saya%20ingin%20bergabung%20komunitas" target="_blank" rel="noopener" class="btn-wa">
+        <a href="#" target="_blank" rel="noopener" class="btn-wa" id="cta-btn-wa">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Hubungi via WhatsApp
         </a>
-        <div class="risk-note">
-          ⚠️ Trading forex & komoditas memiliki risiko tinggi. Hanya gunakan modal yang siap Anda rugikan. Komunitas ini bersifat edukatif, bukan jaminan profit.
-        </div>
+        <div class="risk-note">⚠️ Trading forex & komoditas memiliki risiko tinggi. Hanya gunakan modal yang siap Anda rugikan. Komunitas ini bersifat edukatif, bukan jaminan profit.</div>
       </div>
     </div>
   </div>
@@ -1267,53 +1074,15 @@
   <div class="faq-wrap">
     <div class="section-eyebrow">Pertanyaan Umum</div>
     <h2 class="section-title" style="margin-bottom:64px;">FAQ</h2>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Apakah komunitas ini cocok untuk trader pemula?
-        <span class="faq-arrow">+</span>
-      </button>
-      <div class="faq-a">Ya, komunitas ini cocok untuk semua level. Kami menyediakan materi dari dasar (apa itu lot, pip, spread, margin) hingga analisa tingkat lanjut. Yang penting adalah komitmen untuk belajar dan disiplin dalam manajemen risiko.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Berapa modal minimal untuk mulai trading XAU/USD?
-        <span class="faq-arrow">+</span>
-      </button>
-      <div class="faq-a">Kami merekomendasikan minimal $500 untuk bisa trading XAU/USD dengan lot size yang wajar dan risk management yang benar. Namun untuk belajar dan demo trading, Anda bisa mulai tanpa modal dulu.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Broker apa yang digunakan dan apakah aman?
-        <span class="faq-arrow">+</span>
-      </button>
-      <div class="faq-a">Kami hanya merekomendasikan broker yang memiliki regulasi internasional terpercaya (FCA, ASIC, CySEC, atau CFTC). Broker rekanan kami sudah terverifikasi, memiliki track record baik, dan proses withdrawal yang lancar.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Apakah ada biaya membership komunitas?
-        <span class="faq-arrow">+</span>
-      </button>
-      <div class="faq-a">Akses komunitas dasar GRATIS melalui pendaftaran broker via IB link kami. Ini adalah model IB (Introducing Broker) yang umum — Anda trading seperti biasa, kami mendapat komisi dari broker, dan Anda mendapat benefit komunitas premium.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Apakah ini sinyal trading atau edukasi?
-        <span class="faq-arrow">+</span>
-      </button>
-      <div class="faq-a">Ini adalah komunitas EDUKASI, bukan signal provider. Kami mengajarkan cara membaca dan menganalisa pasar sendiri. Tujuan kami adalah membuat Anda menjadi trader independen — bukan bergantung pada sinyal orang lain selamanya.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        MT4 atau MT5? Platform apa yang sebaiknya digunakan?
-        <span class="faq-arrow">+</span>
-      </button>
-      <div class="faq-a">Kami merekomendasikan MetaTrader 5 (MT5) karena memiliki lebih banyak fitur, timeframe lebih lengkap, dan depth of market yang membantu dalam membaca order flow. Namun MT4 juga masih sangat relevan dan kami support keduanya.</div>
+    <div id="faq-container">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Apakah komunitas ini cocok untuk trader pemula? <span class="faq-arrow">+</span></button>
+        <div class="faq-a">Ya, komunitas ini cocok untuk semua level. Kami menyediakan materi dari dasar hingga analisa tingkat lanjut.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Berapa modal minimal untuk mulai trading XAU/USD? <span class="faq-arrow">+</span></button>
+        <div class="faq-a">Kami merekomendasikan minimal $500 untuk bisa trading XAU/USD dengan lot size yang wajar.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1321,8 +1090,8 @@
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--gold);">FARID GOLD KILLER</div>
-      <p>Komunitas trading XAU/USD berbasis Price Action dan Smart Money Concept. Didirikan untuk membantu trader Indonesia profit secara konsisten dan independen.</p>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--gold);" id="footer-brand-title">FARID GOLD KILLER</div>
+      <p id="footer-brand-desc">Komunitas trading XAU/USD berbasis Price Action dan Smart Money Concept. Didirikan untuk membantu trader Indonesia profit secara konsisten dan independen.</p>
     </div>
     <div>
       <div class="footer-heading">Navigasi</div>
@@ -1337,32 +1106,237 @@
     <div>
       <div class="footer-heading">Broker & Platform</div>
       <ul class="footer-links">
-        <li><a href="https://LINK-IB-BROKER-ANDA.com" target="_blank">Daftar Broker via IB</a></li>
-        <li><a href="#" target="_blank">Download MetaTrader 5</a></li>
-        <li><a href="#" target="_blank">Download MetaTrader 4</a></li>
-        <li><a href="#" target="_blank">TradingView Gratis</a></li>
+        <li><a href="#" target="_blank" id="footer-link-ib">Daftar Broker via IB</a></li>
+        <li><a href="#" target="_blank" id="footer-link-mt5">Download MetaTrader 5</a></li>
+        <li><a href="#" target="_blank" id="footer-link-mt4">Download MetaTrader 4</a></li>
+        <li><a href="#" target="_blank" id="footer-link-tv">TradingView Gratis</a></li>
       </ul>
     </div>
     <div>
       <div class="footer-heading">Kontak</div>
       <ul class="footer-links">
-        <li><a href="https://wa.me/6281234567890" target="_blank">WhatsApp Admin</a></li>
-        <li><a href="https://t.me/faridgoldkiller" target="_blank">Telegram Komunitas</a></li>
-        <li><a href="https://instagram.com/faridgoldkiller" target="_blank">Instagram</a></li>
-        <li><a href="https://youtube.com/@faridgoldkiller" target="_blank">YouTube Channel</a></li>
+        <li><a href="#" target="_blank" id="footer-link-wa">WhatsApp Admin</a></li>
+        <li><a href="#" target="_blank" id="footer-link-tg">Telegram Komunitas</a></li>
+        <li><a href="#" target="_blank" id="footer-link-ig">Instagram</a></li>
+        <li><a href="#" target="_blank" id="footer-link-yt">YouTube Channel</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Farid Gold Killer. All rights reserved.</span>
-    <span style="color:var(--gold-dim);">XAU/USD · BREAKOUT TEKAN · SMART MONEY CONCEPT</span>
+    <span id="footer-copyright">© 2026 Farid Gold Killer. All rights reserved.</span>
+    <span style="color:var(--gold-dim);" id="footer-tagline">XAU/USD · BREAKOUT TEKAN · SMART MONEY CONCEPT</span>
   </div>
-  <div class="footer-disclaimer">
-    <strong>DISCLAIMER RISIKO:</strong> Trading forex, komoditas, dan instrumen keuangan lainnya mengandung risiko kehilangan modal yang sangat tinggi dan mungkin tidak cocok untuk semua investor. Pastikan Anda memahami sepenuhnya risiko yang terlibat sebelum bertransaksi. Performa masa lalu tidak menjamin hasil di masa depan. Seluruh konten di website ini bersifat edukatif dan bukan merupakan saran investasi atau rekomendasi keuangan. Farid Gold Killer bukan perusahaan sekuritas dan tidak memberikan layanan manajemen investasi. Selalu konsultasikan dengan penasihat keuangan profesional sebelum membuat keputusan investasi.
+  <div class="footer-disclaimer" id="footer-disclaimer">
+    <strong>DISCLAIMER RISIKO:</strong> Trading forex, komoditas, dan instrumen keuangan lainnya mengandung risiko kehilangan modal yang sangat tinggi dan mungkin tidak cocok untuk semua investor.
   </div>
 </footer>
 
 <script>
+  // ==========================================
+  // KONFIGURASI JSONBIN
+  // ==========================================
+  const JSONBIN_ID = "PASTE_BIN_ID_DISINI"; 
+  const JSONBIN_KEY = "PASTE_ACCESS_KEY_DISINI"; // Boleh kosong jika Bin bersifat publik
+
+  // ==========================================
+  // LOGIKA FETCH DAN RENDER
+  // ==========================================
+  async function loadDynamicContent() {
+    if (!JSONBIN_ID || JSONBIN_ID === "PASTE_BIN_ID_DISINI") return;
+
+    try {
+      const headers = {};
+      if (JSONBIN_KEY && JSONBIN_KEY !== "PASTE_ACCESS_KEY_DISINI") {
+        headers['X-Access-Key'] = JSONBIN_KEY;
+      }
+      
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`, { headers });
+      if (!res.ok) throw new Error('Network response was not ok');
+      const data = await res.json();
+      applyDataToDOM(data.record);
+    } catch (error) {
+      console.warn("Gagal mengambil data dari JSONBin, menggunakan fallback statis HTML.", error);
+    }
+  }
+
+  function applyDataToDOM(data) {
+    // 1. TEMA & SEO
+    if (data.theme) {
+      const r = document.documentElement.style;
+      if(data.theme.color_gold) r.setProperty('--gold', data.theme.color_gold);
+      if(data.theme.color_gold_light) r.setProperty('--gold-light', data.theme.color_gold_light);
+      if(data.theme.color_bg) {
+        r.setProperty('--black', data.theme.color_bg);
+        r.setProperty('--surface', data.theme.color_bg); // Adjusting background gracefully
+      }
+      if(data.theme.color_green) r.setProperty('--green', data.theme.color_green);
+      if(data.theme.color_red) r.setProperty('--red', data.theme.color_red);
+      if(data.theme.color_text) r.setProperty('--text', data.theme.color_text);
+
+      if(!data.theme.show_ticker) document.getElementById('ticker-wrap').style.display = 'none';
+      if(!data.theme.show_candles) document.getElementById('hero-candles-wrap').style.display = 'none';
+      if(!data.theme.show_noise) document.body.classList.add('no-noise');
+
+      if(data.theme.meta_title) document.getElementById('meta-title').innerText = data.theme.meta_title;
+      if(data.theme.meta_desc) document.getElementById('meta-desc').content = data.theme.meta_desc;
+    }
+
+    // 2. HERO & BRANDING
+    if (data.hero) {
+      document.getElementById('hero-eyebrow').innerText = data.hero.eyebrow;
+      document.getElementById('hero-title').innerHTML = `${data.hero.title1}<br><span class="accent">${data.hero.title2}</span><br>${data.hero.title3}`;
+      document.getElementById('hero-sub').innerText = data.hero.sub;
+      document.getElementById('hero-btn1').innerText = data.hero.btn_text;
+      document.getElementById('hero-btn2').innerText = data.hero.btn2_text;
+    }
+    if (data.brand) {
+      document.getElementById('brand-white').innerText = data.brand.name_white;
+      document.getElementById('brand-gold').innerText = data.brand.name_gold;
+      document.getElementById('nav-link1').innerText = data.brand.nav1;
+      document.getElementById('nav-link2').innerText = data.brand.nav2;
+      document.getElementById('nav-link3').innerText = data.brand.nav3;
+    }
+
+    // 3. TICKER
+    if (data.ticker && data.ticker.enabled && data.ticker.items) {
+      const itemsHtml = data.ticker.items.map(t => 
+        `<span class="ticker-item"><span class="sym">${t.sym}</span> ${t.price} <span class="${t.dir === 'up' ? 'up' : 'dn'}">${t.dir === 'up' ? '▲' : '▼'} ${t.change}</span></span>`
+      ).join('');
+      document.getElementById('ticker-track').innerHTML = itemsHtml + itemsHtml; // Di-double agar animasi looping mulus
+    }
+
+    // 4. STATS
+    if (data.stats) {
+      document.getElementById('stats-container').innerHTML = data.stats.map(s => 
+        `<div class="stat-item fade-in-obs"><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>`
+      ).join('');
+    }
+
+    // 5. STRATEGY
+    if (data.strategy) {
+      document.getElementById('strat-eyebrow').innerText = data.strategy.eyebrow;
+      document.getElementById('strat-title').innerHTML = `${data.strategy.title1}<br><span class="accent">${data.strategy.title2}</span>`;
+      document.getElementById('strat-desc').innerText = data.strategy.desc;
+      
+      if(data.strategy.chart) {
+        document.getElementById('chart-label').innerText = data.strategy.chart.label;
+        document.getElementById('chart-price').innerText = data.strategy.chart.price;
+        document.getElementById('chart-change').innerText = data.strategy.chart.change;
+        document.getElementById('chart-res').innerText = `Resistance: ${data.strategy.chart.resistance}`;
+        document.getElementById('chart-sup').innerText = `Support: ${data.strategy.chart.support}`;
+      }
+
+      if(data.strategy.pillars) {
+        document.getElementById('pillars-container').innerHTML = data.strategy.pillars.map((p, i) => 
+          `<div class="pillar fade-in-obs"><div class="pillar-num">0${i+1}</div><div><div class="pillar-title">${p.title}</div><div class="pillar-body">${p.body}</div></div></div>`
+        ).join('');
+      }
+    }
+
+    // 6. FEATURES
+    if (data.features) {
+      document.getElementById('feat-eyebrow').innerText = data.features.eyebrow;
+      document.getElementById('feat-title').innerHTML = `${data.features.title1}<br><span class="accent">${data.features.title2}</span>`;
+      // We keep a standard SVG for all feature cards dynamically generated
+      const svg = `<svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`;
+      if(data.features.items) {
+        document.getElementById('features-container').innerHTML = data.features.items.map(f => 
+          `<div class="feature-card fade-in-obs">${svg}<div class="feature-title">${f.title}</div><div class="feature-body">${f.body}</div></div>`
+        ).join('');
+      }
+    }
+
+    // 7. TESTIMONIALS
+    if (data.testimonials) {
+      document.getElementById('testi-eyebrow').innerText = data.testimonials.eyebrow;
+      document.getElementById('testi-title').innerHTML = `${data.testimonials.title1}<br><span class="accent">${data.testimonials.title2}</span>`;
+      if(data.testimonials.items) {
+        document.getElementById('testi-container').innerHTML = data.testimonials.items.map(t => 
+          `<div class="testi-card fade-in-obs"><div class="testi-stars">${'★'.repeat(t.stars)}</div><p class="testi-quote">"${t.quote}"</p><div class="testi-author"><div class="testi-avatar">${t.name.substring(0,2).toUpperCase()}</div><div><div class="testi-name">${t.name}</div><div class="testi-meta">${t.meta}</div></div></div></div>`
+        ).join('');
+      }
+    }
+
+    // 8. PROOF
+    if (data.proof) {
+      document.getElementById('proof-eyebrow').innerText = data.proof.eyebrow;
+      document.getElementById('proof-note').innerText = data.proof.note;
+      if(data.proof.slots) {
+        document.getElementById('proof-container').innerHTML = data.proof.slots.map((s,i) => {
+          if(s.type === 'image' || s.image) {
+            const imgHtml = s.image ? `<img src="${s.image}" alt="Proof" />` : `<div class="proof-placeholder"><div class="proof-icon">📸</div><div class="proof-label">${s.label || `Foto Bukti ${i+1}`}</div></div>`;
+            return `<div class="proof-card fade-in-obs">${imgHtml}</div>`;
+          } else {
+            const valClass = parseFloat(s.profit.replace(/[^0-9.-]+/g,"")) >= 0 ? 'pos' : 'neg';
+            return `<div class="proof-card proof-mt5 fade-in-obs"><div class="mt5-header">MT5 · Profit Screenshot</div><div class="mt5-row"><span>${s.pair}</span><span class="val ${valClass}">${s.profit}</span></div><div class="mt5-row"><span>Lot Size</span><span class="val">${s.lot}</span></div><div class="mt5-row"><span>Open</span><span class="val">${s.open}</span></div><div class="mt5-row"><span>Close</span><span class="val">${s.close}</span></div><div class="mt5-row"><span>Duration</span><span class="val">${s.duration}</span></div><div class="mt5-total">${s.profit}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PROFIT · CLOSED</div></div>`;
+          }
+        }).join('');
+      }
+    }
+
+    // 9. STEPS
+    if (data.steps) {
+      document.getElementById('steps-eyebrow').innerText = data.steps.eyebrow;
+      document.getElementById('steps-title').innerHTML = `${data.steps.title1}<br><span class="accent">${data.steps.title2}</span>`;
+      if(data.steps.items) {
+        document.getElementById('steps-container').innerHTML = data.steps.items.map((s,i) => 
+          `<div class="step fade-in-obs"><div class="step-num">0${i+1}</div><div class="step-title">${s.title}</div><div class="step-body">${s.body}</div></div>`
+        ).join('');
+      }
+    }
+
+    // 10. CTA & JOIN
+    if (data.cta) {
+      document.getElementById('join-eyebrow').innerText = data.cta.join_eyebrow;
+      document.getElementById('join-title').innerHTML = `${data.cta.join_title1}<br><span class="accent">${data.cta.join_title2}</span>`;
+      if(data.cta.benefits) {
+        document.getElementById('benefits-container').innerHTML = data.cta.benefits.map(b => 
+          `<div class="benefit-row"><div class="benefit-check">✓</div><div class="benefit-text">${b.text}</div></div>`
+        ).join('');
+      }
+
+      document.getElementById('cta-label').innerText = data.cta.label;
+      document.getElementById('cta-title').innerHTML = `${data.cta.title1}<br>${data.cta.title2}`;
+      document.getElementById('cta-desc').innerText = data.cta.desc;
+      document.getElementById('cta-btn-text').innerText = data.cta.ib_btn_text;
+      document.getElementById('cta-btn-ib').href = data.cta.ib_link;
+      
+      const waLink = `https://wa.me/${data.cta.wa_number}?text=${encodeURIComponent(data.cta.wa_message)}`;
+      document.getElementById('cta-btn-wa').href = waLink;
+    }
+
+    // 11. FAQ
+    if (data.faq && data.faq.length > 0) {
+      document.getElementById('faq-container').innerHTML = data.faq.map(f => 
+        `<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">${f.q} <span class="faq-arrow">+</span></button><div class="faq-a">${f.a}</div></div>`
+      ).join('');
+    }
+
+    // 12. FOOTER
+    if (data.footer) {
+      if(data.footer.brand_desc) document.getElementById('footer-brand-desc').innerText = data.footer.brand_desc;
+      if(data.footer.copyright) document.getElementById('footer-copyright').innerText = data.footer.copyright;
+      if(data.footer.tagline) document.getElementById('footer-tagline').innerText = data.footer.tagline;
+      if(data.footer.disclaimer) document.getElementById('footer-disclaimer').innerHTML = `<strong>DISCLAIMER RISIKO:</strong> ${data.footer.disclaimer}`;
+      
+      document.getElementById('footer-link-ib').href = data.footer.ib;
+      document.getElementById('footer-link-mt5').href = data.footer.mt5;
+      document.getElementById('footer-link-mt4').href = data.footer.mt4;
+      document.getElementById('footer-link-tv').href = data.footer.tv;
+      document.getElementById('footer-link-wa').href = data.footer.whatsapp;
+      document.getElementById('footer-link-tg').href = data.footer.telegram;
+      document.getElementById('footer-link-ig').href = data.footer.instagram;
+      document.getElementById('footer-link-yt').href = data.footer.youtube;
+    }
+
+    // Re-trigger Observer untuk elemen yang baru dirender dari JSON
+    reObserveElements();
+  }
+
+  // ==========================================
+  // UI & ANIMATION SCRIPTS
+  // ==========================================
+  
   // FAQ Toggle
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
@@ -1382,12 +1356,15 @@
     });
   }, { threshold: 0.1 });
 
-  document.querySelectorAll('.feature-card, .testi-card, .stat-item, .pillar, .step, .proof-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-  });
+  function reObserveElements() {
+    const selector = '.feature-card, .testi-card, .stat-item, .pillar, .step, .proof-card, .fade-in-obs';
+    document.querySelectorAll(selector).forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  }
 
   // Smooth nav highlight
   window.addEventListener('scroll', () => {
@@ -1397,6 +1374,12 @@
     } else {
       nav.style.background = 'rgba(8,8,8,0.85)';
     }
+  });
+
+  // Eksekusi pengambilan JSONBin saat load
+  document.addEventListener("DOMContentLoaded", () => {
+    reObserveElements(); // Trigger untuk elemen bawaan (fallback)
+    loadDynamicContent(); // Timpa dengan data dinamis jika ada JSONBIN_ID
   });
 </script>
 </body>
