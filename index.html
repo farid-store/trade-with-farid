@@ -32,32 +32,12 @@
     overflow-x: hidden;
   }
 
-  /* ===== TICKER ===== */
+  /* ===== TICKER (REVISED WITH TRADINGVIEW WIDGET CONTAINER) ===== */
   .ticker-wrap {
     background: var(--dark2);
     border-bottom: 1px solid #2a2a2a;
+    height: 46px; /* Tradingview default height */
     overflow: hidden;
-    padding: 8px 0;
-  }
-  .ticker-track {
-    display: flex;
-    gap: 50px;
-    animation: ticker 30s linear infinite;
-    width: max-content;
-  }
-  .ticker-item {
-    white-space: nowrap;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: var(--gray);
-  }
-  .ticker-item span.up { color: var(--green); }
-  .ticker-item span.down { color: var(--red); }
-  .ticker-item strong { color: var(--white); }
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
   }
 
   /* ===== NAVBAR ===== */
@@ -295,6 +275,43 @@
     color: #aaa;
     line-height: 1.7;
     max-width: 640px;
+  }
+
+  /* ===== TRADINGVIEW TERMINAL GRID (NEW) ===== */
+  .terminal-wrapper {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+  .terminal-row-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .tv-card {
+    background: var(--dark3);
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .tv-card-header {
+    background: #151515;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    border-bottom: 1px solid #2a2a2a;
+    letter-spacing: 1px;
+  }
+  .tv-tall { height: 500px; }
+  .tv-medium { height: 400px; }
+  
+  @media (max-width: 992px) {
+    .terminal-wrapper { grid-template-columns: 1fr; }
+    .terminal-row-bottom { grid-template-columns: 1fr; }
   }
 
   /* ===== PROBLEM SECTION ===== */
@@ -855,41 +872,42 @@
 </head>
 <body>
 
-<!-- TICKER -->
 <div class="ticker-wrap">
-  <div class="ticker-track" id="ticker">
-    <span class="ticker-item"><strong>XAU/USD</strong> 3,124.50 <span class="up">▲ +1.24%</span></span>
-    <span class="ticker-item"><strong>EUR/USD</strong> 1.0821 <span class="down">▼ -0.31%</span></span>
-    <span class="ticker-item"><strong>GBP/USD</strong> 1.2734 <span class="up">▲ +0.52%</span></span>
-    <span class="ticker-item"><strong>USD/JPY</strong> 149.82 <span class="down">▼ -0.18%</span></span>
-    <span class="ticker-item"><strong>BTC/USD</strong> 87,450 <span class="up">▲ +2.10%</span></span>
-    <span class="ticker-item"><strong>XAG/USD</strong> 33.42 <span class="up">▲ +0.87%</span></span>
-    <span class="ticker-item"><strong>NASDAQ</strong> 18,340 <span class="up">▲ +0.65%</span></span>
-    <span class="ticker-item"><strong>XAU/USD</strong> 3,124.50 <span class="up">▲ +1.24%</span></span>
-    <span class="ticker-item"><strong>EUR/USD</strong> 1.0821 <span class="down">▼ -0.31%</span></span>
-    <span class="ticker-item"><strong>GBP/USD</strong> 1.2734 <span class="up">▲ +0.52%</span></span>
-    <span class="ticker-item"><strong>USD/JPY</strong> 149.82 <span class="down">▼ -0.18%</span></span>
-    <span class="ticker-item"><strong>BTC/USD</strong> 87,450 <span class="up">▲ +2.10%</span></span>
-    <span class="ticker-item"><strong>XAG/USD</strong> 33.42 <span class="up">▲ +0.87%</span></span>
-    <span class="ticker-item"><strong>NASDAQ</strong> 18,340 <span class="up">▲ +0.65%</span></span>
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+    "symbols": [
+      { "proName": "OANDA:XAUUSD", "title": "XAU/USD" },
+      { "proName": "BINANCE:BTCUSD", "title": "BTC/USD" },
+      { "proName": "IDX:COMPOSITE", "title": "IHSG" },
+      { "proName": "FX:EURUSD", "title": "EUR/USD" },
+      { "proName": "FX:GBPUSD", "title": "GBP/USD" },
+      { "proName": "FX:USDJPY", "title": "USD/JPY" }
+    ],
+    "showSymbolLogo": true,
+    "isTransparent": true,
+    "displayMode": "adaptive",
+    "colorTheme": "dark",
+    "locale": "id"
+  }
+    </script>
   </div>
 </div>
 
-<!-- NAVBAR -->
 <nav>
   <div class="nav-logo">FARID GOLD KILLER</div>
   <ul class="nav-links">
     <li><a href="#founder">Tentang</a></li>
     <li><a href="#benefits">Program</a></li>
     <li><a href="#portfolio">Portofolio</a></li>
-    <li><a href="#live-market">Live Market</a></li>
+    <li><a href="#f-terminal">F-Terminal Live</a></li>
     <li><a href="#testimonial">Testimoni</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#cta" class="nav-cta">Gabung Gratis →</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-inner">
     <div class="hero-badge">2.000+ trader sudah bergabung &amp; profit · Gratis selamanya</div>
@@ -953,7 +971,6 @@
 
 <div class="gold-line"></div>
 
-<!-- PROBLEM -->
 <section class="problem-section" id="problem">
   <div class="section-inner">
     <p class="section-label">Ini Bukan Salah Kamu</p>
@@ -1000,7 +1017,6 @@
   </div>
 </section>
 
-<!-- FOUNDER -->
 <section class="founder-section" id="founder">
   <div class="section-inner">
     <p class="section-label">Kenalan Dulu</p>
@@ -1032,7 +1048,6 @@
   </div>
 </section>
 
-<!-- BENEFITS -->
 <section class="benefits-section" id="benefits">
   <div class="section-inner">
     <p class="section-label">Yang Kamu Dapat</p>
@@ -1074,7 +1089,6 @@
   </div>
 </section>
 
-<!-- PORTFOLIO -->
 <section class="portfolio-section" id="portfolio">
   <div class="section-inner">
     <p class="section-label">Track Record</p>
@@ -1116,7 +1130,124 @@
   </div>
 </section>
 
-<!-- LIVE MARKET -->
+<section style="background: var(--dark); border-top: 1px solid #222;" id="f-terminal">
+  <div class="section-inner">
+    <p class="section-label">F-Terminal Integrations</p>
+    <h2 class="section-title">Live Analytics Dashboard</h2>
+    <p class="section-sub">Pantau pergerakan harga, teknikal, dan fundamental global secara real-time langsung dari web ini menggunakan teknologi F-Terminal.</p>
+    
+    <div class="terminal-wrapper fade-up">
+      <div class="tv-card tv-tall">
+        <div class="tv-card-header">MAIN CHART (XAU/USD)</div>
+        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
+          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+          {
+          "autosize": true,
+          "symbol": "OANDA:XAUUSD",
+          "interval": "15",
+          "timezone": "Asia/Jakarta",
+          "theme": "dark",
+          "style": "1",
+          "locale": "id",
+          "enable_publishing": false,
+          "backgroundColor": "rgba(34, 34, 34, 1)",
+          "gridColor": "rgba(42, 42, 42, 1)",
+          "hide_top_toolbar": false,
+          "hide_legend": false,
+          "save_image": false,
+          "container_id": "tradingview_chart_f"
+        }
+          </script>
+        </div>
+      </div>
+
+      <div class="tv-card tv-tall">
+        <div class="tv-card-header">AI TECHNICAL ANALYSIS</div>
+        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
+          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+          {
+          "interval": "15m",
+          "width": "100%",
+          "isTransparent": true,
+          "height": "100%",
+          "symbol": "OANDA:XAUUSD",
+          "showIntervalTabs": true,
+          "displayMode": "single",
+          "locale": "id",
+          "colorTheme": "dark"
+        }
+          </script>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-row-bottom fade-up">
+      <div class="tv-card tv-medium">
+        <div class="tv-card-header">MARKET HEATMAP (CRYPTO)</div>
+        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
+          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js" async>
+          {
+          "dataSource": "Crypto",
+          "blockSize": "market_cap_calc",
+          "blockColor": "change",
+          "locale": "id",
+          "symbolUrl": "",
+          "colorTheme": "dark",
+          "hasTopBar": false,
+          "isDataSetEnabled": false,
+          "isZoomEnabled": true,
+          "hasSymbolTooltip": true,
+          "isTransparent": true,
+          "width": "100%",
+          "height": "100%"
+        }
+          </script>
+        </div>
+      </div>
+
+      <div class="tv-card tv-medium">
+        <div class="tv-card-header">ECONOMIC CALENDAR</div>
+        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
+          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+          {
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "width": "100%",
+          "height": "100%",
+          "locale": "id",
+          "importanceFilter": "-1,0,1",
+          "currencyFilter": "USD,EUR,GBP,JPY"
+        }
+          </script>
+        </div>
+      </div>
+
+      <div class="tv-card tv-medium">
+        <div class="tv-card-header">GLOBAL MARKET NEWS</div>
+        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
+          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+          {
+          "feedMode": "all_symbols",
+          "isTransparent": true,
+          "displayMode": "regular",
+          "width": "100%",
+          "height": "100%",
+          "colorTheme": "dark",
+          "locale": "id"
+        }
+          </script>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <section class="live-section" id="live-market">
   <div class="section-inner">
     <p class="section-label">● Live</p>
@@ -1157,7 +1288,6 @@
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
 <section class="testimonial-section" id="testimonial">
   <div class="section-inner">
     <p class="section-label">Kata Mereka</p>
@@ -1247,7 +1377,6 @@
   </div>
 </section>
 
-<!-- FAQ -->
 <section class="faq-section" id="faq">
   <div class="section-inner">
     <p class="section-label">Ada Pertanyaan?</p>
@@ -1282,7 +1411,6 @@
   </div>
 </section>
 
-<!-- CTA -->
 <section class="cta-section" id="cta">
   <div class="section-inner cta-inner">
     <p class="section-label">Langkah Pertama</p>
@@ -1298,7 +1426,6 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
@@ -1358,9 +1485,7 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-// Smooth ticker duplicate for infinite scroll
-const track = document.getElementById('ticker');
-track.innerHTML += track.innerHTML;
+// Script untuk Ticker manual bawaan dihapus karena sudah diganti dengan Ticker TradingView
 </script>
 
 </body>
