@@ -4,1243 +4,1195 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Farid Gold Killer — Breakout Tekan</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #FFD700;
-    --gold-dark: #B8860B;
-    --gold-light: #FFF0A0;
-    --gold-deep: #996600;
-    --black: #0A0A0A;
-    --dark: #111111;
-    --dark2: #1A1A1A;
-    --dark3: #222222;
-    --gray: #888888;
-    --white: #FFFFFF;
-    --green: #00C851;
-    --red: #FF4444;
-  }
+/* ============================
+   DESIGN TOKENS
+============================= */
+:root {
+  --teal:        #0DCFB4;
+  --teal-dim:    #0A9E8A;
+  --teal-deep:   #05584D;
+  --teal-glow:   rgba(13, 207, 180, 0.18);
+  --teal-line:   rgba(13, 207, 180, 0.12);
+  --blue:        #1A8BFF;
+  --blue-dim:    rgba(26, 139, 255, 0.12);
+  --green:       #00E676;
+  --red:         #FF5252;
+  --bg-0:        #060A0F;
+  --bg-1:        #0C1118;
+  --bg-2:        #111820;
+  --bg-3:        #172030;
+  --card:        rgba(255,255,255,0.03);
+  --card-border: rgba(255,255,255,0.07);
+  --card-hover:  rgba(13,207,180,0.08);
+  --text-1:      #F0F4F8;
+  --text-2:      #8A9BB0;
+  --text-3:      #4A5A6A;
+  --font-head:   'Syne', sans-serif;
+  --font-body:   'DM Sans', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+  --r-sm:        8px;
+  --r-md:        14px;
+  --r-lg:        20px;
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ============================
+   RESET & BASE
+============================= */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-0);
+  color: var(--text-1);
+  overflow-x: hidden;
+  line-height: 1.6;
+  cursor: default;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
 
-  html { scroll-behavior: smooth; }
+/* ============================
+   SCROLLBAR
+============================= */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-0); }
+::-webkit-scrollbar-thumb { background: var(--teal-deep); border-radius: 4px; }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--black);
-    color: var(--white);
-    overflow-x: hidden;
-  }
+/* ============================
+   UTILITY
+============================= */
+.container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+}
+.tag::before { content: ''; width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0; }
+.section-title {
+  font-family: var(--font-head);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.section-sub {
+  font-size: 16px; color: var(--text-2); line-height: 1.8;
+  max-width: 560px; margin-top: 14px;
+}
+.accent { color: var(--teal); }
+.mono { font-family: var(--font-mono); }
 
-  /* ===== TICKER (REVISED WITH TRADINGVIEW WIDGET CONTAINER) ===== */
-  .ticker-wrap {
-    background: var(--dark2);
-    border-bottom: 1px solid #2a2a2a;
-    height: 46px; /* Tradingview default height */
-    overflow: hidden;
-  }
+/* GRID DIVIDER */
+.gold-line { height:1px; background: linear-gradient(90deg,transparent,var(--teal),transparent); }
 
-  /* ===== NAVBAR ===== */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgba(10,10,10,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid #1f1f1f;
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-  .nav-links a {
-    color: #aaa;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-  .nav-cta {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: var(--black) !important;
-    padding: 10px 22px;
-    border-radius: 6px;
-    font-weight: 700 !important;
-    font-size: 13px !important;
-    transition: opacity 0.2s !important;
-  }
-  .nav-cta:hover { opacity: 0.9; }
+/* ============================
+   GLOW BG ELEMENTS
+============================= */
+.glow-orb {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-  /* ===== HERO ===== */
-  .hero {
-    min-height: 100vh;
-    background: radial-gradient(ellipse at 20% 50%, rgba(255,215,0,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(184,134,11,0.05) 0%, transparent 50%),
-                var(--black);
-    display: flex;
-    align-items: center;
-    padding: 80px 40px 60px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-dark), transparent);
-  }
-  .hero-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,215,0,0.08);
-    border: 1px solid rgba(255,215,0,0.2);
-    border-radius: 100px;
-    padding: 8px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gold);
-    letter-spacing: 0.5px;
-    margin-bottom: 28px;
-  }
-  .hero-badge::before {
-    content: '';
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.2); }
-  }
-  .hero h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(36px, 5vw, 68px);
-    font-weight: 900;
-    line-height: 1.1;
-    margin-bottom: 24px;
-    letter-spacing: -1px;
-  }
-  .hero h1 .gold-text {
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-desc {
-    font-size: 17px;
-    color: #bbb;
-    line-height: 1.8;
-    max-width: 620px;
-    margin-bottom: 36px;
-  }
-  .hero-desc strong { color: var(--white); }
+/* ============================
+   TOP BAR — TRADINGVIEW TICKER
+============================= */
+.ticker-bar {
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--card-border);
+  height: 44px;
+  overflow: hidden;
+  position: relative;
+}
 
-  /* Testimonial snippets */
-  .hero-snippets {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-  .snippet {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255,215,0,0.05);
-    border: 1px solid rgba(255,215,0,0.15);
-    border-radius: 8px;
-    padding: 12px 18px;
-    max-width: 460px;
-  }
-  .snippet-icon {
-    font-size: 22px;
-  }
-  .snippet p {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--gold);
-  }
-  .snippet span {
-    font-size: 12px;
-    color: var(--gray);
-  }
+/* ============================
+   NAVBAR
+============================= */
+nav {
+  position: sticky; top:0; z-index:100;
+  background: rgba(6,10,15,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--card-border);
+  height: 66px;
+}
+.nav-inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+.nav-logo {
+  font-family: var(--font-head);
+  font-size: 20px; font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(120deg, var(--teal), #64FFDA);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex; flex-direction: column;
+  line-height: 1.1;
+}
+.nav-logo small {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.2em;
+  color: var(--text-3); -webkit-text-fill-color: var(--text-3);
+  font-family: var(--font-mono); text-transform: uppercase;
+}
+.nav-menu { display:flex; align-items:center; gap:6px; list-style:none; }
+.nav-menu a {
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  padding: 7px 14px; border-radius: var(--r-sm);
+  transition: color .2s, background .2s;
+}
+.nav-menu a:hover { color: var(--teal); background: var(--teal-glow); }
+.nav-menu .nav-cta {
+  background: var(--teal);
+  color: var(--bg-0) !important;
+  font-weight: 700; padding: 9px 20px;
+  transition: opacity .2s, transform .15s !important;
+}
+.nav-cta:hover { opacity:.88; transform:translateY(-1px); }
 
-  .hero-btns {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-bottom: 60px;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: var(--black);
-    padding: 16px 34px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 15px;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(255,215,0,0.3);
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(255,215,0,0.4);
-  }
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    padding: 16px 34px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 15px;
-    text-decoration: none;
-    border: 1px solid #333;
-    transition: border-color 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+/* ============================
+   HERO
+============================= */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 100px 0 80px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 60%, rgba(13,207,180,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 90% 20%, rgba(26,139,255,0.06) 0%, transparent 55%),
+    var(--bg-0);
+}
+/* grid bg */
+.hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(var(--card-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--card-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  pointer-events:none;
+}
+.hero-inner {
+  display:grid; grid-template-columns: 1.1fr .9fr;
+  gap:64px; align-items:center;
+}
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:8px;
+  background: rgba(13,207,180,0.08);
+  border: 1px solid rgba(13,207,180,0.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-family: var(--font-mono); font-size:11px; font-weight:600;
+  color: var(--teal); letter-spacing:.1em; margin-bottom: 24px;
+}
+.hero-kicker .dot {
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation: blink 1.8s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,230,118,.4)} 50%{opacity:.5;box-shadow:0 0 0 6px transparent} }
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(40px, 5vw, 70px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 22px;
+}
+.hero h1 em { color:var(--teal); font-style:normal; }
+.hero-desc {
+  font-size:17px; color: var(--text-2);
+  line-height: 1.85; max-width: 520px;
+  margin-bottom: 36px;
+}
+.hero-desc strong { color:var(--text-1); font-weight:600; }
 
-  /* Stats row */
-  .hero-stats {
-    display: flex;
-    gap: 48px;
-    flex-wrap: wrap;
-  }
-  .stat-item { text-align: left; }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--gray);
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
+/* result pills */
+.hero-pills { display:flex; flex-direction:column; gap:10px; margin-bottom:36px; }
+.pill {
+  display:inline-flex; align-items:center; gap:12px;
+  background: var(--card); border:1px solid var(--card-border);
+  border-radius: var(--r-sm); padding:11px 18px;
+  max-width: 360px;
+  transition: border-color .2s;
+}
+.pill:hover { border-color: rgba(13,207,180,.35); }
+.pill-icon { font-size:18px; flex-shrink:0; }
+.pill-val { font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--teal); }
+.pill-who { font-size:12px; color:var(--text-3); margin-top:1px; }
 
-  /* ===== SECTION COMMON ===== */
-  section {
-    padding: 90px 40px;
-  }
-  .section-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-  .section-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(28px, 3.5vw, 48px);
-    font-weight: 900;
-    line-height: 1.15;
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
-  }
-  .section-sub {
-    font-size: 16px;
-    color: #aaa;
-    line-height: 1.7;
-    max-width: 640px;
-  }
+/* buttons */
+.hero-btns { display:flex; gap:14px; flex-wrap:wrap; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+  color: var(--bg-0); font-family:var(--font-head);
+  font-weight:700; font-size:15px;
+  padding:15px 30px; border-radius:var(--r-sm);
+  border:none; cursor:pointer;
+  box-shadow: 0 0 28px rgba(13,207,180,.35);
+  transition: transform .15s, box-shadow .15s;
+  display:inline-block;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 4px 36px rgba(13,207,180,.45); }
+.btn-ghost {
+  background: transparent; color:var(--text-1);
+  font-weight:600; font-size:15px;
+  padding:14px 28px; border-radius:var(--r-sm);
+  border:1px solid var(--card-border);
+  transition: border-color .2s, color .2s;
+  display:inline-block;
+}
+.btn-ghost:hover { border-color:var(--teal); color:var(--teal); }
 
-  /* ===== TRADINGVIEW TERMINAL GRID (NEW) ===== */
-  .terminal-wrapper {
-    margin-top: 48px;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 20px;
-  }
-  .terminal-row-bottom {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
-  }
-  .tv-card {
-    background: var(--dark3);
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-  }
-  .tv-card-header {
-    background: #151515;
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--gold);
-    border-bottom: 1px solid #2a2a2a;
-    letter-spacing: 1px;
-  }
-  .tv-tall { height: 500px; }
-  .tv-medium { height: 400px; }
-  
-  @media (max-width: 992px) {
-    .terminal-wrapper { grid-template-columns: 1fr; }
-    .terminal-row-bottom { grid-template-columns: 1fr; }
-  }
+/* hero right — stats panel */
+.hero-panel {
+  background: var(--bg-2);
+  border:1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  padding:32px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-panel::before {
+  content:'';
+  position:absolute; top:0;left:0;right:0; height:2px;
+  background: linear-gradient(90deg, var(--teal), var(--blue));
+}
+.panel-title {
+  font-family:var(--font-mono); font-size:10px;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--text-3); margin-bottom:20px;
+  display:flex; align-items:center; gap:8px;
+}
+.panel-title::after {
+  content:''; flex:1; height:1px;
+  background: var(--card-border);
+}
+.panel-stats {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:16px; margin-bottom:24px;
+}
+.p-stat {
+  background: var(--bg-3); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:18px;
+}
+.p-stat .n {
+  font-family:var(--font-head); font-size:32px;
+  font-weight:800; color:var(--teal); line-height:1;
+}
+.p-stat .l { font-size:11px; color:var(--text-3); margin-top:5px; font-family:var(--font-mono); letter-spacing:.05em; }
+.panel-bar { height:1px; background:var(--card-border); margin:20px 0; }
+.panel-results { display:flex; flex-direction:column; gap:10px; }
+.pr-row {
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; color:var(--text-2);
+}
+.pr-dot { width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0; }
+.pr-val { font-weight:700; color:var(--text-1); }
 
-  /* ===== PROBLEM SECTION ===== */
-  .problem-section { background: var(--dark2); }
-  .problem-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-top: 48px;
-  }
-  .problem-card {
-    background: var(--dark3);
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-  }
-  .problem-card::before {
-    content: '✕';
-    position: absolute;
-    top: 20px; right: 20px;
-    font-size: 18px;
-    color: var(--red);
-    font-weight: 700;
-  }
-  .problem-card h3 {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 10px;
-    padding-right: 30px;
-  }
-  .problem-card p {
-    font-size: 13px;
-    color: #888;
-    line-height: 1.7;
-  }
-  .quote-box {
-    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(184,134,11,0.05));
-    border: 1px solid rgba(255,215,0,0.2);
-    border-left: 4px solid var(--gold);
-    border-radius: 12px;
-    padding: 32px 36px;
-    margin: 48px 0;
-    font-size: 18px;
-    font-style: italic;
-    color: #ddd;
-    line-height: 1.8;
-  }
-  .quote-box em { color: var(--gold); font-style: normal; font-weight: 700; }
-  .results-list {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .results-list li {
-    list-style: none;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .results-list li span.dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--green);
-    flex-shrink: 0;
-  }
+/* ============================
+   PROBLEM SECTION
+============================= */
+.problem-section {
+  padding: 96px 0;
+  background: var(--bg-1);
+  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+}
+.problem-header { margin-bottom:52px; }
+.problem-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px; margin-bottom:52px;
+}
+.problem-card {
+  background: var(--card); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:26px;
+  position:relative; overflow:hidden;
+  transition: border-color .25s;
+}
+.problem-card:hover { border-color: rgba(255,82,82,.35); }
+.problem-card .x-icon {
+  position:absolute; top:20px;right:20px;
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(255,82,82,.12); border:1px solid rgba(255,82,82,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px; color:var(--red); font-weight:700;
+}
+.problem-card h4 { font-size:14px; font-weight:700; margin-bottom:8px; padding-right:36px; }
+.problem-card p { font-size:13px; color:var(--text-3); line-height:1.7; }
 
-  /* ===== FOUNDER ===== */
-  .founder-section { background: var(--black); }
-  .founder-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
-    align-items: center;
-    margin-top: 48px;
-  }
-  .founder-img-wrap {
-    position: relative;
-  }
-  .founder-img-placeholder {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-    border-radius: 16px;
-    border: 2px solid rgba(255,215,0,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    position: relative;
-    overflow: hidden;
-  }
-  .founder-img-placeholder::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,215,0,0.05), transparent);
-  }
-  .founder-badge-float {
-    position: absolute;
-    bottom: -16px; right: -16px;
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: var(--black);
-    border-radius: 12px;
-    padding: 16px 20px;
-    font-weight: 800;
-    font-size: 13px;
-    text-align: center;
-    line-height: 1.3;
-    box-shadow: 0 8px 32px rgba(255,215,0,0.3);
-  }
-  .founder-badge-float .big { font-size: 28px; font-family: 'Bebas Neue'; letter-spacing: 1px; }
-  .founder-info h2 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 36px;
-    font-weight: 900;
-    margin-bottom: 8px;
-  }
-  .founder-title {
-    font-size: 14px;
-    color: var(--gold);
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  .founder-info p {
-    font-size: 15px;
-    color: #bbb;
-    line-height: 1.8;
-    margin-bottom: 16px;
-  }
-  .founder-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 24px;
-  }
-  .tag {
-    background: rgba(255,215,0,0.08);
-    border: 1px solid rgba(255,215,0,0.2);
-    color: var(--gold);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 12px;
-    font-weight: 600;
-  }
+.quote-strip {
+  background: linear-gradient(135deg, rgba(13,207,180,.07), rgba(26,139,255,.05));
+  border:1px solid rgba(13,207,180,.2);
+  border-left:3px solid var(--teal);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding:28px 32px;
+  font-size:17px; color:var(--text-2);
+  font-style:italic; line-height:1.8;
+  margin-bottom:36px;
+}
+.quote-strip em { color:var(--teal); font-style:normal; font-weight:600; }
 
-  /* ===== BENEFITS ===== */
-  .benefits-section { background: var(--dark2); }
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-    margin-top: 48px;
-  }
-  .benefit-card {
-    background: var(--dark3);
-    border: 1px solid #2a2a2a;
-    border-radius: 14px;
-    padding: 32px;
-    transition: border-color 0.3s, transform 0.3s;
-  }
-  .benefit-card:hover {
-    border-color: rgba(255,215,0,0.3);
-    transform: translateY(-4px);
-  }
-  .benefit-icon {
-    font-size: 36px;
-    margin-bottom: 20px;
-    display: block;
-  }
-  .benefit-card h3 {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: var(--white);
-  }
-  .benefit-card p {
-    font-size: 14px;
-    color: #888;
-    line-height: 1.7;
-  }
-  .benefit-card .highlight {
-    color: var(--gold);
-    font-weight: 700;
-  }
+.result-list { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
+.rl-item {
+  display:flex; align-items:center; gap:12px;
+  font-size:15px; font-weight:500;
+}
+.rl-bullet {
+  width:8px;height:8px;border-radius:50%;
+  background:var(--teal); flex-shrink:0;
+  box-shadow:0 0 8px var(--teal);
+}
 
-  /* ===== PORTFOLIO ===== */
-  .portfolio-section { background: var(--black); }
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-    margin-top: 48px;
-  }
-  .portfolio-card {
-    background: var(--dark2);
-    border: 1px solid #222;
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-    transition: border-color 0.3s;
-  }
-  .portfolio-card:hover { border-color: rgba(255,215,0,0.3); }
-  .portfolio-result {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 44px;
-    color: var(--gold);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .portfolio-result.negative { color: var(--red); }
-  .portfolio-instrument {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 4px;
-  }
-  .portfolio-date {
-    font-size: 11px;
-    color: var(--gray);
-  }
+/* ============================
+   FOUNDER SECTION
+============================= */
+.founder-section { padding:96px 0; background:var(--bg-0); }
+.founder-grid {
+  display:grid; grid-template-columns:360px 1fr;
+  gap:72px; align-items:start; margin-top:52px;
+}
+.founder-card {
+  background: var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-lg); overflow:hidden;
+  position:relative;
+}
+.founder-card::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--teal),var(--blue));
+}
+.founder-img {
+  width:100%; aspect-ratio:1/1;
+  background: linear-gradient(145deg, var(--bg-3), var(--bg-2));
+  display:flex; align-items:center; justify-content:center;
+  font-size:90px;
+  border-bottom:1px solid var(--card-border);
+}
+.founder-card-body { padding:24px; }
+.founder-name {
+  font-family:var(--font-head); font-size:26px;
+  font-weight:800; margin-bottom:4px;
+  background:linear-gradient(120deg,var(--teal),#64FFDA);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.founder-role { font-family:var(--font-mono); font-size:11px; color:var(--text-3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:16px; }
+.founder-chips { display:flex;flex-wrap:wrap;gap:8px; }
+.chip {
+  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.2);
+  color:var(--teal); font-size:11px; font-weight:600;
+  padding:5px 12px; border-radius:100px; font-family:var(--font-mono);
+}
+.founder-right {}
+.founder-bio {
+  font-size:16px; color:var(--text-2); line-height:1.85;
+  margin-bottom:18px;
+}
+.founder-bio strong { color:var(--text-1); font-weight:600; }
+.founder-metrics {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:16px; margin-top:36px;
+}
+.fm-item {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:20px 16px; text-align:center;
+}
+.fm-n { font-family:var(--font-head); font-size:30px; font-weight:800; color:var(--teal); }
+.fm-l { font-size:11px; color:var(--text-3); margin-top:4px; font-family:var(--font-mono); }
 
-  /* ===== LIVE MARKET ===== */
-  .live-section { background: var(--dark2); }
-  .live-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 40px;
-  }
-  .live-card {
-    background: var(--dark3);
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .live-pair {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--gray);
-    letter-spacing: 1px;
-  }
-  .live-price {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    color: var(--white);
-    line-height: 1;
-  }
-  .live-change {
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .live-change.up { color: var(--green); }
-  .live-change.down { color: var(--red); }
+/* ============================
+   BENEFITS SECTION
+============================= */
+.benefits-section {
+  padding:96px 0;
+  background:var(--bg-1);
+  border-top:1px solid var(--card-border);
+  border-bottom:1px solid var(--card-border);
+}
+.benefits-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:20px; margin-top:52px;
+}
+.benefit-card {
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:28px;
+  transition:border-color .25s, transform .25s, background .25s;
+  position:relative; overflow:hidden;
+}
+.benefit-card::after {
+  content:''; position:absolute;
+  top:0;left:0;right:0; height:1px;
+  background:linear-gradient(90deg,var(--teal),transparent);
+  opacity:0; transition: opacity .25s;
+}
+.benefit-card:hover {
+  border-color:rgba(13,207,180,.3);
+  transform:translateY(-5px);
+  background: var(--card-hover);
+}
+.benefit-card:hover::after { opacity:1; }
+.b-icon {
+  width:48px; height:48px; border-radius:12px;
+  background:rgba(13,207,180,.1); border:1px solid rgba(13,207,180,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px; margin-bottom:18px;
+}
+.benefit-card h3 { font-family:var(--font-head); font-size:17px; font-weight:700; margin-bottom:10px; }
+.benefit-card p { font-size:13px; color:var(--text-2); line-height:1.7; }
+.b-free {
+  display:inline-block; margin-top:14px;
+  background:rgba(0,230,118,.1); border:1px solid rgba(0,230,118,.25);
+  color:var(--green); font-size:10px; font-weight:700;
+  padding:4px 12px; border-radius:100px; font-family:var(--font-mono);
+  letter-spacing:.05em;
+}
 
-  /* ===== TESTIMONIALS ===== */
-  .testimonial-section { background: var(--black); }
-  .testi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-    margin-top: 48px;
-  }
-  .testi-card {
-    background: var(--dark2);
-    border: 1px solid #222;
-    border-radius: 14px;
-    padding: 28px;
-  }
-  .testi-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-  .testi-avatar {
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    color: var(--black);
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  .testi-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--white);
-  }
-  .testi-sub {
-    font-size: 12px;
-    color: var(--gray);
-  }
-  .testi-badge {
-    margin-left: auto;
-    background: rgba(0,200,81,0.1);
-    border: 1px solid rgba(0,200,81,0.3);
-    color: var(--green);
-    border-radius: 100px;
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-  .testi-stars { color: var(--gold); font-size: 14px; margin-bottom: 12px; }
-  .testi-text {
-    font-size: 14px;
-    color: #bbb;
-    line-height: 1.7;
-  }
-  .testi-result {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #2a2a2a;
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--gold);
-  }
+/* ============================
+   PORTFOLIO SECTION
+============================= */
+.portfolio-section { padding:96px 0; background:var(--bg-0); }
+.portfolio-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:16px; margin-top:52px;
+}
+.port-card {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:24px;
+  text-align:center; cursor:default;
+  transition: border-color .2s, transform .2s;
+  position:relative; overflow:hidden;
+}
+.port-card::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(13,207,180,.05),transparent);
+  opacity:0; transition:opacity .2s;
+}
+.port-card:hover { border-color:rgba(13,207,180,.35); transform:translateY(-3px); }
+.port-card:hover::before { opacity:1; }
+.port-num {
+  font-family:var(--font-head); font-size:38px;
+  font-weight:800; color:var(--teal); line-height:1;
+  margin-bottom:6px;
+}
+.port-inst { font-size:12px; font-weight:700; color:var(--text-2); margin-bottom:4px; font-family:var(--font-mono); letter-spacing:.05em; }
+.port-ctx { font-size:11px; color:var(--text-3); }
 
-  /* ===== FAQ ===== */
-  .faq-section { background: var(--dark2); }
-  .faq-list {
-    max-width: 760px;
-    margin: 48px auto 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .faq-item {
-    background: var(--dark3);
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .faq-q {
-    padding: 22px 28px;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--white);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    transition: color 0.2s;
-  }
-  .faq-q:hover { color: var(--gold); }
-  .faq-q::after {
-    content: '+';
-    font-size: 22px;
-    color: var(--gold);
-    flex-shrink: 0;
-    transition: transform 0.3s;
-  }
-  .faq-item.open .faq-q::after { transform: rotate(45deg); }
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-  .faq-item.open .faq-a { max-height: 300px; }
-  .faq-a p {
-    padding: 0 28px 22px;
-    font-size: 14px;
-    color: #999;
-    line-height: 1.8;
-  }
+/* ============================
+   TERMINAL / LIVE SECTION
+============================= */
+.terminal-section {
+  padding:96px 0;
+  background:var(--bg-1);
+  border-top:1px solid var(--card-border);
+  border-bottom:1px solid var(--card-border);
+}
+.terminal-header { margin-bottom:40px; }
+.tv-grid {
+  display:grid; grid-template-columns:2fr 1fr;
+  gap:16px; margin-bottom:16px;
+}
+.tv-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.tv-card {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-md); overflow:hidden;
+}
+.tv-head {
+  background:var(--bg-3); border-bottom:1px solid var(--card-border);
+  padding:10px 16px;
+  display:flex; align-items:center; gap:8px;
+}
+.tv-head span {
+  font-family:var(--font-mono); font-size:10px;
+  font-weight:700; color:var(--teal); letter-spacing:.12em; text-transform:uppercase;
+}
+.tv-head .dot-live {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--teal); animation:blink 2s infinite;
+}
+.tv-body { position:relative; }
+.tv-tall { height:500px; }
+.tv-tall .tv-body { height:calc(500px - 38px); }
+.tv-mid { height:420px; }
+.tv-mid .tv-body { height:calc(420px - 38px); }
+.tv-sm { height:360px; }
+.tv-sm .tv-body { height:calc(360px - 38px); }
 
-  /* ===== CTA ===== */
-  .cta-section {
-    background: radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%),
-                var(--dark2);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .cta-section::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px; height: 600px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,215,0,0.05);
-  }
-  .cta-section::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 900px; height: 900px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,215,0,0.03);
-  }
-  .cta-inner { position: relative; z-index: 1; }
-  .cta-section h2 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(32px, 4vw, 56px);
-    font-weight: 900;
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
-  }
-  .cta-section p {
-    font-size: 17px;
-    color: #aaa;
-    max-width: 520px;
-    margin: 0 auto 40px;
-    line-height: 1.7;
-  }
-  .cta-form {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-  }
-  .cta-input {
-    background: var(--dark3);
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 16px 20px;
-    color: var(--white);
-    font-size: 15px;
-    width: 280px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .cta-input:focus { border-color: var(--gold); }
-  .cta-input::placeholder { color: #555; }
-  .btn-cta-big {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: var(--black);
-    padding: 16px 36px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 15px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(255,215,0,0.3);
-    display: inline-block;
-  }
-  .btn-cta-big:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(255,215,0,0.4);
-  }
-  .cta-note {
-    font-size: 13px;
-    color: var(--gray);
-    margin-top: 16px;
-  }
-  .cta-note strong { color: var(--gold); }
+/* ============================
+   TESTIMONIALS
+============================= */
+.testi-section { padding:96px 0; background:var(--bg-0); }
+.testi-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:20px; margin-top:52px;
+}
+.testi-card {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:28px;
+  transition:border-color .2s;
+}
+.testi-card:hover { border-color:rgba(13,207,180,.3); }
+.testi-top {
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+}
+.testi-ava {
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:15px;font-weight:800;color:var(--bg-0);
+  flex-shrink:0;
+}
+.testi-nm { font-size:14px; font-weight:700; }
+.testi-loc { font-size:11px; color:var(--text-3); font-family:var(--font-mono); }
+.testi-badge-v {
+  margin-left:auto; flex-shrink:0;
+  background:rgba(0,230,118,.1); border:1px solid rgba(0,230,118,.25);
+  color:var(--green); font-size:10px; font-weight:700;
+  padding:3px 10px; border-radius:100px;font-family:var(--font-mono);
+}
+.testi-stars { color:var(--teal); font-size:13px; margin-bottom:12px; letter-spacing:2px; }
+.testi-body { font-size:14px; color:var(--text-2); line-height:1.75; margin-bottom:20px; }
+.testi-result {
+  padding-top:16px; border-top:1px solid var(--card-border);
+  font-family:var(--font-head); font-size:19px; font-weight:800;
+  color:var(--teal);
+}
 
-  /* ===== FOOTER ===== */
-  footer {
-    background: var(--black);
-    border-top: 1px solid #1a1a1a;
-    padding: 48px 40px 32px;
-  }
-  .footer-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 32px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid #1a1a1a;
-    margin-bottom: 24px;
-  }
-  .footer-brand .brand-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .footer-brand .brand-tagline {
-    font-size: 12px;
-    color: var(--gray);
-    margin-top: 6px;
-    letter-spacing: 1px;
-  }
-  .footer-links h4 {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 14px;
-  }
-  .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .footer-links a {
-    color: #888;
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.2s;
-  }
-  .footer-links a:hover { color: var(--gold); }
-  .footer-bottom {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .footer-bottom p { font-size: 12px; color: #555; }
-  .footer-bottom .disclaimer { font-size: 11px; color: #444; max-width: 500px; line-height: 1.6; }
+/* ============================
+   FAQ
+============================= */
+.faq-section {
+  padding:96px 0;
+  background:var(--bg-1);
+  border-top:1px solid var(--card-border);
+}
+.faq-list { max-width:740px; margin:52px auto 0; display:flex;flex-direction:column;gap:10px; }
+.faq-item {
+  background:var(--card); border:1px solid var(--card-border);
+  border-radius:var(--r-md); overflow:hidden;
+}
+.faq-q {
+  padding:20px 26px; font-size:15px; font-weight:600;
+  color:var(--text-1); cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  transition:color .2s;
+}
+.faq-q:hover { color:var(--teal); }
+.faq-q .ico {
+  width:28px;height:28px; flex-shrink:0;
+  border-radius:50%; border:1px solid var(--card-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px; color:var(--teal); font-weight:700;
+  transition:transform .3s, background .2s;
+}
+.faq-item.open .faq-q .ico { transform:rotate(45deg); background:rgba(13,207,180,.12); }
+.faq-a { max-height:0; overflow:hidden; transition:max-height .35s ease; }
+.faq-item.open .faq-a { max-height:300px; }
+.faq-a p { padding:0 26px 22px; font-size:14px; color:var(--text-2); line-height:1.8; }
 
-  /* ===== DECORATIVE ===== */
-  .gold-line {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 0;
-  }
+/* ============================
+   CTA SECTION
+============================= */
+.cta-section {
+  padding:120px 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(13,207,180,.09) 0%, transparent 65%),
+    var(--bg-0);
+  text-align:center;
+  border-top:1px solid var(--card-border);
+  position:relative; overflow:hidden;
+}
+.cta-section::before {
+  content:''; position:absolute;
+  top:50%;left:50%; transform:translate(-50%,-50%);
+  width:700px; height:700px; border-radius:50%;
+  border:1px solid rgba(13,207,180,.06);
+}
+.cta-section::after {
+  content:''; position:absolute;
+  top:50%;left:50%; transform:translate(-50%,-50%);
+  width:1000px; height:1000px; border-radius:50%;
+  border:1px solid rgba(13,207,180,.03);
+}
+.cta-inner { position:relative;z-index:1; }
+.cta-pill {
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);
+  color:var(--green); font-family:var(--font-mono);
+  font-size:11px;font-weight:700;letter-spacing:.1em;
+  padding:7px 18px;border-radius:100px;margin-bottom:28px;
+}
+.cta-h {
+  font-family:var(--font-head); font-size:clamp(38px,5vw,66px);
+  font-weight:800; line-height:1.05; letter-spacing:-0.04em;
+  margin-bottom:18px;
+}
+.cta-p {
+  font-size:17px; color:var(--text-2); line-height:1.8;
+  max-width:500px; margin:0 auto 44px;
+}
+.cta-form {
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;
+}
+.cta-input {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-sm); padding:16px 20px;
+  color:var(--text-1); font-size:15px; font-family:var(--font-body);
+  width:280px; outline:none;
+  transition:border-color .2s;
+}
+.cta-input:focus { border-color:var(--teal); }
+.cta-input::placeholder { color:var(--text-3); }
+.cta-note { font-size:12px; color:var(--text-3); margin-top:12px; font-family:var(--font-mono); letter-spacing:.04em; }
+.cta-note b { color:var(--teal); font-weight:600; }
 
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 768px) {
-    nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    section { padding: 60px 20px; }
-    .hero { padding: 60px 20px 50px; }
-    .founder-grid { grid-template-columns: 1fr; gap: 40px; }
-    .hero-stats { gap: 28px; }
-    .footer-inner { flex-direction: column; }
-  }
+/* ============================
+   FOOTER
+============================= */
+footer {
+  background:var(--bg-0); border-top:1px solid var(--card-border);
+  padding:56px 0 32px;
+}
+.footer-grid {
+  display:grid; grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px; padding-bottom:40px;
+  border-bottom:1px solid var(--card-border);
+  margin-bottom:28px;
+}
+.footer-brand-name {
+  font-family:var(--font-head); font-size:22px; font-weight:800;
+  background:linear-gradient(120deg,var(--teal),#64FFDA);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px;
+}
+.footer-tagline {
+  font-family:var(--font-mono); font-size:10px;
+  color:var(--text-3); letter-spacing:.2em; text-transform:uppercase;
+  margin-bottom:16px;
+}
+.footer-desc { font-size:13px; color:var(--text-3); line-height:1.7; max-width:260px; }
+.footer-col h5 {
+  font-family:var(--font-mono); font-size:10px;
+  font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--teal); margin-bottom:16px;
+}
+.footer-col ul { list-style:none; display:flex;flex-direction:column;gap:10px; }
+.footer-col a { font-size:13px; color:var(--text-3); transition:color .2s; }
+.footer-col a:hover { color:var(--teal); }
+.footer-bottom {
+  display:flex; justify-content:space-between; align-items:start;
+  flex-wrap:wrap; gap:12px;
+}
+.footer-copy { font-size:12px; color:var(--text-3); }
+.footer-disc { font-size:11px; color:var(--text-3); max-width:480px; line-height:1.6; }
 
-  /* Scroll animation */
-  .fade-up {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .fade-up.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ============================
+   SCROLL ANIMATIONS
+============================= */
+.reveal {
+  opacity:0; transform:translateY(28px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+.reveal.show { opacity:1; transform:translateY(0); }
+.reveal-d1 { transition-delay:.1s; }
+.reveal-d2 { transition-delay:.2s; }
+.reveal-d3 { transition-delay:.3s; }
+
+/* ============================
+   RESPONSIVE
+============================= */
+@media(max-width:1024px) {
+  .hero-inner { grid-template-columns:1fr; gap:48px; }
+  .hero-panel { display:none; }
+  .founder-grid { grid-template-columns:1fr; gap:40px; }
+  .founder-card { max-width:360px; }
+  .benefits-grid { grid-template-columns:1fr 1fr; }
+  .testi-grid { grid-template-columns:1fr 1fr; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .tv-grid { grid-template-columns:1fr; }
+  .tv-row { grid-template-columns:1fr; }
+}
+@media(max-width:768px) {
+  .container { padding:0 16px; }
+  nav { padding:0; }
+  .nav-menu { display:none; }
+  section, .benefits-section, .portfolio-section, .problem-section, .founder-section, .terminal-section, .testi-section, .faq-section, .cta-section { padding:72px 0; }
+  .benefits-grid { grid-template-columns:1fr; }
+  .testi-grid { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr; gap:32px; }
+  .cta-form { flex-direction:column; align-items:center; }
+  .cta-input { width:100%; max-width:320px; }
+}
 </style>
 </head>
 <body>
 
-<div class="ticker-wrap">
-  <div class="tradingview-widget-container">
+<!-- ============================
+     TOP TICKER — TRADINGVIEW
+============================= -->
+<div class="ticker-bar">
+  <div class="tradingview-widget-container" style="height:100%">
     <div class="tradingview-widget-container__widget"></div>
     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
     {
-    "symbols": [
-      { "proName": "OANDA:XAUUSD", "title": "XAU/USD" },
-      { "proName": "BINANCE:BTCUSD", "title": "BTC/USD" },
-      { "proName": "IDX:COMPOSITE", "title": "IHSG" },
-      { "proName": "FX:EURUSD", "title": "EUR/USD" },
-      { "proName": "FX:GBPUSD", "title": "GBP/USD" },
-      { "proName": "FX:USDJPY", "title": "USD/JPY" }
-    ],
-    "showSymbolLogo": true,
-    "isTransparent": true,
-    "displayMode": "adaptive",
-    "colorTheme": "dark",
-    "locale": "id"
-  }
+      "symbols":[
+        {"proName":"OANDA:XAUUSD","title":"XAU/USD Gold"},
+        {"proName":"OANDA:XAGUSD","title":"XAG/USD Silver"},
+        {"proName":"FX:EURUSD","title":"EUR/USD"},
+        {"proName":"FX:GBPUSD","title":"GBP/USD"},
+        {"proName":"FX:USDJPY","title":"USD/JPY"},
+        {"proName":"BINANCE:BTCUSDT","title":"BTC/USDT"},
+        {"proName":"NASDAQ:NDX","title":"NASDAQ"},
+        {"proName":"IDX:COMPOSITE","title":"IHSG"}
+      ],
+      "showSymbolLogo":true,
+      "isTransparent":true,
+      "displayMode":"adaptive",
+      "colorTheme":"dark",
+      "locale":"id"
+    }
     </script>
   </div>
 </div>
 
+<!-- ============================
+     NAVIGATION
+============================= -->
 <nav>
-  <div class="nav-logo">FARID GOLD KILLER</div>
-  <ul class="nav-links">
-    <li><a href="#founder">Tentang</a></li>
-    <li><a href="#benefits">Program</a></li>
-    <li><a href="#portfolio">Portofolio</a></li>
-    <li><a href="#f-terminal">F-Terminal Live</a></li>
-    <li><a href="#testimonial">Testimoni</a></li>
-    <li><a href="#faq">FAQ</a></li>
-    <li><a href="#cta" class="nav-cta">Gabung Gratis →</a></li>
-  </ul>
+  <div class="container nav-inner">
+    <a href="#home" class="nav-logo">
+      FARID GOLD KILLER
+      <small>Breakout Tekan</small>
+    </a>
+    <ul class="nav-menu">
+      <li><a href="#founder">Tentang</a></li>
+      <li><a href="#benefits">Program</a></li>
+      <li><a href="#portfolio">Portofolio</a></li>
+      <li><a href="#terminal">Live Market</a></li>
+      <li><a href="#testimoni">Testimoni</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#cta" class="nav-cta">Gabung Gratis →</a></li>
+    </ul>
+  </div>
 </nav>
 
-<section class="hero" id="home">
-  <div class="hero-inner">
-    <div class="hero-badge">2.000+ trader sudah bergabung &amp; profit · Gratis selamanya</div>
-    <h1>
-      Capek Boncos?<br>
-      Waktunya <span class="gold-text">Breakout Tekan.</span>
-    </h1>
-    <p class="hero-desc">
-      Selama 7 tahun, Farid sudah uji ratusan strategi — dan menyederhanakannya jadi <strong>satu sistem yang bisa diikuti siapapun.</strong> Hasilnya? Member baru profit +59% di hari pertama. Pemula $12 jadi $60. Dan ribuan trader lain yang akhirnya bisa konsisten.
-    </p>
+<!-- ============================
+     HERO
+============================= -->
+<section id="home" class="hero">
+  <div class="container" style="width:100%">
+    <div class="hero-inner">
 
-    <div class="hero-snippets">
-      <div class="snippet">
-        <div class="snippet-icon">🔥</div>
-        <div>
-          <p>+200% dalam 1 hari</p>
-          <span>— Vio, member aktif</span>
+      <!-- LEFT -->
+      <div>
+        <div class="hero-kicker reveal">
+          <div class="dot"></div>
+          2.000+ trader sudah bergabung &amp; profit
+        </div>
+        <h1 class="reveal reveal-d1">
+          Capek<br>Boncos?<br>
+          Waktunya<br><em>Breakout Tekan.</em>
+        </h1>
+        <p class="hero-desc reveal reveal-d2">
+          Selama 7 tahun, Farid sudah uji ratusan strategi dan menyederhanakannya jadi
+          <strong>satu sistem yang bisa diikuti siapapun.</strong>
+          Member baru profit +59% di hari pertama. Pemula $12 jadi $60. Ribuan trader akhirnya konsisten.
+        </p>
+
+        <div class="hero-pills reveal reveal-d2">
+          <div class="pill">
+            <div class="pill-icon">🔥</div>
+            <div>
+              <div class="pill-val">+200% dalam 1 hari</div>
+              <div class="pill-who">— Vio, member aktif</div>
+            </div>
+          </div>
+          <div class="pill">
+            <div class="pill-icon">💰</div>
+            <div>
+              <div class="pill-val">$12 → $60 minggu pertama</div>
+              <div class="pill-who">— Viona Permatasari, member pemula</div>
+            </div>
+          </div>
+          <div class="pill">
+            <div class="pill-icon">📈</div>
+            <div>
+              <div class="pill-val">3× Flip seminggu full profit</div>
+              <div class="pill-who">— Rizaldi Pratama, member aktif</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-btns reveal reveal-d3">
+          <a href="#cta" class="btn-primary">Gabung Gratis Sekarang →</a>
+          <a href="#testimoni" class="btn-ghost">Lihat Bukti Nyata</a>
         </div>
       </div>
-      <div class="snippet">
-        <div class="snippet-icon">💰</div>
-        <div>
-          <p>$12 → $60 dalam minggu pertama</p>
-          <span>— Viona Permatasari, member pemula</span>
+
+      <!-- RIGHT — STATS PANEL -->
+      <div class="hero-panel reveal reveal-d1">
+        <div class="panel-title">Farid Performance Overview</div>
+        <div class="panel-stats">
+          <div class="p-stat">
+            <div class="n">2.000+</div>
+            <div class="l">Member Aktif</div>
+          </div>
+          <div class="p-stat">
+            <div class="n">7 Thn</div>
+            <div class="l">Pengalaman</div>
+          </div>
+          <div class="p-stat">
+            <div class="n">83%</div>
+            <div class="l">Win Rate</div>
+          </div>
+          <div class="p-stat">
+            <div class="n">Gratis</div>
+            <div class="l">Untuk Bergabung</div>
+          </div>
+        </div>
+        <div class="panel-bar"></div>
+        <div class="panel-results">
+          <div class="pr-row"><div class="pr-dot"></div><span><span class="pr-val">+$1,070</span> dalam satu sesi trading</span></div>
+          <div class="pr-row"><div class="pr-dot"></div><span><span class="pr-val">+59%</span> profit di hari pertama bergabung</span></div>
+          <div class="pr-row"><div class="pr-dot"></div><span><span class="pr-val">+200%</span> dalam 24 jam</span></div>
+          <div class="pr-row"><div class="pr-dot"></div><span>Modal <span class="pr-val">5× lipat</span> bulan pertama</span></div>
         </div>
       </div>
-      <div class="snippet">
-        <div class="snippet-icon">📈</div>
-        <div>
-          <p>3× Flip seminggu full profit</p>
-          <span>— Rizaldi Pratama, member aktif</span>
-        </div>
-      </div>
-    </div>
 
-    <div class="hero-btns">
-      <a href="#cta" class="btn-primary">Gabung Gratis Sekarang →</a>
-      <a href="#testimonial" class="btn-secondary">Lihat Bukti Nyata</a>
-    </div>
-
-    <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-num">2.000+</div>
-        <div class="stat-label">Member Aktif</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">7 Tahun</div>
-        <div class="stat-label">Pengalaman</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">83%</div>
-        <div class="stat-label">Member Profit</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">Gratis</div>
-        <div class="stat-label">Untuk Bergabung</div>
-      </div>
     </div>
   </div>
 </section>
 
 <div class="gold-line"></div>
 
+<!-- ============================
+     PROBLEM
+============================= -->
 <section class="problem-section" id="problem">
-  <div class="section-inner">
-    <p class="section-label">Ini Bukan Salah Kamu</p>
-    <h2 class="section-title">Kenapa Trader Pintar pun<br>Masih Terus Rugi?</h2>
-    <p class="section-sub">Bukan karena pasar tidak bisa diprediksi. Bukan karena modal kamu kurang. Tapi karena <strong>sistem yang kamu pakai memang tidak dirancang untuk menang.</strong></p>
+  <div class="container">
+    <div class="problem-header">
+      <div class="tag">Ini Bukan Salah Kamu</div>
+      <h2 class="section-title">Kenapa Trader Pintar pun<br>Masih Terus Rugi?</h2>
+      <p class="section-sub">Bukan karena pasar tidak bisa diprediksi. Bukan karena modal kamu kurang. Tapi karena <strong style="color:var(--text-1)">sistem yang kamu pakai memang tidak dirancang untuk menang.</strong></p>
+    </div>
 
-    <div class="problem-grid fade-up">
+    <div class="problem-grid reveal">
       <div class="problem-card">
-        <h3>Ikut signal gratisan yang tidak jelas sumbernya</h3>
+        <div class="x-icon">✕</div>
+        <h4>Ikut signal gratisan yang tidak jelas sumbernya</h4>
         <p>Admin-nya sendiri belum tentu trading. Kamu yang rugi, dia yang hilang.</p>
       </div>
       <div class="problem-card">
-        <h3>Belajar dari YouTube tapi tidak tahu mana yang bisa dipercaya</h3>
+        <div class="x-icon">✕</div>
+        <h4>Belajar dari YouTube tapi tidak tahu mana yang bisa dipercaya</h4>
         <p>Konten creator ≠ trader profit. Beda dunia, beda realita.</p>
       </div>
       <div class="problem-card">
-        <h3>Strategi ganti-ganti, tidak ada yang konsisten</h3>
+        <div class="x-icon">✕</div>
+        <h4>Strategi ganti-ganti, tidak ada yang konsisten</h4>
         <p>Setiap kali rugi, ganti strategi. Akhirnya tidak pernah master satu pun.</p>
       </div>
       <div class="problem-card">
-        <h3>Trading sendirian, tidak ada yang bisa diajak diskusi</h3>
+        <div class="x-icon">✕</div>
+        <h4>Trading sendirian, tidak ada yang bisa diajak diskusi</h4>
         <p>Salah entry pun tidak tahu kenapa salah. Lingkaran yang sama terus berulang.</p>
       </div>
     </div>
 
-    <div class="quote-box fade-up">
-      "Satu hal yang membedakan trader yang profit dan yang tidak: mereka punya <em>sistem yang terbukti</em> dan <em>orang yang pernah lewati jalan yang sama.</em>"
+    <div class="quote-strip reveal">
+      "Satu hal yang membedakan trader yang profit dan yang tidak: mereka punya
+      <em>sistem yang terbukti</em> dan <em>orang yang pernah lewati jalan yang sama.</em>"
     </div>
 
-    <p style="color:#bbb; font-size:16px; line-height:1.8; margin-bottom:24px;">
-      Farid sudah 7 tahun di market. Pernah boncos, pernah frustasi, pernah hampir berhenti. Tapi dia tidak berhenti — dan sekarang dia bawa lebih dari 2.000 orang keluar dari lubang yang sama.
+    <p style="font-size:16px;color:var(--text-2);line-height:1.85;margin-bottom:28px;max-width:640px;">
+      Farid sudah 7 tahun di market. Pernah boncos, pernah frustasi, pernah hampir berhenti.
+      Tapi dia tidak berhenti — dan sekarang dia bawa lebih dari 2.000 orang keluar dari lubang yang sama.
     </p>
 
-    <p class="section-label" style="margin-top:32px;">HASIL NYATA MEMBER</p>
-    <ul class="results-list fade-up">
-      <li><span class="dot"></span> +59% profit di hari pertama bergabung</li>
-      <li><span class="dot"></span> $12 → $60 oleh member yang baru mulai</li>
-      <li><span class="dot"></span> $1.070+ dalam satu sesi trading</li>
-    </ul>
-
-    <div style="margin-top:32px;">
+    <div class="tag" style="margin-top:32px;">Hasil Nyata Member</div>
+    <div class="result-list reveal">
+      <div class="rl-item"><div class="rl-bullet"></div><span><strong>+59% profit</strong> di hari pertama bergabung</span></div>
+      <div class="rl-item"><div class="rl-bullet"></div><span><strong>$12 → $60</strong> oleh member yang baru mulai</span></div>
+      <div class="rl-item"><div class="rl-bullet"></div><span><strong>$1.070+</strong> dalam satu sesi trading</span></div>
+    </div>
+    <div style="margin-top:28px;" class="reveal">
       <a href="#cta" class="btn-primary">Saya Mau Keluar dari Lingkaran Ini →</a>
     </div>
   </div>
 </section>
 
+<!-- ============================
+     FOUNDER
+============================= -->
 <section class="founder-section" id="founder">
-  <div class="section-inner">
-    <p class="section-label">Kenalan Dulu</p>
+  <div class="container">
+    <div class="tag">Kenalan Dulu</div>
     <div class="founder-grid">
-      <div class="founder-img-wrap fade-up">
-        <div class="founder-img-placeholder">
-          👤
-        </div>
-        <div class="founder-badge-float">
-          <div class="big">7 TAHUN</div>
-          di Market
-        </div>
-      </div>
-      <div class="founder-info fade-up">
-        <p class="founder-title">Founder &amp; Head Trader</p>
-        <h2>Farid<br>Gold Killer</h2>
-        <p>Trader profesional dengan pengalaman 7 tahun di pasar forex dan komoditas. Spesialisasi di XAU/USD (Gold) dengan metode <strong style="color:var(--gold)">Breakout Tekan</strong> — strategi simpel namun mematikan yang sudah terbukti menghasilkan ribuan pips konsisten.</p>
-        <p>Pernah merasakan pahitnya boncos hingga puluhan juta. Tapi dari situ justru lahir sistem yang benar-benar bekerja — dan kini sudah diajarkan ke lebih dari 2.000 trader di seluruh Indonesia.</p>
-        <p>Misi Farid satu: <strong style="color:var(--gold)">tidak ada lagi trader Indonesia yang rugi karena salah sistem.</strong></p>
-        <div class="founder-tags">
-          <span class="tag">XAU/USD Specialist</span>
-          <span class="tag">Breakout Strategy</span>
-          <span class="tag">Risk Management</span>
-          <span class="tag">7 Tahun Experience</span>
-          <span class="tag">2.000+ Students</span>
+
+      <div class="founder-card reveal">
+        <div class="founder-img">🥇</div>
+        <div class="founder-card-body">
+          <div class="founder-name">Farid Gold Killer</div>
+          <div class="founder-role">Founder &amp; Head Trader</div>
+          <div class="founder-chips">
+            <span class="chip">XAU/USD Specialist</span>
+            <span class="chip">Breakout Strategy</span>
+            <span class="chip">Risk Management</span>
+            <span class="chip">7 Tahun Experience</span>
+          </div>
         </div>
       </div>
+
+      <div class="founder-right reveal reveal-d1">
+        <h2 class="section-title" style="margin-bottom:24px;">Trader Yang<br>Sudah <em class="accent">Lewati Jalan Itu.</em></h2>
+        <p class="founder-bio">Farid bukan trader teori. Dia turun langsung ke market sejak 2017, merasakan pahitnya boncos sebelum akhirnya menemukan sistem yang konsisten. Kini, metode <strong>Breakout Tekan</strong> miliknya sudah diikuti lebih dari 2.000 trader aktif di seluruh Indonesia.</p>
+        <p class="founder-bio">Spesialisasi di XAU/USD (Gold), Farid mengembangkan teknik breakout presisi yang simpel namun powerful — memungkinkan siapapun, bahkan pemula, untuk mengikuti setup trading dengan win rate tinggi.</p>
+        <p class="founder-bio">Misi satu: <strong>tidak ada lagi trader Indonesia yang rugi karena salah sistem.</strong></p>
+        <div class="founder-metrics">
+          <div class="fm-item">
+            <div class="fm-n">2.000+</div>
+            <div class="fm-l">Member</div>
+          </div>
+          <div class="fm-item">
+            <div class="fm-n">83%</div>
+            <div class="fm-l">Win Rate</div>
+          </div>
+          <div class="fm-item">
+            <div class="fm-n">7 Thn</div>
+            <div class="fm-l">Experience</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
+<!-- ============================
+     BENEFITS
+============================= -->
 <section class="benefits-section" id="benefits">
-  <div class="section-inner">
-    <p class="section-label">Yang Kamu Dapat</p>
-    <h2 class="section-title">Semua Gratis.<br>Semua Terbukti.</h2>
+  <div class="container">
+    <div class="tag">Yang Kamu Dapat</div>
+    <h2 class="section-title">Semua Gratis.<br>Semua <em class="accent">Terbukti.</em></h2>
     <p class="section-sub">Gabung ke komunitas Farid Gold Killer dan dapatkan akses ke semua tools, edukasi, dan support yang kamu butuhkan untuk profit konsisten.</p>
 
-    <div class="benefits-grid fade-up">
-      <div class="benefit-card">
-        <span class="benefit-icon">⚡</span>
+    <div class="benefits-grid">
+      <div class="benefit-card reveal">
+        <div class="b-icon">⚡</div>
         <h3>Signal XAU/USD Premium</h3>
-        <p>Signal gold harian dengan entry, TP, dan SL yang jelas. Dianalisis langsung oleh Farid dengan akurasi <span class="highlight">rata-rata 83%</span>.</p>
+        <p>Signal gold harian dengan entry, TP, dan SL yang jelas. Dianalisis langsung oleh Farid dengan akurasi rata-rata 83%.</p>
+        <span class="b-free">GRATIS</span>
       </div>
-      <div class="benefit-card">
-        <span class="benefit-icon">🎯</span>
+      <div class="benefit-card reveal reveal-d1">
+        <div class="b-icon">🎯</div>
         <h3>Metode Breakout Tekan</h3>
-        <p>Sistem trading eksklusif yang hanya ada di komunitas ini. Simpel, terstruktur, dan bisa dipelajari bahkan oleh pemula tanpa pengalaman apapun.</p>
+        <p>Sistem trading eksklusif yang hanya ada di komunitas ini. Simpel, terstruktur, bisa dipelajari bahkan oleh pemula tanpa pengalaman apapun.</p>
+        <span class="b-free">EKSKLUSIF</span>
       </div>
-      <div class="benefit-card">
-        <span class="benefit-icon">📊</span>
+      <div class="benefit-card reveal reveal-d2">
+        <div class="b-icon">📊</div>
         <h3>Analisa Market Harian</h3>
-        <p>Video analisa setiap pagi sebelum market buka. Kamu tahu apa yang akan terjadi <span class="highlight">sebelum candle terbentuk</span>.</p>
+        <p>Video analisa setiap pagi sebelum market buka. Kamu tahu arah market sebelum candle terbentuk.</p>
+        <span class="b-free">GRATIS</span>
       </div>
-      <div class="benefit-card">
-        <span class="benefit-icon">💬</span>
+      <div class="benefit-card reveal">
+        <div class="b-icon">💬</div>
         <h3>Komunitas Aktif 24/7</h3>
         <p>Grup Telegram aktif dengan 2.000+ member. Diskusi, tanya jawab, dan saling support setiap saat.</p>
+        <span class="b-free">GRATIS</span>
       </div>
-      <div class="benefit-card">
-        <span class="benefit-icon">🧠</span>
+      <div class="benefit-card reveal reveal-d1">
+        <div class="b-icon">🧠</div>
         <h3>Edukasi Trading Lengkap</h3>
-        <p>Materi dari dasar hingga advanced. Mulai dari cara baca chart, money management, sampai psikologi trading.</p>
+        <p>Materi dari dasar hingga advanced. Cara baca chart, money management, sampai psikologi trading.</p>
+        <span class="b-free">GRATIS</span>
       </div>
-      <div class="benefit-card">
-        <span class="benefit-icon">🔒</span>
+      <div class="benefit-card reveal reveal-d2">
+        <div class="b-icon">🔒</div>
         <h3>100% Gratis Selamanya</h3>
-        <p>Tidak ada biaya tersembunyi. Tidak ada upsell. Semua konten dan signal bisa diakses <span class="highlight">gratis selamanya</span>.</p>
+        <p>Tidak ada biaya tersembunyi. Tidak ada upsell. Semua konten dan signal bisa diakses gratis selamanya.</p>
+        <span class="b-free">SELAMANYA</span>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================
+     PORTFOLIO
+============================= -->
 <section class="portfolio-section" id="portfolio">
-  <div class="section-inner">
-    <p class="section-label">Track Record</p>
-    <h2 class="section-title">Portofolio Nyata.<br>Bukan Backtesting.</h2>
+  <div class="container">
+    <div class="tag">Track Record</div>
+    <h2 class="section-title">Portofolio Nyata.<br><em class="accent">Bukan Backtesting.</em></h2>
     <p class="section-sub">Semua hasil di bawah ini adalah live trade yang didokumentasikan secara transparan. Bukan demo. Bukan rekayasa.</p>
 
-    <div class="portfolio-grid fade-up">
-      <div class="portfolio-card">
-        <div class="portfolio-result">+$1,070</div>
-        <div class="portfolio-instrument">XAU/USD</div>
-        <div class="portfolio-date">Satu Sesi Trading</div>
+    <div class="portfolio-grid reveal">
+      <div class="port-card">
+        <div class="port-num">+$1,070</div>
+        <div class="port-inst">XAU/USD</div>
+        <div class="port-ctx">Satu Sesi Trading</div>
       </div>
-      <div class="portfolio-card">
-        <div class="portfolio-result">+59%</div>
-        <div class="portfolio-instrument">Akun Live</div>
-        <div class="portfolio-date">Hari Pertama Member</div>
+      <div class="port-card">
+        <div class="port-num">+59%</div>
+        <div class="port-inst">Akun Live</div>
+        <div class="port-ctx">Hari Pertama Member</div>
       </div>
-      <div class="portfolio-card">
-        <div class="portfolio-result">+200%</div>
-        <div class="portfolio-instrument">XAU/USD</div>
-        <div class="portfolio-date">Dalam 24 Jam</div>
+      <div class="port-card">
+        <div class="port-num">+200%</div>
+        <div class="port-inst">XAU/USD</div>
+        <div class="port-ctx">Dalam 24 Jam</div>
       </div>
-      <div class="portfolio-card">
-        <div class="portfolio-result">5×</div>
-        <div class="portfolio-instrument">Modal Awal</div>
-        <div class="portfolio-date">Bulan Pertama</div>
+      <div class="port-card">
+        <div class="port-num">5×</div>
+        <div class="port-inst">Modal Awal</div>
+        <div class="port-ctx">Bulan Pertama</div>
       </div>
-      <div class="portfolio-card">
-        <div class="portfolio-result">+83%</div>
-        <div class="portfolio-instrument">Win Rate</div>
-        <div class="portfolio-date">Average Bulanan</div>
+      <div class="port-card">
+        <div class="port-num">83%</div>
+        <div class="port-inst">Win Rate</div>
+        <div class="port-ctx">Average Bulanan</div>
       </div>
-      <div class="portfolio-card">
-        <div class="portfolio-result">$60</div>
-        <div class="portfolio-instrument">Dari $12</div>
-        <div class="portfolio-date">Minggu Pertama</div>
+      <div class="port-card">
+        <div class="port-num">$60</div>
+        <div class="port-inst">Dari $12</div>
+        <div class="port-ctx">Minggu Pertama</div>
       </div>
     </div>
   </div>
 </section>
 
-<section style="background: var(--dark); border-top: 1px solid #222;" id="f-terminal">
-  <div class="section-inner">
-    <p class="section-label">F-Terminal Integrations</p>
-    <h2 class="section-title">Live Analytics Dashboard</h2>
-    <p class="section-sub">Pantau pergerakan harga, teknikal, dan fundamental global secara real-time langsung dari web ini menggunakan teknologi F-Terminal.</p>
-    
-    <div class="terminal-wrapper fade-up">
+<!-- ============================
+     F-TERMINAL — LIVE MARKET
+============================= -->
+<section class="terminal-section" id="terminal">
+  <div class="container">
+    <div class="terminal-header">
+      <div class="tag">F-Terminal · Live</div>
+      <h2 class="section-title">Live Market<br><em class="accent">Dashboard</em></h2>
+      <p class="section-sub">Pantau grafik harga, analisa teknikal, kalender ekonomi, dan berita market secara real-time langsung dari halaman ini.</p>
+    </div>
+
+    <!-- MAIN CHART + TECHNICAL ANALYSIS -->
+    <div class="tv-grid reveal">
+      <!-- CHART XAU/USD -->
       <div class="tv-card tv-tall">
-        <div class="tv-card-header">MAIN CHART (XAU/USD)</div>
-        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
-          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-          {
-          "autosize": true,
-          "symbol": "OANDA:XAUUSD",
-          "interval": "15",
-          "timezone": "Asia/Jakarta",
-          "theme": "dark",
-          "style": "1",
-          "locale": "id",
-          "enable_publishing": false,
-          "backgroundColor": "rgba(34, 34, 34, 1)",
-          "gridColor": "rgba(42, 42, 42, 1)",
-          "hide_top_toolbar": false,
-          "hide_legend": false,
-          "save_image": false,
-          "container_id": "tradingview_chart_f"
-        }
-          </script>
+        <div class="tv-head"><div class="dot-live"></div><span>Main Chart — XAU/USD</span></div>
+        <div class="tv-body">
+          <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            {
+              "autosize":true,
+              "symbol":"OANDA:XAUUSD",
+              "interval":"15",
+              "timezone":"Asia/Jakarta",
+              "theme":"dark",
+              "style":"1",
+              "locale":"id",
+              "backgroundColor":"rgba(17,24,32,1)",
+              "gridColor":"rgba(255,255,255,0.04)",
+              "hide_top_toolbar":false,
+              "hide_legend":false,
+              "save_image":false
+            }
+            </script>
+          </div>
         </div>
       </div>
-
+      <!-- TECHNICAL ANALYSIS -->
       <div class="tv-card tv-tall">
-        <div class="tv-card-header">AI TECHNICAL ANALYSIS</div>
-        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
-          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-          {
-          "interval": "15m",
-          "width": "100%",
-          "isTransparent": true,
-          "height": "100%",
-          "symbol": "OANDA:XAUUSD",
-          "showIntervalTabs": true,
-          "displayMode": "single",
-          "locale": "id",
-          "colorTheme": "dark"
-        }
-          </script>
+        <div class="tv-head"><div class="dot-live"></div><span>Analisa Teknikal</span></div>
+        <div class="tv-body">
+          <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+            {
+              "interval":"15m",
+              "width":"100%",
+              "isTransparent":true,
+              "height":"100%",
+              "symbol":"OANDA:XAUUSD",
+              "showIntervalTabs":true,
+              "displayMode":"single",
+              "locale":"id",
+              "colorTheme":"dark"
+            }
+            </script>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="terminal-row-bottom fade-up">
-      <div class="tv-card tv-medium">
-        <div class="tv-card-header">MARKET HEATMAP (CRYPTO)</div>
-        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
-          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js" async>
-          {
-          "dataSource": "Crypto",
-          "blockSize": "market_cap_calc",
-          "blockColor": "change",
-          "locale": "id",
-          "symbolUrl": "",
-          "colorTheme": "dark",
-          "hasTopBar": false,
-          "isDataSetEnabled": false,
-          "isZoomEnabled": true,
-          "hasSymbolTooltip": true,
-          "isTransparent": true,
-          "width": "100%",
-          "height": "100%"
-        }
-          </script>
+    <!-- BOTTOM ROW: HEATMAP + CALENDAR + NEWS -->
+    <div class="tv-row reveal" style="margin-top:16px;">
+      <!-- CRYPTO HEATMAP -->
+      <div class="tv-card tv-sm">
+        <div class="tv-head"><div class="dot-live"></div><span>Crypto Heatmap</span></div>
+        <div class="tv-body">
+          <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js" async>
+            {
+              "dataSource":"Crypto",
+              "blockSize":"market_cap_calc",
+              "blockColor":"change",
+              "locale":"id",
+              "colorTheme":"dark",
+              "hasTopBar":false,
+              "isDataSetEnabled":false,
+              "isZoomEnabled":true,
+              "hasSymbolTooltip":true,
+              "isTransparent":true,
+              "width":"100%",
+              "height":"100%"
+            }
+            </script>
+          </div>
         </div>
       </div>
-
-      <div class="tv-card tv-medium">
-        <div class="tv-card-header">ECONOMIC CALENDAR</div>
-        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
-          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-          {
-          "colorTheme": "dark",
-          "isTransparent": true,
-          "width": "100%",
-          "height": "100%",
-          "locale": "id",
-          "importanceFilter": "-1,0,1",
-          "currencyFilter": "USD,EUR,GBP,JPY"
-        }
-          </script>
+      <!-- ECONOMIC CALENDAR -->
+      <div class="tv-card tv-sm">
+        <div class="tv-head"><div class="dot-live"></div><span>Economic Calendar</span></div>
+        <div class="tv-body">
+          <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+            {
+              "colorTheme":"dark",
+              "isTransparent":true,
+              "width":"100%",
+              "height":"100%",
+              "locale":"id",
+              "importanceFilter":"-1,0,1",
+              "currencyFilter":"USD,EUR,GBP,JPY"
+            }
+            </script>
+          </div>
         </div>
       </div>
-
-      <div class="tv-card tv-medium">
-        <div class="tv-card-header">GLOBAL MARKET NEWS</div>
-        <div class="tradingview-widget-container" style="height:calc(100% - 37px);width:100%">
-          <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-          {
-          "feedMode": "all_symbols",
-          "isTransparent": true,
-          "displayMode": "regular",
-          "width": "100%",
-          "height": "100%",
-          "colorTheme": "dark",
-          "locale": "id"
-        }
-          </script>
+      <!-- MARKET NEWS -->
+      <div class="tv-card tv-sm">
+        <div class="tv-head"><div class="dot-live"></div><span>Market News</span></div>
+        <div class="tv-body">
+          <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+            {
+              "feedMode":"all_symbols",
+              "isTransparent":true,
+              "displayMode":"regular",
+              "width":"100%",
+              "height":"100%",
+              "colorTheme":"dark",
+              "locale":"id"
+            }
+            </script>
+          </div>
         </div>
       </div>
     </div>
@@ -1248,225 +1200,187 @@
   </div>
 </section>
 
-<section class="live-section" id="live-market">
-  <div class="section-inner">
-    <p class="section-label">● Live</p>
-    <h2 class="section-title">Kondisi Market<br>Saat Ini</h2>
-
-    <div class="live-grid fade-up">
-      <div class="live-card">
-        <div class="live-pair">XAU/USD</div>
-        <div class="live-price">3,124</div>
-        <div class="live-change up">▲ +1.24%</div>
-      </div>
-      <div class="live-card">
-        <div class="live-pair">EUR/USD</div>
-        <div class="live-price">1.0821</div>
-        <div class="live-change down">▼ -0.31%</div>
-      </div>
-      <div class="live-card">
-        <div class="live-pair">GBP/USD</div>
-        <div class="live-price">1.2734</div>
-        <div class="live-change up">▲ +0.52%</div>
-      </div>
-      <div class="live-card">
-        <div class="live-pair">USD/JPY</div>
-        <div class="live-price">149.82</div>
-        <div class="live-change down">▼ -0.18%</div>
-      </div>
-      <div class="live-card">
-        <div class="live-pair">BTC/USD</div>
-        <div class="live-price">87,450</div>
-        <div class="live-change up">▲ +2.10%</div>
-      </div>
-      <div class="live-card">
-        <div class="live-pair">XAG/USD</div>
-        <div class="live-price">33.42</div>
-        <div class="live-change up">▲ +0.87%</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="testimonial-section" id="testimonial">
-  <div class="section-inner">
-    <p class="section-label">Kata Mereka</p>
-    <h2 class="section-title">2.000+ Trader<br>Sudah Merasakannya.</h2>
+<!-- ============================
+     TESTIMONIALS
+============================= -->
+<section class="testi-section" id="testimoni">
+  <div class="container">
+    <div class="tag">Kata Mereka</div>
+    <h2 class="section-title">2.000+ Trader<br><em class="accent">Sudah Merasakannya.</em></h2>
     <p class="section-sub">Bukan testimoni palsu. Bukan screenshot editan. Ini cerita nyata dari member komunitas Farid Gold Killer.</p>
 
-    <div class="testi-grid fade-up">
-      <div class="testi-card">
-        <div class="testi-header">
-          <div class="testi-avatar">V</div>
-          <div>
-            <div class="testi-name">Vio</div>
-            <div class="testi-sub">Member Aktif · Surabaya</div>
-          </div>
-          <div class="testi-badge">Verified</div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-top">
+          <div class="testi-ava">V</div>
+          <div><div class="testi-nm">Vio</div><div class="testi-loc">Member Aktif · Surabaya</div></div>
+          <div class="testi-badge-v">Verified</div>
         </div>
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">Baru join dan langsung profit di hari pertama. Sistem Breakout Tekan dari Farid benar-benar beda dari yang pernah aku pelajari sebelumnya. Simple tapi efektif banget!</div>
+        <div class="testi-body">Baru join dan langsung profit di hari pertama. Sistem Breakout Tekan dari Farid benar-benar beda dari yang pernah aku pelajari sebelumnya. Simple tapi efektif banget!</div>
         <div class="testi-result">+200% Hari Pertama 🔥</div>
       </div>
-      <div class="testi-card">
-        <div class="testi-header">
-          <div class="testi-avatar">VP</div>
-          <div>
-            <div class="testi-name">Viona Permatasari</div>
-            <div class="testi-sub">Member Pemula · Jakarta</div>
-          </div>
-          <div class="testi-badge">Verified</div>
+      <div class="testi-card reveal reveal-d1">
+        <div class="testi-top">
+          <div class="testi-ava">VP</div>
+          <div><div class="testi-nm">Viona Permatasari</div><div class="testi-loc">Member Pemula · Jakarta</div></div>
+          <div class="testi-badge-v">Verified</div>
         </div>
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">Awalnya ragu karena gratis, takut zonk. Tapi ternyata kualitasnya premium banget. Signal-nya akurat, analisanya lengkap. Modal $12 jadi $60 dalam seminggu!</div>
+        <div class="testi-body">Awalnya ragu karena gratis, takut zonk. Tapi ternyata kualitasnya premium banget. Signal-nya akurat, analisanya lengkap. Modal $12 jadi $60 dalam seminggu!</div>
         <div class="testi-result">$12 → $60 Seminggu 💰</div>
       </div>
-      <div class="testi-card">
-        <div class="testi-header">
-          <div class="testi-avatar">RP</div>
-          <div>
-            <div class="testi-name">Rizaldi Pratama</div>
-            <div class="testi-sub">Member Aktif · Bandung</div>
-          </div>
-          <div class="testi-badge">Verified</div>
+      <div class="testi-card reveal reveal-d2">
+        <div class="testi-top">
+          <div class="testi-ava">RP</div>
+          <div><div class="testi-nm">Rizaldi Pratama</div><div class="testi-loc">Member Aktif · Bandung</div></div>
+          <div class="testi-badge-v">Verified</div>
         </div>
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">Sudah 3 bulan di komunitas ini. Setiap minggu bisa flip 3 kali dan full profit. Dulu sering boncos, sekarang lebih tenang karena ada sistem yang jelas.</div>
+        <div class="testi-body">Sudah 3 bulan di komunitas ini. Setiap minggu bisa flip 3 kali dan full profit. Dulu sering boncos, sekarang lebih tenang karena ada sistem yang jelas.</div>
         <div class="testi-result">3× Flip/Minggu Full Profit 📈</div>
       </div>
-      <div class="testi-card">
-        <div class="testi-header">
-          <div class="testi-avatar">AR</div>
-          <div>
-            <div class="testi-name">Ahmad Reza</div>
-            <div class="testi-sub">Member Aktif · Medan</div>
-          </div>
-          <div class="testi-badge">Verified</div>
+      <div class="testi-card reveal">
+        <div class="testi-top">
+          <div class="testi-ava">AR</div>
+          <div><div class="testi-nm">Ahmad Reza</div><div class="testi-loc">Member Aktif · Medan</div></div>
+          <div class="testi-badge-v">Verified</div>
         </div>
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">Yang paling valuable adalah analisanya setiap pagi. Jadi tau arah market sebelum masuk. Udah gak nebak-nebak lagi. Farid emang Gold Killer sejati.</div>
+        <div class="testi-body">Yang paling valuable adalah analisanya setiap pagi. Jadi tau arah market sebelum masuk. Udah gak nebak-nebak lagi. Farid emang Gold Killer sejati.</div>
         <div class="testi-result">+$1,070 Satu Sesi 🎯</div>
       </div>
-      <div class="testi-card">
-        <div class="testi-header">
-          <div class="testi-avatar">DS</div>
-          <div>
-            <div class="testi-name">Dian Sari</div>
-            <div class="testi-sub">Member Baru · Bali</div>
-          </div>
-          <div class="testi-badge">Verified</div>
+      <div class="testi-card reveal reveal-d1">
+        <div class="testi-top">
+          <div class="testi-ava">DS</div>
+          <div><div class="testi-nm">Dian Sari</div><div class="testi-loc">Member Baru · Bali</div></div>
+          <div class="testi-badge-v">Verified</div>
         </div>
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">Sebagai wanita yang baru belajar trading, sempat insecure. Tapi komunitas Farid Gold Killer sangat supportive dan tidak pernah menghakimi. Sekarang sudah bisa profit sendiri.</div>
+        <div class="testi-body">Sebagai pemula yang baru belajar trading, komunitas Farid Gold Killer sangat supportive. Sekarang sudah bisa profit sendiri secara konsisten tiap minggu.</div>
         <div class="testi-result">Profit Konsisten Tiap Minggu ✅</div>
       </div>
-      <div class="testi-card">
-        <div class="testi-header">
-          <div class="testi-avatar">HW</div>
-          <div>
-            <div class="testi-name">Hendra Wijaya</div>
-            <div class="testi-sub">Member Aktif · Semarang</div>
-          </div>
-          <div class="testi-badge">Verified</div>
+      <div class="testi-card reveal reveal-d2">
+        <div class="testi-top">
+          <div class="testi-ava">HW</div>
+          <div><div class="testi-nm">Hendra Wijaya</div><div class="testi-loc">Member Aktif · Semarang</div></div>
+          <div class="testi-badge-v">Verified</div>
         </div>
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">Pernah rugi jutaan ikut mentor berbayar. Eh ini yang gratis malah jauh lebih bagus. Sinyal XAU/USD-nya tajam banget. Breakout Tekan memang gak ada lawan.</div>
+        <div class="testi-body">Pernah rugi jutaan ikut mentor berbayar. Ini yang gratis malah jauh lebih bagus. Sinyal XAU/USD-nya tajam banget. Breakout Tekan gak ada lawan.</div>
         <div class="testi-result">Modal 5× Lipat Sebulan 💎</div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================
+     FAQ
+============================= -->
 <section class="faq-section" id="faq">
-  <div class="section-inner">
-    <p class="section-label">Ada Pertanyaan?</p>
-    <h2 class="section-title" style="text-align:center;">Yang Sering Ditanyakan</h2>
-
+  <div class="container">
+    <div style="text-align:center;margin-bottom:0;">
+      <div class="tag" style="justify-content:center;">Ada Pertanyaan?</div>
+      <h2 class="section-title" style="text-align:center;">Yang Sering<br><em class="accent">Ditanyakan</em></h2>
+    </div>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q">Apakah benar-benar gratis? Tidak ada biaya tersembunyi?</div>
+        <div class="faq-q">Apakah benar-benar gratis? Tidak ada biaya tersembunyi?<div class="ico">+</div></div>
         <div class="faq-a"><p>Ya, 100% gratis dan tidak ada biaya apapun. Tidak ada biaya pendaftaran, tidak ada biaya bulanan, tidak ada upsell produk berbayar. Semua konten, signal, dan edukasi bisa diakses gratis selamanya.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Apakah cocok untuk pemula yang belum pernah trading sama sekali?</div>
-        <div class="faq-a"><p>Sangat cocok! Metode Breakout Tekan dirancang agar bisa dipelajari siapapun termasuk pemula tanpa background trading. Materi dimulai dari dasar dan dilengkapi dengan panduan lengkap.</p></div>
+        <div class="faq-q">Apakah cocok untuk pemula yang belum pernah trading sama sekali?<div class="ico">+</div></div>
+        <div class="faq-a"><p>Sangat cocok! Metode Breakout Tekan dirancang agar bisa dipelajari siapapun termasuk pemula tanpa background trading. Materi dimulai dari dasar dan dilengkapi dengan panduan langkah demi langkah.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Berapa modal minimal untuk mulai trading menggunakan sistem ini?</div>
+        <div class="faq-q">Berapa modal minimal untuk mulai trading menggunakan sistem ini?<div class="ico">+</div></div>
         <div class="faq-a"><p>Tidak ada batasan modal minimal. Ada member yang mulai dengan modal $12 dan berhasil mengembangkannya. Yang penting adalah konsistensi dalam menjalankan sistem, bukan besarnya modal awal.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Bagaimana cara bergabung?</div>
-        <div class="faq-a"><p>Cukup klik tombol "Gabung Gratis Sekarang" dan masukkan nomor WhatsApp kamu. Kamu akan langsung diarahkan ke grup Telegram komunitas Farid Gold Killer dan bisa langsung akses semua konten.</p></div>
+        <div class="faq-q">Bagaimana cara bergabung?<div class="ico">+</div></div>
+        <div class="faq-a"><p>Cukup masukkan nomor WhatsApp kamu di form di bawah dan klik "Gabung Gratis Sekarang". Kamu akan langsung diarahkan ke grup Telegram komunitas Farid Gold Killer dan bisa langsung akses semua konten.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Berapa lama sampai bisa profit?</div>
-        <div class="faq-a"><p>Banyak member yang sudah profit di hari pertama bergabung. Namun hasilnya tergantung pada seberapa serius kamu belajar dan menjalankan sistem. Dengan konsistensi, kebanyakan member mulai profit konsisten dalam 1-4 minggu.</p></div>
+        <div class="faq-q">Berapa lama sampai bisa profit?<div class="ico">+</div></div>
+        <div class="faq-a"><p>Banyak member yang sudah profit di hari pertama bergabung. Namun hasilnya tergantung pada seberapa serius kamu belajar dan menjalankan sistem. Dengan konsistensi, kebanyakan member mulai profit konsisten dalam 1–4 minggu pertama.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Instrumen apa saja yang diajarkan?</div>
-        <div class="faq-a"><p>Fokus utama adalah XAU/USD (Gold) karena itu spesialisasi Farid. Namun sistem ini juga bisa diterapkan di EUR/USD, GBP/USD, dan pair forex major lainnya.</p></div>
+        <div class="faq-q">Instrumen apa saja yang diajarkan?<div class="ico">+</div></div>
+        <div class="faq-a"><p>Fokus utama adalah XAU/USD (Gold) karena itu spesialisasi Farid. Namun sistem ini juga bisa diterapkan di EUR/USD, GBP/USD, dan pair forex major lainnya dengan penyesuaian minor.</p></div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================
+     CTA
+============================= -->
 <section class="cta-section" id="cta">
-  <div class="section-inner cta-inner">
-    <p class="section-label">Langkah Pertama</p>
-    <h2>
-      Siap <span style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Breakout</span>?
+  <div class="container cta-inner">
+    <div class="cta-pill">✓ Gratis Selamanya · Tanpa Syarat Apapun</div>
+    <h2 class="cta-h">
+      Siap <em class="accent">Breakout</em><br>dari Zona Boncos?
     </h2>
-    <p>Gabung sekarang dan dapatkan akses penuh ke sistem trading gold terbukti yang sudah menghasilkan ribuan trader Indonesia. Gratis. Selamanya.</p>
+    <p class="cta-p">Gabung sekarang dan dapatkan akses penuh ke sistem trading gold terbukti yang sudah menghasilkan ribuan trader Indonesia. Gratis. Selamanya.</p>
     <div class="cta-form">
-      <input type="text" class="cta-input" placeholder="Nomor WhatsApp kamu...">
-      <a href="#" class="btn-cta-big">Gabung Gratis Sekarang →</a>
+      <input type="tel" class="cta-input" placeholder="Nomor WhatsApp kamu...">
+      <a href="#" class="btn-primary">Gabung Gratis Sekarang →</a>
     </div>
-    <p class="cta-note">✓ Gratis selamanya &nbsp;&nbsp; ✓ Tanpa spam &nbsp;&nbsp; ✓ <strong>Langsung akses signal hari ini</strong></p>
+    <p class="cta-note">✓ Gratis selamanya &nbsp;·&nbsp; ✓ Tanpa spam &nbsp;·&nbsp; <b>Langsung akses signal hari ini</b></p>
   </div>
 </section>
 
+<!-- ============================
+     FOOTER
+============================= -->
 <footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="brand-name">FARID GOLD KILLER</div>
-      <div class="brand-tagline">BREAKOUT TEKAN</div>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">FARID GOLD KILLER</div>
+        <div class="footer-tagline">Breakout Tekan</div>
+        <p class="footer-desc">Komunitas trader XAU/USD terbesar dan terpercaya di Indonesia. Gratis. Terbukti. Konsisten.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Navigasi</h5>
+        <ul>
+          <li><a href="#founder">Tentang Farid</a></li>
+          <li><a href="#benefits">Program</a></li>
+          <li><a href="#portfolio">Portofolio</a></li>
+          <li><a href="#testimoni">Testimoni</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Komunitas</h5>
+        <ul>
+          <li><a href="#">Telegram</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">TikTok</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Disclaimer</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat &amp; Ketentuan</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="footer-links">
-      <h4>Navigasi</h4>
-      <ul>
-        <li><a href="#founder">Tentang Farid</a></li>
-        <li><a href="#benefits">Program</a></li>
-        <li><a href="#portfolio">Portofolio</a></li>
-        <li><a href="#testimonial">Testimoni</a></li>
-      </ul>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Farid Gold Killer. All rights reserved.</p>
+      <p class="footer-disc">⚠️ Trading forex dan komoditas memiliki risiko tinggi. Hasil yang ditampilkan bukan jaminan profit di masa depan. Pastikan kamu memahami risiko sebelum trading.</p>
     </div>
-    <div class="footer-links">
-      <h4>Komunitas</h4>
-      <ul>
-        <li><a href="#">Telegram</a></li>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">YouTube</a></li>
-        <li><a href="#">TikTok</a></li>
-      </ul>
-    </div>
-    <div class="footer-links">
-      <h4>Legal</h4>
-      <ul>
-        <li><a href="#">Disclaimer</a></li>
-        <li><a href="#">Kebijakan Privasi</a></li>
-        <li><a href="#">Syarat & Ketentuan</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 Farid Gold Killer. All rights reserved.</p>
-    <p class="disclaimer">⚠️ Trading forex dan komoditas memiliki risiko tinggi. Hasil yang ditampilkan bukan jaminan profit di masa depan. Pastikan kamu memahami risiko sebelum trading.</p>
   </div>
 </footer>
 
+<!-- ============================
+     JAVASCRIPT
+============================= -->
 <script>
-// FAQ Toggle
+/* FAQ Toggle */
 document.querySelectorAll('.faq-q').forEach(q => {
   q.addEventListener('click', () => {
     const item = q.parentElement;
@@ -1476,17 +1390,24 @@ document.querySelectorAll('.faq-q').forEach(q => {
   });
 });
 
-// Scroll Animations
-const observer = new IntersectionObserver((entries) => {
+/* Scroll Reveal */
+const revealObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('visible');
+    if (e.isIntersecting) {
+      e.target.classList.add('show');
+      revealObs.unobserve(e.target);
+    }
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-// Script untuk Ticker manual bawaan dihapus karena sudah diganti dengan Ticker TradingView
+/* Hero reveal on load */
+window.addEventListener('load', () => {
+  document.querySelectorAll('.hero .reveal').forEach(el => {
+    setTimeout(() => el.classList.add('show'), 100);
+  });
+});
 </script>
-
 </body>
 </html>
