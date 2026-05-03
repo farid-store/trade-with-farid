@@ -1,120 +1,67 @@
-<?php
-/**
- * ╔═══════════════════════════════════════════════════════╗
- * ║  send_signal.php  –  Kirim sinyal MANUAL ke JSONBin  ║
- * ║  Gunakan untuk test / inject sinyal tanpa EA         ║
- * ╚═══════════════════════════════════════════════════════╝
- *
- * Akses via browser: https://yourdomain.com/send_signal.php
- * LINDUNGI FILE INI dengan htaccess atau password sebelum deploy!
- */
-
-// ──────────────────────────────────────────────────
-define('WEBHOOK_SECRET',    'farid_1124');
-define('JSONBIN_BIN_ID',    '69f6caf536566621a81bc334');
-define('JSONBIN_MASTER_KEY','$2a$10$tcKHEWwuz2sqRoMCKJfga.1xxTFW0RxpXUPnP.NI4YbivtlK1xxau');
-define('MAX_HISTORY',        50);
-// ──────────────────────────────────────────────────
-
-$message = '';
-$success = false;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $signal = [
-        'symbol'    => strtoupper(trim($_POST['symbol']   ?? 'XAUUSD')),
-        'action'    => strtoupper(trim($_POST['action']   ?? 'BUY')),
-        'mode'      => strtoupper(trim($_POST['mode']     ?? 'NORMAL')),
-        'price'     => (float)($_POST['price']            ?? 0),
-        'sl'        => (float)($_POST['sl']               ?? 0),
-        'tp'        => (float)($_POST['tp']               ?? 0),
-        'lots'      => (float)($_POST['lots']             ?? 0.1),
-        'pips'      => (float)($_POST['pips']             ?? 0),
-        'profit'    => (float)($_POST['profit']           ?? 0),
-        'comment'   => trim($_POST['comment']             ?? 'Manual'),
-        'confidence'=> (int)($_POST['confidence']         ?? 75),
-        'timestamp' => date('c'),
-    ];
-
-    $current  = jsonbin_get();
-    if ($current === null) $current = ['history' => []];
-
-    $history = $current['history'] ?? [];
-    array_unshift($history, $signal);
-    if (count($history) > MAX_HISTORY) $history = array_slice($history, 0, MAX_HISTORY);
-    $current['history'] = $history;
-
-    $result = jsonbin_put($current);
-    if ($result) {
-        $success = true;
-        $message = '✅ Sinyal berhasil dikirim ke JSONBin!';
-    } else {
-        $message = '❌ Gagal menyimpan ke JSONBin. Cek config.';
-    }
-}
-
-// ════════════════════════════════════════════════
-function jsonbin_get(): ?array {
-    $ch = curl_init('https://api.jsonbin.io/v3/b/' . JSONBIN_BIN_ID . '/latest');
-    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER=>true, CURLOPT_HTTPHEADER=>['X-Master-Key: '.JSONBIN_MASTER_KEY], CURLOPT_TIMEOUT=>10]);
-    $resp = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ($code === 200 && $resp) { $j = json_decode($resp, true); return $j['record'] ?? null; }
-    return null;
-}
-function jsonbin_put(array $payload): ?array {
-    $ch = curl_init('https://api.jsonbin.io/v3/b/' . JSONBIN_BIN_ID);
-    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER=>true, CURLOPT_CUSTOMREQUEST=>'PUT', CURLOPT_POSTFIELDS=>json_encode($payload), CURLOPT_HTTPHEADER=>['Content-Type: application/json','X-Master-Key: '.JSONBIN_MASTER_KEY], CURLOPT_TIMEOUT=>10]);
-    $resp = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    return ($code===200||$code===201) ? json_decode($resp,true) : null;
-}
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FaridFX – Send Signal Manual</title>
 <style>
   body { font-family: monospace; background:#050a0f; color:#c8dde8; padding:30px; }
   h2   { color:#00c8ff; letter-spacing:3px; margin-bottom:20px; }
   label{ display:block; margin-bottom:4px; font-size:.8rem; color:#4a7090; letter-spacing:1px; }
   input, select {
-    display:block; width:300px; padding:8px 10px;
+    display:block; width:100%; max-width: 300px; padding:8px 10px;
     background:#0a1520; border:1px solid #1a3a5c;
     color:#c8dde8; font-family:monospace; font-size:.9rem;
-    margin-bottom:14px; border-radius:3px;
+    margin-bottom:14px; border-radius:3px; box-sizing: border-box;
   }
   button {
     padding:10px 28px; background:#00c8ff; color:#050a0f;
     font-weight:700; font-family:monospace; font-size:.9rem;
     border:none; border-radius:3px; cursor:pointer;
     letter-spacing:2px; text-transform:uppercase;
+    transition: background 0.3s;
   }
   button:hover { background:#00ff9d; }
+  button:disabled { background: #4a7090; cursor: not-allowed; }
+  
+  /* Class notifikasi dinamis */
   .msg {
-    margin-top:16px; padding:12px 16px;
+    margin-top:16px; padding:12px 16px; margin-bottom: 20px;
     border-radius:3px; font-size:.85rem; letter-spacing:1px;
-    background: <?php echo $success ? 'rgba(0,255,157,.1)' : 'rgba(255,63,90,.1)'; ?>;
-    border: 1px solid <?php echo $success ? 'rgba(0,255,157,.3)' : 'rgba(255,63,90,.3)'; ?>;
-    color: <?php echo $success ? '#00ff9d' : '#ff3f5a'; ?>;
+    display: none; /* Disembunyikan secara default */
   }
+  .msg.success {
+    background: rgba(0,255,157,.1);
+    border: 1px solid rgba(0,255,157,.3);
+    color: #00ff9d;
+  }
+  .msg.error {
+    background: rgba(255,63,90,.1);
+    border: 1px solid rgba(255,63,90,.3);
+    color: #ff3f5a;
+  }
+  
   .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 30px; max-width:640px; }
   a { color:#00c8ff; text-decoration:none; }
+  
+  /* Responsif untuk HP */
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    input, select { max-width: 100%; }
+  }
 </style>
 </head>
 <body>
+
 <h2>FARIDFX // SEND SIGNAL MANUAL</h2>
 <p style="color:#4a7090;font-size:.75rem;margin-bottom:24px;letter-spacing:1px;">
-  Halaman ini untuk test / inject sinyal tanpa EA. <a href="index.html">← Kembali ke dashboard</a>
+  Halaman ini untuk test / inject sinyal manual ke API Vercel.
 </p>
 
-<?php if ($message): ?>
-<div class="msg"><?= htmlspecialchars($message) ?></div><br>
-<?php endif; ?>
+<!-- Kotak Pesan Notifikasi -->
+<div id="messageBox" class="msg"></div>
 
-<form method="POST">
+<form id="signalForm">
   <div class="grid">
     <div>
       <label>SYMBOL</label>
@@ -145,7 +92,77 @@ function jsonbin_put(array $payload): ?array {
       <input name="comment" value="Manual Test">
     </div>
   </div>
-  <button type="submit">KIRIM SINYAL</button>
+  <button type="submit" id="submitBtn">KIRIM SINYAL</button>
 </form>
+
+<script>
+  const form = document.getElementById('signalForm');
+  const msgBox = document.getElementById('messageBox');
+  const submitBtn = document.getElementById('submitBtn');
+
+  // Ganti WEBHOOK_SECRET dengan yang Anda setting di API Vercel
+  const API_SECRET = 'farid_1124'; 
+  
+  // URL API (Karena di-host di Vercel yang sama, cukup gunakan path relatif)
+  const API_URL = '/api/webhook'; 
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Mencegah halaman reload
+    
+    // Ubah tampilan tombol saat loading
+    submitBtn.innerText = 'MENGIRIM...';
+    submitBtn.disabled = true;
+    msgBox.style.display = 'none';
+    msgBox.className = 'msg';
+
+    // Susun payload JSON dari input form
+    const payload = {
+      secret: API_SECRET,
+      symbol: form.symbol.value,
+      action: form.action.value,
+      mode: form.mode.value,
+      price: parseFloat(form.price.value),
+      sl: parseFloat(form.sl.value),
+      tp: parseFloat(form.tp.value),
+      lots: parseFloat(form.lots.value),
+      profit: parseFloat(form.profit.value),
+      confidence: parseInt(form.confidence.value),
+      comment: form.comment.value,
+      status: 'MANUAL' // Menandakan ini dikirim dari web, bukan dari EA MT5
+    };
+
+    try {
+      // Kirim data ke Vercel API Endpoint
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Tampilkan pesan sukses
+        msgBox.innerHTML = '✅ Sinyal manual berhasil diteruskan ke JSONBin!';
+        msgBox.classList.add('success');
+      } else {
+        // Tampilkan error dari backend
+        msgBox.innerHTML = '❌ Gagal: ' + (result.error || 'Terjadi kesalahan');
+        msgBox.classList.add('error');
+      }
+    } catch (error) {
+      // Tampilkan error jaringan/koneksi
+      msgBox.innerHTML = '❌ Gagal menghubungi API Vercel. Cek koneksi Anda.';
+      msgBox.classList.add('error');
+    }
+
+    // Tampilkan kotak pesan dan kembalikan tombol
+    msgBox.style.display = 'block';
+    submitBtn.innerText = 'KIRIM SINYAL';
+    submitBtn.disabled = false;
+  });
+</script>
 </body>
 </html>
