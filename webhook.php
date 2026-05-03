@@ -12,9 +12,9 @@
 // ──────────────────────────────────────────────────
 //  CONFIG  –  WAJIB DIISI
 // ──────────────────────────────────────────────────
-define('WEBHOOK_SECRET',    'farid_fx_secret_2024');   // harus sama dengan InpWebhookSecret di EA
-define('JSONBIN_BIN_ID',    'GANTI_BIN_ID_ANDA');       // ID bin dari jsonbin.io
-define('JSONBIN_MASTER_KEY','$2a$10$GANTI_MASTER_KEY'); // Master Key dari jsonbin.io
+define('WEBHOOK_SECRET',    'farid_1124');   // harus sama dengan InpWebhookSecret di EA
+define('JSONBIN_BIN_ID',    '69f6caf536566621a81bc334');       // ID bin dari jsonbin.io
+define('JSONBIN_MASTER_KEY','$2a$10$tcKHEWwuz2sqRoMCKJfga.1xxTFW0RxpXUPnP.NI4YbivtlK1xxau'); // Master Key dari jsonbin.io
 define('MAX_HISTORY',        50);                        // jumlah riwayat sinyal yang disimpan
 // ──────────────────────────────────────────────────
 
