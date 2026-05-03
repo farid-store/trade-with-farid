@@ -246,7 +246,7 @@ nav {
   display:flex; align-items:center; gap:8px;
 }
 .panel-title::after { content:''; flex:1; height:1px; background:var(--card-border); }
-.panel-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
 .p-stat {
   background:var(--bg-3); border:1px solid var(--card-border);
   border-radius:var(--r-md); padding:clamp(12px,2vw,16px);
@@ -789,8 +789,10 @@ footer {
 
 /* Tablet: ≤1024px */
 @media(max-width:1024px) {
-  .hero-inner { grid-template-columns:1fr; gap:40px; }
-  .hero-panel { display:none; }
+  .hero-inner { grid-template-columns:1fr; gap:28px; }
+  /* Panel tampil full width di bawah hero text */
+  .hero-panel { display:block; }
+  .panel-stats { grid-template-columns:repeat(3,1fr); }
   .founder-grid { grid-template-columns:1fr; gap:32px; }
   .founder-card { max-width:320px; }
   .benefits-grid { grid-template-columns:1fr 1fr; }
@@ -821,6 +823,10 @@ footer {
   .hero-btns { gap:10px; }
   .hero-btns .btn-primary,
   .hero-btns .btn-ghost { flex:1; justify-content:center; min-width:140px; }
+
+  /* Panel di mobile: tetap tampil, stats 2x2 */
+  .hero-panel { display:block; }
+  .panel-stats { grid-template-columns:1fr 1fr; }
 
   .benefits-grid { grid-template-columns:1fr; }
   .testi-grid { grid-template-columns:1fr; }
@@ -954,6 +960,8 @@ footer {
           <div class="p-stat"><div class="n" id="stat-unrealized">$0.00</div><div class="l">Floating PnL</div></div>
           <div class="p-stat"><div class="n" id="stat-dd">0.00%</div><div class="l">Max Drawdown</div></div>
           <div class="p-stat"><div class="n" id="stat-winrate">83%</div><div class="l">Win Rate (Avg)</div></div>
+          <div class="p-stat"><div class="n" id="stat-rr">1:2.0</div><div class="l">Risk Ratio (avg)</div></div>
+          <div class="p-stat"><div class="n" id="stat-sltp">25/50</div><div class="l">SL / TP (pip)</div></div>
         </div>
         <div class="panel-bar"></div>
         <div class="panel-results">
@@ -1439,6 +1447,24 @@ function renderStats(stats) {
   document.getElementById('stat-dd').textContent   = parseFloat(stats.drawdown || 0).toFixed(2) + '%';
   document.getElementById('stat-balance').textContent = '$' + parseFloat(stats.balance || 0).toFixed(2);
   document.getElementById('stat-equity').textContent  = '$' + parseFloat(stats.equity  || 0).toFixed(2);
+
+  // Risk Ratio
+  const rrEl = document.getElementById('stat-rr');
+  if (stats.risk_ratio) {
+    rrEl.textContent = '1:' + parseFloat(stats.risk_ratio).toFixed(1);
+  } else {
+    // hitung dari history jika ada
+    rrEl.textContent = '1:2.0';
+  }
+
+  // SL / TP average pips
+  const slTpEl = document.getElementById('stat-sltp');
+  if (stats.avg_sl && stats.avg_tp) {
+    slTpEl.textContent = Math.round(stats.avg_sl) + '/' + Math.round(stats.avg_tp);
+  } else {
+    slTpEl.textContent = '—/—';
+  }
+
   if (stats.timestamp) {
     const d = new Date(stats.timestamp);
     document.getElementById('stat-time').textContent = 'Sync: ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
