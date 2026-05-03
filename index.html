@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Farid Gold Killer — Breakout Tekan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ============================
    DESIGN TOKENS
@@ -14,10 +14,10 @@
   --teal:        #0DCFB4;
   --teal-dim:    #0A9E8A;
   --teal-deep:   #05584D;
-  --teal-glow:   rgba(13, 207, 180, 0.18);
-  --teal-line:   rgba(13, 207, 180, 0.12);
+  --teal-glow:   rgba(13,207,180,0.15);
+  --teal-line:   rgba(13,207,180,0.12);
   --blue:        #1A8BFF;
-  --blue-dim:    rgba(26, 139, 255, 0.12);
+  --blue-dim:    rgba(26,139,255,0.12);
   --green:       #00E676;
   --red:         #FF5252;
   --bg-0:        #060A0F;
@@ -26,7 +26,7 @@
   --bg-3:        #172030;
   --card:        rgba(255,255,255,0.03);
   --card-border: rgba(255,255,255,0.07);
-  --card-hover:  rgba(13,207,180,0.08);
+  --card-hover:  rgba(13,207,180,0.06);
   --text-1:      #F0F4F8;
   --text-2:      #8A9BB0;
   --text-3:      #4A5A6A;
@@ -34,9 +34,18 @@
   --font-body:   'DM Sans', sans-serif;
   --font-mono:   'JetBrains Mono', monospace;
   --r-sm:        8px;
-  --r-md:        14px;
-  --r-lg:        20px;
+  --r-md:        12px;
+  --r-lg:        16px;
+  /* Spacing scale */
+  --sp-xs: 8px;
+  --sp-sm: 12px;
+  --sp-md: 16px;
+  --sp-lg: 24px;
+  --sp-xl: 40px;
+  --sp-2xl: 64px;
+  --sp-section: clamp(56px, 8vw, 96px);
 }
+
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; font-size:16px; }
 body {
@@ -55,30 +64,36 @@ img { max-width:100%; display:block; }
 /* ============================
    UTILITY
 ============================= */
-.container { max-width:1140px; margin:0 auto; padding:0 24px; }
+.container { max-width:1120px; margin:0 auto; padding:0 clamp(16px, 4vw, 32px); }
+
 .tag {
-  display:inline-flex; align-items:center; gap:7px;
-  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:10px; font-weight:600;
   letter-spacing:.12em; text-transform:uppercase;
-  color:var(--teal); margin-bottom:14px;
+  color:var(--teal); margin-bottom:12px;
 }
-.tag::before { content:''; width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0; }
+.tag::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+
 .section-title {
   font-family:var(--font-head);
-  font-size:clamp(32px,4vw,52px);
+  font-size:clamp(26px, 4.5vw, 48px);
   font-weight:800; line-height:1.1; letter-spacing:-0.03em;
 }
-.section-sub { font-size:16px; color:var(--text-2); line-height:1.8; max-width:560px; margin-top:14px; }
+.section-sub {
+  font-size:clamp(14px, 1.5vw, 16px);
+  color:var(--text-2); line-height:1.75;
+  max-width:520px; margin-top:12px;
+}
 .accent { color:var(--teal); }
-.mono { font-family:var(--font-mono); }
 .gold-line { height:1px; background:linear-gradient(90deg,transparent,var(--teal),transparent); }
 
 /* ============================
    TOP TICKER
 ============================= */
 .ticker-bar {
-  background:var(--bg-1); border-bottom:1px solid var(--card-border);
-  height:44px; overflow:hidden; position:relative;
+  background:var(--bg-1);
+  border-bottom:1px solid var(--card-border);
+  height:40px; overflow:hidden;
 }
 
 /* ============================
@@ -86,55 +101,54 @@ img { max-width:100%; display:block; }
 ============================= */
 nav {
   position:sticky; top:0; z-index:100;
-  background:rgba(6,10,15,0.92);
+  background:rgba(6,10,15,0.95);
   backdrop-filter:blur(20px);
   border-bottom:1px solid var(--card-border);
-  height:66px;
+  height:58px;
 }
 .nav-inner {
   display:flex; align-items:center;
-  justify-content:space-between; height:100%;
+  justify-content:space-between; height:100%; gap:16px;
 }
 .nav-logo {
   font-family:var(--font-head);
-  font-size:20px; font-weight:800; letter-spacing:-0.03em;
+  font-size:clamp(14px,2vw,17px); font-weight:800; letter-spacing:-0.02em;
   background:linear-gradient(120deg,var(--teal),#64FFDA);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  display:flex; flex-direction:column; line-height:1.1;
+  display:flex; flex-direction:column; line-height:1.1; flex-shrink:0;
 }
 .nav-logo small {
-  font-size:9px; font-weight:600; letter-spacing:.2em;
+  font-size:8px; font-weight:600; letter-spacing:.18em;
   color:var(--text-3); -webkit-text-fill-color:var(--text-3);
   font-family:var(--font-mono); text-transform:uppercase;
 }
-.nav-menu { display:flex; align-items:center; gap:6px; list-style:none; }
+.nav-menu { display:flex; align-items:center; gap:2px; list-style:none; }
 .nav-menu a {
-  font-size:13px; font-weight:500; color:var(--text-2);
-  padding:7px 14px; border-radius:var(--r-sm);
-  transition:color .2s,background .2s;
+  font-size:12.5px; font-weight:500; color:var(--text-2);
+  padding:6px 10px; border-radius:var(--r-sm);
+  transition:color .2s, background .2s; white-space:nowrap;
 }
 .nav-menu a:hover { color:var(--teal); background:var(--teal-glow); }
 .nav-menu .nav-cta {
   background:var(--teal); color:var(--bg-0) !important;
-  font-weight:700; padding:9px 20px;
-  transition:opacity .2s,transform .15s !important;
+  font-weight:700; padding:8px 16px;
+  transition:opacity .2s, transform .15s !important;
 }
-.nav-cta:hover { opacity:.88; transform:translateY(-1px); }
-/* Mobile hamburger */
+.nav-cta:hover { opacity:.88 !important; transform:translateY(-1px) !important; }
 .nav-toggle { display:none; background:none; border:none; cursor:pointer; padding:8px; }
-.nav-toggle span { display:block; width:22px; height:2px; background:var(--text-2); margin:5px 0; border-radius:2px; transition:.3s; }
+.nav-toggle span { display:block; width:20px; height:2px; background:var(--text-2); margin:4px 0; border-radius:2px; transition:.3s; }
 
 /* ============================
    HERO
 ============================= */
 .hero {
-  min-height:100vh;
+  min-height: 100svh;
   display:flex; align-items:center;
-  padding:100px 0 80px;
+  padding:clamp(80px,12vw,110px) 0 clamp(48px,8vw,80px);
   position:relative; overflow:hidden;
   background:
-    radial-gradient(ellipse 60% 50% at 10% 60%,rgba(13,207,180,.07) 0%,transparent 60%),
-    radial-gradient(ellipse 40% 40% at 90% 20%,rgba(26,139,255,.06) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 45% at 8% 60%,rgba(13,207,180,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 35% at 92% 20%,rgba(26,139,255,.05) 0%,transparent 55%),
     var(--bg-0);
 }
 .hero::before {
@@ -142,241 +156,247 @@ nav {
   background-image:
     linear-gradient(var(--card-border) 1px,transparent 1px),
     linear-gradient(90deg,var(--card-border) 1px,transparent 1px);
-  background-size:60px 60px;
+  background-size:56px 56px;
   mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
   pointer-events:none;
 }
 .hero-inner {
-  display:grid; grid-template-columns:1.1fr .9fr;
-  gap:64px; align-items:center;
+  display:grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap:clamp(32px,5vw,60px);
+  align-items:center;
 }
 .hero-kicker {
   display:inline-flex; align-items:center; gap:8px;
-  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.2);
-  border-radius:100px; padding:6px 16px;
-  font-family:var(--font-mono); font-size:11px; font-weight:600;
-  color:var(--teal); letter-spacing:.1em; margin-bottom:24px;
+  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.18);
+  border-radius:100px; padding:5px 14px;
+  font-family:var(--font-mono); font-size:10px; font-weight:600;
+  color:var(--teal); letter-spacing:.08em; margin-bottom:20px;
 }
 .hero-kicker .dot {
-  width:7px;height:7px;border-radius:50%;background:var(--green);
-  animation:blink 1.8s ease-in-out infinite;
+  width:6px; height:6px; border-radius:50%; background:var(--green);
+  animation:blink 1.8s ease-in-out infinite; flex-shrink:0;
 }
-@keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,230,118,.4)} 50%{opacity:.5;box-shadow:0 0 0 6px transparent} }
+@keyframes blink {
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,230,118,.4)}
+  50%{opacity:.5;box-shadow:0 0 0 5px transparent}
+}
 .hero h1 {
   font-family:var(--font-head);
-  font-size:clamp(40px,5vw,70px);
-  font-weight:800; line-height:1.05;
-  letter-spacing:-0.04em; margin-bottom:22px;
+  font-size:clamp(34px,5.5vw,62px);
+  font-weight:800; line-height:1.06;
+  letter-spacing:-0.04em; margin-bottom:18px;
 }
 .hero h1 em { color:var(--teal); font-style:normal; }
-.hero-desc { font-size:17px; color:var(--text-2); line-height:1.85; max-width:520px; margin-bottom:36px; }
+.hero-desc {
+  font-size:clamp(14px,1.5vw,16px);
+  color:var(--text-2); line-height:1.8;
+  max-width:500px; margin-bottom:28px;
+}
 .hero-desc strong { color:var(--text-1); font-weight:600; }
-.hero-pills { display:flex; flex-direction:column; gap:10px; margin-bottom:36px; }
+
+.hero-pills { display:flex; flex-direction:column; gap:8px; margin-bottom:28px; }
 .pill {
-  display:inline-flex; align-items:center; gap:12px;
+  display:inline-flex; align-items:center; gap:10px;
   background:var(--card); border:1px solid var(--card-border);
-  border-radius:var(--r-sm); padding:11px 18px; max-width:360px;
+  border-radius:var(--r-sm); padding:10px 14px; max-width:340px;
   transition:border-color .2s;
 }
-.pill:hover { border-color:rgba(13,207,180,.35); }
-.pill-icon { font-size:18px; flex-shrink:0; }
-.pill-val { font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--teal); }
-.pill-who { font-size:12px; color:var(--text-3); margin-top:1px; }
-.hero-btns { display:flex; gap:14px; flex-wrap:wrap; }
+.pill:hover { border-color:rgba(13,207,180,.3); }
+.pill-icon { font-size:16px; flex-shrink:0; }
+.pill-val { font-family:var(--font-head); font-size:13px; font-weight:700; color:var(--teal); }
+.pill-who { font-size:11px; color:var(--text-3); margin-top:1px; }
+
+.hero-btns { display:flex; gap:12px; flex-wrap:wrap; }
 .btn-primary {
   background:linear-gradient(135deg,var(--teal),var(--teal-dim));
   color:var(--bg-0); font-family:var(--font-head);
-  font-weight:700; font-size:15px;
-  padding:15px 30px; border-radius:var(--r-sm);
-  border:none; cursor:pointer;
-  box-shadow:0 0 28px rgba(13,207,180,.35);
-  transition:transform .15s,box-shadow .15s;
-  display:inline-block;
+  font-weight:700; font-size:clamp(13px,1.5vw,15px);
+  padding:clamp(12px,2vw,14px) clamp(20px,3vw,26px);
+  border-radius:var(--r-sm); border:none; cursor:pointer;
+  box-shadow:0 0 24px rgba(13,207,180,.3);
+  transition:transform .15s, box-shadow .15s;
+  display:inline-flex; align-items:center; white-space:nowrap;
 }
-.btn-primary:hover { transform:translateY(-2px); box-shadow:0 4px 36px rgba(13,207,180,.45); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 4px 32px rgba(13,207,180,.4); }
 .btn-ghost {
   background:transparent; color:var(--text-1);
-  font-weight:600; font-size:15px;
-  padding:14px 28px; border-radius:var(--r-sm);
-  border:1px solid var(--card-border);
-  transition:border-color .2s,color .2s;
-  display:inline-block;
+  font-weight:600; font-size:clamp(13px,1.5vw,15px);
+  padding:clamp(11px,2vw,13px) clamp(18px,2.5vw,24px);
+  border-radius:var(--r-sm); border:1px solid var(--card-border);
+  transition:border-color .2s, color .2s;
+  display:inline-flex; align-items:center; white-space:nowrap;
 }
 .btn-ghost:hover { border-color:var(--teal); color:var(--teal); }
+
+/* Hero Panel (Right side) */
 .hero-panel {
   background:var(--bg-2); border:1px solid var(--card-border);
-  border-radius:var(--r-lg); padding:32px;
+  border-radius:var(--r-lg); padding:clamp(20px,3vw,28px);
   position:relative; overflow:hidden;
 }
 .hero-panel::before {
-  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background:linear-gradient(90deg,var(--teal),var(--blue));
 }
 .panel-title {
-  font-family:var(--font-mono); font-size:10px;
+  font-family:var(--font-mono); font-size:9px;
   letter-spacing:.15em; text-transform:uppercase;
-  color:var(--text-3); margin-bottom:20px;
+  color:var(--text-3); margin-bottom:16px;
   display:flex; align-items:center; gap:8px;
 }
 .panel-title::after { content:''; flex:1; height:1px; background:var(--card-border); }
-.panel-stats { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.panel-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
 .p-stat {
   background:var(--bg-3); border:1px solid var(--card-border);
-  border-radius:var(--r-md); padding:18px;
+  border-radius:var(--r-md); padding:clamp(12px,2vw,16px);
 }
-.p-stat .n { font-family:var(--font-head); font-size:32px; font-weight:800; color:var(--teal); line-height:1; }
-.p-stat .l { font-size:11px; color:var(--text-3); margin-top:5px; font-family:var(--font-mono); letter-spacing:.05em; }
-.panel-bar { height:1px; background:var(--card-border); margin:20px 0; }
-.panel-results { display:flex; flex-direction:column; gap:10px; }
-.pr-row { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-2); }
-.pr-dot { width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0; }
+.p-stat .n {
+  font-family:var(--font-head); font-size:clamp(22px,3vw,30px);
+  font-weight:800; color:var(--teal); line-height:1;
+}
+.p-stat .l { font-size:10px; color:var(--text-3); margin-top:4px; font-family:var(--font-mono); letter-spacing:.04em; }
+.panel-bar { height:1px; background:var(--card-border); margin:16px 0; }
+.panel-results { display:flex; flex-direction:column; gap:8px; }
+.pr-row { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); }
+.pr-dot { width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
 .pr-val { font-weight:700; color:var(--text-1); }
+
+/* ============================
+   SECTION WRAPPER (shared)
+============================= */
+.sec { padding:var(--sp-section) 0; }
+.sec-alt { background:var(--bg-1); border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border); }
+.sec-head { margin-bottom:clamp(32px,5vw,48px); }
 
 /* ============================
    PROBLEM SECTION
 ============================= */
-.problem-section {
-  padding:96px 0;
-  background:var(--bg-1);
-  border-top:1px solid var(--card-border);
-  border-bottom:1px solid var(--card-border);
-}
-.problem-header { margin-bottom:52px; }
 .problem-grid {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px; margin-bottom:52px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px; margin-bottom:40px;
 }
 .problem-card {
   background:var(--card); border:1px solid var(--card-border);
-  border-radius:var(--r-md); padding:26px;
+  border-radius:var(--r-md); padding:20px;
   position:relative; overflow:hidden;
   transition:border-color .25s;
 }
-.problem-card:hover { border-color:rgba(255,82,82,.35); }
+.problem-card:hover { border-color:rgba(255,82,82,.3); }
 .problem-card .x-icon {
-  position:absolute; top:20px;right:20px;
-  width:26px;height:26px;border-radius:50%;
-  background:rgba(255,82,82,.12); border:1px solid rgba(255,82,82,.25);
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px; color:var(--red); font-weight:700;
+  position:absolute; top:16px; right:16px;
+  width:22px; height:22px; border-radius:50%;
+  background:rgba(255,82,82,.1); border:1px solid rgba(255,82,82,.22);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:var(--red); font-weight:700;
 }
-.problem-card h4 { font-size:14px; font-weight:700; margin-bottom:8px; padding-right:36px; }
-.problem-card p { font-size:13px; color:var(--text-3); line-height:1.7; }
+.problem-card h4 { font-size:13px; font-weight:700; margin-bottom:6px; padding-right:30px; }
+.problem-card p { font-size:12px; color:var(--text-3); line-height:1.65; }
+
 .quote-strip {
-  background:linear-gradient(135deg,rgba(13,207,180,.07),rgba(26,139,255,.05));
-  border:1px solid rgba(13,207,180,.2);
+  background:linear-gradient(135deg,rgba(13,207,180,.06),rgba(26,139,255,.04));
+  border:1px solid rgba(13,207,180,.18);
   border-left:3px solid var(--teal);
   border-radius:0 var(--r-md) var(--r-md) 0;
-  padding:28px 32px;
-  font-size:17px; color:var(--text-2);
-  font-style:italic; line-height:1.8;
-  margin-bottom:36px;
+  padding:clamp(18px,3vw,24px) clamp(20px,3vw,28px);
+  font-size:clamp(14px,1.8vw,16px); color:var(--text-2);
+  font-style:italic; line-height:1.8; margin-bottom:28px;
 }
 .quote-strip em { color:var(--teal); font-style:normal; font-weight:600; }
-.result-list { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
-.rl-item { display:flex; align-items:center; gap:12px; font-size:15px; font-weight:500; }
-.rl-bullet { width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;box-shadow:0 0 8px var(--teal); }
+
+.result-list { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+.rl-item { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; }
+.rl-bullet { width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0; box-shadow:0 0 6px var(--teal); }
 
 /* ============================
    FOUNDER SECTION
 ============================= */
-.founder-section { padding:96px 0; background:var(--bg-0); }
 .founder-grid {
-  display:grid; grid-template-columns:360px 1fr;
-  gap:72px; align-items:start; margin-top:52px;
+  display:grid; grid-template-columns:300px 1fr;
+  gap:clamp(32px,5vw,60px); align-items:start; margin-top:clamp(32px,5vw,48px);
 }
 .founder-card {
   background:var(--bg-2); border:1px solid var(--card-border);
   border-radius:var(--r-lg); overflow:hidden; position:relative;
 }
 .founder-card::before {
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background:linear-gradient(90deg,var(--teal),var(--blue));
 }
 .founder-img {
   width:100%; aspect-ratio:1/1;
   background:linear-gradient(145deg,var(--bg-3),var(--bg-2));
   display:flex; align-items:center; justify-content:center;
-  font-size:90px; border-bottom:1px solid var(--card-border);
+  font-size:72px; border-bottom:1px solid var(--card-border);
 }
-.founder-card-body { padding:24px; }
+.founder-card-body { padding:20px; }
 .founder-name {
-  font-family:var(--font-head); font-size:26px; font-weight:800; margin-bottom:4px;
+  font-family:var(--font-head); font-size:22px; font-weight:800; margin-bottom:4px;
   background:linear-gradient(120deg,var(--teal),#64FFDA);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
-.founder-role { font-family:var(--font-mono); font-size:11px; color:var(--text-3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:16px; }
-.founder-chips { display:flex;flex-wrap:wrap;gap:8px; }
+.founder-role { font-family:var(--font-mono); font-size:10px; color:var(--text-3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; }
+.founder-chips { display:flex; flex-wrap:wrap; gap:6px; }
 .chip {
-  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.2);
-  color:var(--teal); font-size:11px; font-weight:600;
-  padding:5px 12px; border-radius:100px; font-family:var(--font-mono);
+  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.18);
+  color:var(--teal); font-size:10px; font-weight:600;
+  padding:4px 10px; border-radius:100px; font-family:var(--font-mono);
 }
-.founder-bio { font-size:16px; color:var(--text-2); line-height:1.85; margin-bottom:18px; }
+.founder-bio { font-size:14px; color:var(--text-2); line-height:1.8; margin-bottom:14px; }
 .founder-bio strong { color:var(--text-1); font-weight:600; }
-.founder-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:36px; }
+.founder-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:28px; }
 .fm-item {
   background:var(--bg-2); border:1px solid var(--card-border);
-  border-radius:var(--r-md); padding:20px 16px; text-align:center;
+  border-radius:var(--r-md); padding:16px 12px; text-align:center;
 }
-.fm-n { font-family:var(--font-head); font-size:30px; font-weight:800; color:var(--teal); }
-.fm-l { font-size:11px; color:var(--text-3); margin-top:4px; font-family:var(--font-mono); }
+.fm-n { font-family:var(--font-head); font-size:clamp(22px,3vw,28px); font-weight:800; color:var(--teal); }
+.fm-l { font-size:10px; color:var(--text-3); margin-top:3px; font-family:var(--font-mono); }
 
 /* ============================
    BENEFITS SECTION
 ============================= */
-.benefits-section {
-  padding:96px 0;
-  background:var(--bg-1);
-  border-top:1px solid var(--card-border);
-  border-bottom:1px solid var(--card-border);
-}
-.benefits-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:52px; }
+.benefits-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:clamp(32px,5vw,48px); }
 .benefit-card {
   background:var(--card); border:1px solid var(--card-border);
-  border-radius:var(--r-md); padding:28px;
-  transition:border-color .25s,transform .25s,background .25s;
+  border-radius:var(--r-md); padding:clamp(18px,2.5vw,24px);
+  transition:border-color .25s, transform .25s, background .25s;
   position:relative; overflow:hidden;
 }
 .benefit-card::after {
-  content:''; position:absolute; top:0;left:0;right:0; height:1px;
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
   background:linear-gradient(90deg,var(--teal),transparent);
   opacity:0; transition:opacity .25s;
 }
-.benefit-card:hover {
-  border-color:rgba(13,207,180,.3);
-  transform:translateY(-5px);
-  background:var(--card-hover);
-}
+.benefit-card:hover { border-color:rgba(13,207,180,.25); transform:translateY(-4px); background:var(--card-hover); }
 .benefit-card:hover::after { opacity:1; }
 .b-icon {
-  width:48px; height:48px; border-radius:12px;
-  background:rgba(13,207,180,.1); border:1px solid rgba(13,207,180,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px; margin-bottom:18px;
+  width:40px; height:40px; border-radius:10px;
+  background:rgba(13,207,180,.09); border:1px solid rgba(13,207,180,.18);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; margin-bottom:14px;
 }
-.benefit-card h3 { font-family:var(--font-head); font-size:17px; font-weight:700; margin-bottom:10px; }
-.benefit-card p { font-size:13px; color:var(--text-2); line-height:1.7; }
+.benefit-card h3 { font-family:var(--font-head); font-size:15px; font-weight:700; margin-bottom:8px; }
+.benefit-card p { font-size:12px; color:var(--text-2); line-height:1.65; }
 .b-free {
-  display:inline-block; margin-top:14px;
-  background:rgba(0,230,118,.1); border:1px solid rgba(0,230,118,.25);
-  color:var(--green); font-size:10px; font-weight:700;
-  padding:4px 12px; border-radius:100px; font-family:var(--font-mono);
+  display:inline-block; margin-top:10px;
+  background:rgba(0,230,118,.09); border:1px solid rgba(0,230,118,.22);
+  color:var(--green); font-size:9px; font-weight:700;
+  padding:3px 10px; border-radius:100px; font-family:var(--font-mono);
 }
 
 /* ============================
    PORTFOLIO SECTION
 ============================= */
-.portfolio-section { padding:96px 0; background:var(--bg-0); }
 .portfolio-grid {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:16px; margin-top:52px;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px; margin-top:clamp(32px,5vw,48px);
 }
 .port-card {
   background:var(--bg-2); border:1px solid var(--card-border);
-  border-radius:var(--r-md); padding:24px;
+  border-radius:var(--r-md); padding:clamp(16px,2.5vw,22px);
   text-align:center; cursor:default;
-  transition:border-color .2s,transform .2s;
+  transition:border-color .2s, transform .2s;
   position:relative; overflow:hidden;
 }
 .port-card::before {
@@ -384,71 +404,68 @@ nav {
   background:linear-gradient(135deg,rgba(13,207,180,.05),transparent);
   opacity:0; transition:opacity .2s;
 }
-.port-card:hover { border-color:rgba(13,207,180,.35); transform:translateY(-3px); }
+.port-card:hover { border-color:rgba(13,207,180,.3); transform:translateY(-3px); }
 .port-card:hover::before { opacity:1; }
-.port-num { font-family:var(--font-head); font-size:38px; font-weight:800; color:var(--teal); line-height:1; margin-bottom:6px; }
-.port-inst { font-size:12px; font-weight:700; color:var(--text-2); margin-bottom:4px; font-family:var(--font-mono); letter-spacing:.05em; }
-.port-ctx { font-size:11px; color:var(--text-3); }
+.port-num { font-family:var(--font-head); font-size:clamp(26px,4vw,36px); font-weight:800; color:var(--teal); line-height:1; margin-bottom:5px; }
+.port-inst { font-size:11px; font-weight:700; color:var(--text-2); margin-bottom:3px; font-family:var(--font-mono); letter-spacing:.04em; }
+.port-ctx { font-size:10px; color:var(--text-3); }
 
-/* ====================================================
-   ██████  SIGNAL REALTIME SECTION  ██████
-===================================================== */
+/* ============================
+   SIGNAL SECTION
+============================= */
 .signal-section {
-  padding:96px 0;
+  padding:var(--sp-section) 0;
   background:var(--bg-1);
   border-top:1px solid var(--card-border);
   border-bottom:1px solid var(--card-border);
-  position:relative;
-  overflow:hidden;
+  position:relative; overflow:hidden;
 }
-/* subtle grid bg matching hero */
 .signal-section::before {
   content:''; position:absolute; inset:0;
   background-image:
     linear-gradient(var(--card-border) 1px,transparent 1px),
     linear-gradient(90deg,var(--card-border) 1px,transparent 1px);
-  background-size:40px 40px;
+  background-size:36px 36px;
   mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent);
-  pointer-events:none; opacity:.5;
+  pointer-events:none; opacity:.4;
 }
-
-/* header row */
 .signal-header {
   display:flex; align-items:flex-end; justify-content:space-between;
-  flex-wrap:wrap; gap:16px; margin-bottom:36px; position:relative; z-index:1;
+  flex-wrap:wrap; gap:16px; margin-bottom:28px; position:relative; z-index:1;
 }
-.signal-header-left {}
 .signal-meta {
-  display:flex; align-items:center; gap:10px;
-  font-family:var(--font-mono); font-size:11px; color:var(--text-3);
-  letter-spacing:.08em; margin-top:12px;
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-mono); font-size:10px; color:var(--text-3);
+  letter-spacing:.06em; margin-top:10px; flex-wrap:wrap;
 }
 .sig-live-dot {
-  width:8px; height:8px; border-radius:50%; background:var(--green);
-  box-shadow:0 0 8px var(--green); animation:blink 1.8s infinite;
-  flex-shrink:0;
+  width:7px; height:7px; border-radius:50%; background:var(--green);
+  box-shadow:0 0 6px var(--green); animation:blink 1.8s infinite; flex-shrink:0;
 }
 #sig-status-text { color:var(--text-3); }
-#sig-status-text.live { color:var(--teal); }
+#sig-status-text.live  { color:var(--teal); }
 #sig-status-text.error { color:var(--red); }
-
-/* refresh progress bar */
 .sig-progress-wrap {
-  height:2px; background:var(--card-border); border-radius:2px; margin-top:8px;
-  overflow:hidden; max-width:280px;
+  height:2px; background:var(--card-border); border-radius:2px; margin-top:6px;
+  overflow:hidden; max-width:240px;
 }
 #sig-progress-fill {
   height:100%;
   background:linear-gradient(90deg,var(--teal),var(--green));
   width:0%; border-radius:2px; transition:width linear;
 }
+#btn-manual-refresh {
+  background:var(--bg-3); border:1px solid var(--card-border);
+  color:var(--text-2); padding:3px 8px; border-radius:4px;
+  font-family:var(--font-mono); font-size:9px; cursor:pointer;
+  transition:0.2s; letter-spacing:.06em;
+}
+#btn-manual-refresh:hover { border-color:var(--teal); color:var(--teal); }
 
-/* cards row */
 .signal-cards-row {
   display:grid; grid-template-columns:1fr 1fr;
-  gap:20px; margin-bottom:24px; position:relative; z-index:1;
+  gap:16px; margin-bottom:16px; position:relative; z-index:1;
 }
-@media(max-width:700px) { .signal-cards-row { grid-template-columns:1fr; } }
 
 /* individual signal card */
 .sig-card {
@@ -457,374 +474,390 @@ nav {
   transition:border-color .3s;
 }
 .sig-card::before {
-  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background:var(--text-3); transition:background .3s, box-shadow .3s;
 }
-.sig-card.is-buy  { border-color:rgba(0,230,118,.25); }
-.sig-card.is-sell { border-color:rgba(255,82,82,.25); }
-.sig-card.is-buy::before  { background:var(--green); box-shadow:0 0 14px rgba(0,230,118,.4); }
-.sig-card.is-sell::before { background:var(--red);   box-shadow:0 0 14px rgba(255,82,82,.4); }
-.sig-card.is-close { border-color:rgba(255,255,255,.08); }
-.sig-card.is-close::before { background:var(--text-3); }
-.sig-card.is-pending { border-color:rgba(26,139,255,.25); }
-.sig-card.is-pending::before { background:var(--blue); box-shadow:0 0 14px rgba(26,139,255,.4); }
+.sig-card.is-buy  { border-color:rgba(0,230,118,.22); }
+.sig-card.is-sell { border-color:rgba(255,82,82,.22); }
+.sig-card.is-buy::before  { background:var(--green); box-shadow:0 0 12px rgba(0,230,118,.35); }
+.sig-card.is-sell::before { background:var(--red);   box-shadow:0 0 12px rgba(255,82,82,.35); }
+.sig-card.is-close { border-color:rgba(255,255,255,.07); }
+.sig-card.is-pending { border-color:rgba(26,139,255,.22); }
+.sig-card.is-pending::before { background:var(--blue); box-shadow:0 0 12px rgba(26,139,255,.35); }
 
 .sig-card-head {
-  padding:14px 20px 10px;
+  padding:12px 16px 10px;
   display:flex; align-items:center; justify-content:space-between;
   border-bottom:1px solid var(--card-border);
 }
-.sig-symbol {
-  font-family:var(--font-head); font-size:16px; font-weight:800;
-  color:var(--text-1); letter-spacing:2px;
-}
-.sig-badges { display:flex; gap:8px; align-items:center; }
+.sig-symbol { font-family:var(--font-head); font-size:14px; font-weight:800; color:var(--text-1); letter-spacing:1.5px; }
+.sig-badges { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
 .sig-mode-badge {
-  font-family:var(--font-mono); font-size:10px; font-weight:700;
-  padding:3px 10px; border-radius:100px;
-  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.2);
-  color:var(--teal); letter-spacing:.1em; text-transform:uppercase;
+  font-family:var(--font-mono); font-size:9px; font-weight:700;
+  padding:2px 8px; border-radius:100px;
+  background:rgba(13,207,180,.08); border:1px solid rgba(13,207,180,.18);
+  color:var(--teal); letter-spacing:.08em; text-transform:uppercase;
 }
-.sig-mode-badge.war    { background:rgba(255,215,0,.08); border-color:rgba(255,215,0,.25); color:#FFD700; }
-.sig-mode-badge.layer  { background:rgba(255,165,0,.08); border-color:rgba(255,165,0,.2); color:#FFA500; }
-.sig-mode-badge.normal { background:rgba(13,207,180,.08); border-color:rgba(13,207,180,.2); color:var(--teal); }
+.sig-mode-badge.war    { background:rgba(255,215,0,.08); border-color:rgba(255,215,0,.22); color:#FFD700; }
+.sig-mode-badge.layer  { background:rgba(255,165,0,.08); border-color:rgba(255,165,0,.18); color:#FFA500; }
+.sig-mode-badge.normal { background:rgba(13,207,180,.08); border-color:rgba(13,207,180,.18); color:var(--teal); }
 .sig-prev-label {
-  font-family:var(--font-mono); font-size:9px;
-  color:var(--text-3); letter-spacing:.15em; text-transform:uppercase;
-  padding:3px 8px; border:1px solid var(--card-border); border-radius:4px;
+  font-family:var(--font-mono); font-size:8px;
+  color:var(--text-3); letter-spacing:.12em; text-transform:uppercase;
+  padding:2px 7px; border:1px solid var(--card-border); border-radius:4px;
 }
 
-.sig-card-body { padding:18px 20px; }
-
-/* Big direction label */
+.sig-card-body { padding:14px 16px; }
 .sig-direction {
   font-family:var(--font-head);
-  font-size:clamp(36px,6vw,52px);
-  font-weight:800; letter-spacing:4px; line-height:1;
-  color:var(--text-3); margin-bottom:18px;
+  font-size:clamp(28px,5vw,44px);
+  font-weight:800; letter-spacing:3px; line-height:1;
+  color:var(--text-3); margin-bottom:14px;
   transition:color .3s, text-shadow .3s;
-  display:flex; align-items:center; gap:14px;
+  display:flex; align-items:center; gap:10px;
 }
-.is-buy  .sig-direction { color:var(--green); text-shadow:0 0 28px rgba(0,230,118,.4); }
-.is-sell .sig-direction { color:var(--red);   text-shadow:0 0 28px rgba(255,82,82,.4); }
+.is-buy  .sig-direction { color:var(--green); text-shadow:0 0 20px rgba(0,230,118,.35); }
+.is-sell .sig-direction { color:var(--red);   text-shadow:0 0 20px rgba(255,82,82,.35); }
 .is-close .sig-direction { color:var(--text-2); }
-.is-pending .sig-direction { color:var(--blue); font-size:32px; text-shadow:0 0 28px rgba(26,139,255,.4); }
 .sig-dir-arrow { font-size:.7em; opacity:.8; }
 
-/* price grid */
 .sig-price-grid {
   display:grid; grid-template-columns:1fr 1fr;
-  gap:10px; margin-bottom:16px;
+  gap:8px; margin-bottom:12px;
 }
 .sig-price-item {
   background:var(--bg-3); border:1px solid var(--card-border);
-  border-radius:var(--r-sm); padding:10px 13px;
+  border-radius:var(--r-sm); padding:8px 10px;
 }
 .sig-price-item.full { grid-column:1/-1; }
 .sig-price-label {
-  font-family:var(--font-mono); font-size:9px;
-  color:var(--text-3); letter-spacing:.15em; text-transform:uppercase;
-  margin-bottom:4px;
+  font-family:var(--font-mono); font-size:8px;
+  color:var(--text-3); letter-spacing:.12em; text-transform:uppercase; margin-bottom:3px;
 }
 .sig-price-value {
-  font-family:var(--font-mono); font-size:15px;
-  color:var(--text-1); letter-spacing:.5px;
-  font-weight:600;
+  font-family:var(--font-mono); font-size:13px;
+  color:var(--text-1); letter-spacing:.3px; font-weight:600;
 }
-.sig-price-value.entry-price { color:var(--teal); font-size:18px; }
+.sig-price-value.entry-price { color:var(--teal); font-size:15px; }
 .sig-price-value.sl-price    { color:var(--red); }
 .sig-price-value.tp-price    { color:var(--green); }
 .sig-price-value.profit-pos  { color:var(--green); }
 .sig-price-value.profit-neg  { color:var(--red); }
-
-/* comment chip */
 .sig-comment {
-  font-family:var(--font-mono); font-size:10px; color:var(--text-3);
+  font-family:var(--font-mono); font-size:9px; color:var(--text-3);
   background:var(--bg-3); border:1px solid var(--card-border);
-  border-radius:4px; padding:5px 10px; margin-top:10px;
+  border-radius:4px; padding:4px 8px; margin-top:8px;
   display:inline-block; max-width:100%; overflow:hidden;
-  text-overflow:ellipsis; white-space:nowrap; letter-spacing:.05em;
+  text-overflow:ellipsis; white-space:nowrap; letter-spacing:.04em;
 }
-
-/* footer row */
 .sig-card-foot {
-  padding:8px 20px 14px;
+  padding:6px 16px 12px;
   display:flex; justify-content:space-between; align-items:center;
 }
-.sig-timestamp {
-  font-family:var(--font-mono); font-size:10px;
-  color:var(--text-3); letter-spacing:.08em;
+.sig-timestamp, .sig-lots {
+  font-family:var(--font-mono); font-size:9px; color:var(--text-3); letter-spacing:.06em;
 }
-.sig-lots {
-  font-family:var(--font-mono); font-size:10px;
-  color:var(--text-3); letter-spacing:.08em;
-}
-
-/* waiting state */
-.sig-waiting {
-  padding:32px 20px; text-align:center;
-}
+.sig-waiting { padding:24px 16px; text-align:center; }
 .sig-waiting-label {
-  font-family:var(--font-head); font-size:28px; font-weight:800;
-  letter-spacing:6px; color:var(--text-3);
-  animation:wait-blink 2s infinite;
+  font-family:var(--font-head); font-size:24px; font-weight:800;
+  letter-spacing:5px; color:var(--text-3); animation:wait-blink 2s infinite;
 }
 @keyframes wait-blink { 0%,100%{opacity:.4} 50%{opacity:.9} }
-.sig-waiting-sub {
-  margin-top:8px; font-family:var(--font-mono);
-  font-size:10px; color:var(--text-3); letter-spacing:.15em; text-transform:uppercase;
-}
+.sig-waiting-sub { margin-top:6px; font-family:var(--font-mono); font-size:9px; color:var(--text-3); letter-spacing:.12em; text-transform:uppercase; }
 
-/* ── HISTORY TABLE ── */
+/* History table */
 .sig-history-wrap {
   background:var(--bg-2); border:1px solid var(--card-border);
   border-radius:var(--r-lg); overflow:hidden; position:relative; z-index:1;
 }
 .sig-history-head {
-  padding:12px 20px;
-  display:flex; align-items:center; gap:10px;
-  border-bottom:1px solid var(--card-border);
-  background:var(--bg-3);
+  padding:10px 16px;
+  display:flex; align-items:center; gap:8px;
+  border-bottom:1px solid var(--card-border); background:var(--bg-3);
 }
-.sig-history-head span {
-  font-family:var(--font-mono); font-size:10px;
-  font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--teal);
-}
-.sig-history-head::before { content:'//'; color:var(--teal); font-family:var(--font-mono); font-weight:700; font-size:12px; }
-
+.sig-history-head::before { content:'//'; color:var(--teal); font-family:var(--font-mono); font-weight:700; font-size:11px; }
+.sig-history-head span { font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--teal); }
 .sig-table-scroll { overflow-x:auto; }
 .sig-table {
   width:100%; border-collapse:collapse;
-  font-family:var(--font-mono); font-size:12px; min-width:700px;
+  font-family:var(--font-mono); font-size:11px; min-width:640px;
 }
 .sig-table th {
-  padding:9px 16px; text-align:left;
-  color:var(--text-3); letter-spacing:.1em; text-transform:uppercase;
-  font-size:9px; font-weight:700;
-  border-bottom:1px solid var(--card-border);
-  background:var(--bg-3);
+  padding:8px 12px; text-align:left;
+  color:var(--text-3); letter-spacing:.08em; text-transform:uppercase;
+  font-size:8px; font-weight:700;
+  border-bottom:1px solid var(--card-border); background:var(--bg-3);
 }
 .sig-table td {
-  padding:9px 16px;
+  padding:8px 12px;
   border-bottom:1px solid rgba(255,255,255,.03);
-  color:var(--text-2); font-size:11px;
+  color:var(--text-2); font-size:10px;
 }
 .sig-table tr:last-child td { border-bottom:none; }
-.sig-table tr:hover td { background:rgba(13,207,180,.03); }
-.sig-table td.buy-cell  { color:var(--green); font-weight:700; }
-.sig-table td.sell-cell { color:var(--red);   font-weight:700; }
+.sig-table tr:hover td { background:rgba(13,207,180,.02); }
+.sig-table td.buy-cell   { color:var(--green); font-weight:700; }
+.sig-table td.sell-cell  { color:var(--red); font-weight:700; }
 .sig-table td.close-cell { color:var(--text-3); }
 .sig-table td.profit-pos { color:var(--green); }
 .sig-table td.profit-neg { color:var(--red); }
 .sig-table td.entry-cell { color:var(--teal); }
 
-/* ── TELEGRAM JOIN STRIP ── */
+/* Telegram strip */
 .tg-strip {
-  position:relative; z-index:1;
-  margin-top:24px;
-  background:linear-gradient(135deg,rgba(13,207,180,.07),rgba(26,139,255,.06));
-  border:1px solid rgba(13,207,180,.18);
-  border-radius:var(--r-md);
-  padding:22px 28px;
+  position:relative; z-index:1; margin-top:20px;
+  background:linear-gradient(135deg,rgba(13,207,180,.06),rgba(26,139,255,.05));
+  border:1px solid rgba(13,207,180,.16);
+  border-radius:var(--r-md); padding:clamp(16px,3vw,22px) clamp(18px,3vw,24px);
   display:flex; align-items:center; justify-content:space-between;
-  flex-wrap:wrap; gap:16px;
+  flex-wrap:wrap; gap:14px;
 }
-.tg-strip-left { display:flex; align-items:center; gap:16px; }
+.tg-strip-left { display:flex; align-items:center; gap:12px; }
 .tg-icon {
-  width:46px; height:46px; border-radius:12px;
-  background:rgba(13,207,180,.1); border:1px solid rgba(13,207,180,.2);
-  display:flex; align-items:center; justify-content:center;
-  font-size:24px; flex-shrink:0;
+  width:40px; height:40px; border-radius:10px;
+  background:rgba(13,207,180,.09); border:1px solid rgba(13,207,180,.18);
+  display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
 }
-.tg-strip h4 {
-  font-family:var(--font-head); font-size:16px; font-weight:700; margin-bottom:3px;
-}
-.tg-strip p { font-size:13px; color:var(--text-3); }
+.tg-strip h4 { font-family:var(--font-head); font-size:14px; font-weight:700; margin-bottom:2px; }
+.tg-strip p { font-size:12px; color:var(--text-3); }
 .tg-strip p strong { color:var(--teal); }
 .btn-tg {
   background:var(--teal); color:var(--bg-0);
-  font-family:var(--font-head); font-weight:700; font-size:14px;
-  padding:12px 24px; border-radius:var(--r-sm); border:none; cursor:pointer;
-  display:inline-flex; align-items:center; gap:8px;
-  box-shadow:0 0 20px rgba(13,207,180,.3);
+  font-family:var(--font-head); font-weight:700; font-size:13px;
+  padding:10px 20px; border-radius:var(--r-sm); border:none; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+  box-shadow:0 0 16px rgba(13,207,180,.25);
   transition:transform .15s, box-shadow .15s; white-space:nowrap;
 }
-.btn-tg:hover { transform:translateY(-2px); box-shadow:0 4px 28px rgba(13,207,180,.45); }
+.btn-tg:hover { transform:translateY(-2px); box-shadow:0 4px 24px rgba(13,207,180,.4); }
 
-/* flash anim */
 @keyframes sig-flash {
-  from { opacity:0; transform:translateY(6px); }
+  from { opacity:0; transform:translateY(5px); }
   to   { opacity:1; transform:translateY(0); }
 }
-.sig-flash { animation:sig-flash .4s ease forwards; }
+.sig-flash { animation:sig-flash .35s ease forwards; }
 
 /* ============================
-   TERMINAL / LIVE SECTION
+   TERMINAL SECTION
 ============================= */
-.terminal-section {
-  padding:96px 0;
-  background:var(--bg-0);
-  border-top:1px solid var(--card-border);
-  border-bottom:1px solid var(--card-border);
-}
-.terminal-header { margin-bottom:40px; }
-.tv-grid { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px; }
-.tv-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.terminal-section { padding:var(--sp-section) 0; }
+.tv-grid { display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px; }
+.tv-row  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
 .tv-card { background:var(--bg-2); border:1px solid var(--card-border); border-radius:var(--r-md); overflow:hidden; }
 .tv-head {
   background:var(--bg-3); border-bottom:1px solid var(--card-border);
-  padding:10px 16px; display:flex; align-items:center; gap:8px;
+  padding:9px 14px; display:flex; align-items:center; gap:7px;
 }
-.tv-head span { font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--teal); letter-spacing:.12em; text-transform:uppercase; }
-.tv-head .dot-live { width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 2s infinite; }
-.tv-tall { height:500px; }
-.tv-tall .tv-body { height:calc(500px - 38px); }
-.tv-mid { height:420px; }
-.tv-mid .tv-body { height:calc(420px - 38px); }
-.tv-sm { height:360px; }
-.tv-sm .tv-body { height:calc(360px - 38px); }
+.tv-head span { font-family:var(--font-mono); font-size:9px; font-weight:700; color:var(--teal); letter-spacing:.1em; text-transform:uppercase; }
+.tv-head .dot-live { width:5px; height:5px; border-radius:50%; background:var(--teal); animation:blink 2s infinite; }
+.tv-tall { height:480px; }
+.tv-tall .tv-body { height:calc(480px - 36px); }
+.tv-mid { height:400px; }
+.tv-mid .tv-body { height:calc(400px - 36px); }
+.tv-sm { height:340px; }
+.tv-sm .tv-body { height:calc(340px - 36px); }
 
 /* ============================
    TESTIMONIALS
 ============================= */
-.testi-section { padding:96px 0; background:var(--bg-0); }
-.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:52px; }
-.testi-card { background:var(--bg-2); border:1px solid var(--card-border); border-radius:var(--r-md); padding:28px; transition:border-color .2s; }
-.testi-card:hover { border-color:rgba(13,207,180,.3); }
-.testi-top { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.testi-ava {
-  width:42px;height:42px;border-radius:50%;
-  background:linear-gradient(135deg,var(--teal),var(--blue));
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-head);font-size:15px;font-weight:800;color:var(--bg-0);flex-shrink:0;
+.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:clamp(32px,5vw,48px); }
+.testi-card {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-md); padding:clamp(18px,2.5vw,24px);
+  transition:border-color .2s;
 }
-.testi-nm { font-size:14px; font-weight:700; }
-.testi-loc { font-size:11px; color:var(--text-3); font-family:var(--font-mono); }
+.testi-card:hover { border-color:rgba(13,207,180,.25); }
+.testi-top { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.testi-ava {
+  width:38px; height:38px; border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-head); font-size:13px; font-weight:800; color:var(--bg-0); flex-shrink:0;
+}
+.testi-nm { font-size:13px; font-weight:700; }
+.testi-loc { font-size:10px; color:var(--text-3); font-family:var(--font-mono); }
 .testi-badge-v {
   margin-left:auto; flex-shrink:0;
-  background:rgba(0,230,118,.1); border:1px solid rgba(0,230,118,.25);
-  color:var(--green); font-size:10px; font-weight:700;
-  padding:3px 10px; border-radius:100px;font-family:var(--font-mono);
+  background:rgba(0,230,118,.09); border:1px solid rgba(0,230,118,.22);
+  color:var(--green); font-size:9px; font-weight:700;
+  padding:2px 8px; border-radius:100px; font-family:var(--font-mono);
 }
-.testi-stars { color:var(--teal); font-size:13px; margin-bottom:12px; letter-spacing:2px; }
-.testi-body { font-size:14px; color:var(--text-2); line-height:1.75; margin-bottom:20px; }
-.testi-result { padding-top:16px; border-top:1px solid var(--card-border); font-family:var(--font-head); font-size:19px; font-weight:800; color:var(--teal); }
+.testi-stars { color:var(--teal); font-size:12px; margin-bottom:10px; letter-spacing:1.5px; }
+.testi-body { font-size:13px; color:var(--text-2); line-height:1.7; margin-bottom:16px; }
+.testi-result { padding-top:12px; border-top:1px solid var(--card-border); font-family:var(--font-head); font-size:16px; font-weight:800; color:var(--teal); }
 
 /* ============================
    FAQ
 ============================= */
-.faq-section { padding:96px 0; background:var(--bg-1); border-top:1px solid var(--card-border); }
-.faq-list { max-width:740px; margin:52px auto 0; display:flex;flex-direction:column;gap:10px; }
+.faq-list { max-width:700px; margin:clamp(32px,5vw,48px) auto 0; display:flex; flex-direction:column; gap:8px; }
 .faq-item { background:var(--card); border:1px solid var(--card-border); border-radius:var(--r-md); overflow:hidden; }
-.faq-q { padding:20px 26px; font-size:15px; font-weight:600; color:var(--text-1); cursor:pointer; display:flex;justify-content:space-between;align-items:center;gap:16px; transition:color .2s; }
+.faq-q {
+  padding:16px 20px; font-size:14px; font-weight:600; color:var(--text-1);
+  cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:12px;
+  transition:color .2s;
+}
 .faq-q:hover { color:var(--teal); }
-.faq-q .ico { width:28px;height:28px;flex-shrink:0;border-radius:50%;border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--teal);font-weight:700;transition:transform .3s,background .2s; }
-.faq-item.open .faq-q .ico { transform:rotate(45deg); background:rgba(13,207,180,.12); }
+.faq-q .ico {
+  width:24px; height:24px; flex-shrink:0; border-radius:50%;
+  border:1px solid var(--card-border); display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:var(--teal); font-weight:700; transition:transform .3s, background .2s;
+}
+.faq-item.open .faq-q .ico { transform:rotate(45deg); background:rgba(13,207,180,.1); }
 .faq-a { max-height:0; overflow:hidden; transition:max-height .35s ease; }
-.faq-item.open .faq-a { max-height:300px; }
-.faq-a p { padding:0 26px 22px; font-size:14px; color:var(--text-2); line-height:1.8; }
+.faq-item.open .faq-a { max-height:280px; }
+.faq-a p { padding:0 20px 18px; font-size:13px; color:var(--text-2); line-height:1.75; }
 
 /* ============================
    CTA SECTION
 ============================= */
 .cta-section {
-  padding:120px 0;
-  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(13,207,180,.09) 0%,transparent 65%),var(--bg-0);
+  padding:clamp(72px,10vw,112px) 0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(13,207,180,.07) 0%,transparent 65%),var(--bg-0);
   text-align:center; border-top:1px solid var(--card-border);
   position:relative; overflow:hidden;
 }
-.cta-section::before { content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;border:1px solid rgba(13,207,180,.06); }
-.cta-section::after { content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1000px;height:1000px;border-radius:50%;border:1px solid rgba(13,207,180,.03); }
-.cta-inner { position:relative;z-index:1; }
-.cta-pill { display:inline-flex;align-items:center;gap:8px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);color:var(--green);font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;padding:7px 18px;border-radius:100px;margin-bottom:28px; }
-.cta-h { font-family:var(--font-head);font-size:clamp(38px,5vw,66px);font-weight:800;line-height:1.05;letter-spacing:-0.04em;margin-bottom:18px; }
-.cta-p { font-size:17px;color:var(--text-2);line-height:1.8;max-width:500px;margin:0 auto 44px; }
-.cta-form { display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px; }
-.cta-input { background:var(--bg-2);border:1px solid var(--card-border);border-radius:var(--r-sm);padding:16px 20px;color:var(--text-1);font-size:15px;font-family:var(--font-body);width:280px;outline:none;transition:border-color .2s; }
+.cta-section::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:600px; border-radius:50%; border:1px solid rgba(13,207,180,.05); }
+.cta-section::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:900px; height:900px; border-radius:50%; border:1px solid rgba(13,207,180,.025); }
+.cta-inner { position:relative; z-index:1; }
+.cta-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(0,230,118,.07); border:1px solid rgba(0,230,118,.22);
+  color:var(--green); font-family:var(--font-mono); font-size:10px; font-weight:700;
+  letter-spacing:.1em; padding:6px 16px; border-radius:100px; margin-bottom:24px;
+}
+.cta-h {
+  font-family:var(--font-head); font-size:clamp(32px,5.5vw,58px);
+  font-weight:800; line-height:1.05; letter-spacing:-0.04em; margin-bottom:16px;
+}
+.cta-p { font-size:clamp(14px,1.5vw,16px); color:var(--text-2); line-height:1.75; max-width:460px; margin:0 auto 36px; }
+.cta-form { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+.cta-input {
+  background:var(--bg-2); border:1px solid var(--card-border);
+  border-radius:var(--r-sm); padding:14px 18px; color:var(--text-1);
+  font-size:14px; font-family:var(--font-body); width:clamp(240px,35vw,280px);
+  outline:none; transition:border-color .2s;
+}
 .cta-input:focus { border-color:var(--teal); }
 .cta-input::placeholder { color:var(--text-3); }
-.cta-note { font-size:12px;color:var(--text-3);margin-top:12px;font-family:var(--font-mono);letter-spacing:.04em; }
-.cta-note b { color:var(--teal);font-weight:600; }
+.cta-note { font-size:11px; color:var(--text-3); margin-top:10px; font-family:var(--font-mono); letter-spacing:.04em; }
+.cta-note b { color:var(--teal); font-weight:600; }
 
 /* ============================
    FOOTER
 ============================= */
-<footer>
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand-name">FARID GOLD KILLER</div>
-        <div class="footer-tagline">Breakout Tekan</div>
-        <p class="footer-desc">Komunitas trader XAU/USD terbesar dan terpercaya di Indonesia. Gratis. Terbukti. Konsisten.</p>
-      </div>
-      <div class="footer-col"><h5>Navigasi</h5><ul><li><a href="#founder">Tentang Farid</a></li><li><a href="#benefits">Program</a></li><li><a href="#portfolio">Portofolio</a></li><li><a href="#signal">Live Signal</a></li><li><a href="#testimoni">Testimoni</a></li><li><a href="#faq">FAQ</a></li></ul></div>
-      <div class="footer-col"><h5>Komunitas</h5><ul><li><a href="#">Telegram</a></li><li><a href="#">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">TikTok</a></li></ul></div>
-      <div class="footer-col"><h5>Legal</h5><ul><li><a href="#">Disclaimer</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">Syarat &amp; Ketentuan</a></li></ul></div>
-    </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2025 Farid Gold Killer. All rights reserved.</p>
-      <p class="footer-disc">⚠️ Trading forex dan komoditas memiliki risiko tinggi. Hasil yang ditampilkan bukan jaminan profit di masa depan. Pastikan kamu memahami risiko sebelum trading.</p>
-    </div>
-  </div>
-</footer>
+footer {
+  background:var(--bg-1);
+  border-top:1px solid var(--card-border);
+  padding:clamp(40px,6vw,64px) 0 clamp(24px,4vw,40px);
+}
+.footer-grid {
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:clamp(24px,4vw,48px);
+  margin-bottom:clamp(28px,4vw,40px);
+}
+.footer-brand-name {
+  font-family:var(--font-head); font-size:16px; font-weight:800;
+  background:linear-gradient(120deg,var(--teal),#64FFDA);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:3px;
+}
+.footer-tagline { font-family:var(--font-mono); font-size:9px; color:var(--text-3); letter-spacing:.15em; text-transform:uppercase; margin-bottom:10px; }
+.footer-desc { font-size:12px; color:var(--text-3); line-height:1.7; max-width:220px; }
+.footer-col h5 { font-family:var(--font-head); font-size:12px; font-weight:700; color:var(--text-1); margin-bottom:12px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
+.footer-col a { font-size:12px; color:var(--text-3); transition:color .2s; }
+.footer-col a:hover { color:var(--teal); }
+.footer-bottom {
+  border-top:1px solid var(--card-border); padding-top:clamp(18px,3vw,24px);
+  display:flex; flex-direction:column; gap:10px;
+}
+.footer-copy { font-family:var(--font-mono); font-size:10px; color:var(--text-3); letter-spacing:.04em; }
+.footer-disc { font-size:11px; color:var(--text-3); line-height:1.6; max-width:640px; }
 
 /* ============================
-   SCROLL REVEAL & RESPONSIVE
+   SCROLL REVEAL
 ============================= */
-.reveal { opacity:0; transform:translateY(28px); transition:opacity .65s ease,transform .65s ease; }
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease; }
 .reveal.show { opacity:1; transform:translateY(0); }
-.reveal-d1 { transition-delay:.1s; }
-.reveal-d2 { transition-delay:.2s; }
-.reveal-d3 { transition-delay:.3s; }
+.reveal-d1 { transition-delay:.08s; }
+.reveal-d2 { transition-delay:.16s; }
+.reveal-d3 { transition-delay:.24s; }
 
+/* ============================
+   RESPONSIVE BREAKPOINTS
+============================= */
+
+/* Tablet: ≤1024px */
 @media(max-width:1024px) {
-  .hero-inner { grid-template-columns:1fr; gap:48px; }
+  .hero-inner { grid-template-columns:1fr; gap:40px; }
   .hero-panel { display:none; }
-  .founder-grid { grid-template-columns:1fr; gap:40px; }
-  .founder-card { max-width:360px; }
+  .founder-grid { grid-template-columns:1fr; gap:32px; }
+  .founder-card { max-width:320px; }
   .benefits-grid { grid-template-columns:1fr 1fr; }
   .testi-grid { grid-template-columns:1fr 1fr; }
   .footer-grid { grid-template-columns:1fr 1fr; }
   .tv-grid { grid-template-columns:1fr; }
-  .tv-row { grid-template-columns:1fr; }
+  .tv-row  { grid-template-columns:1fr 1fr; }
 }
+
+/* Mobile large: ≤768px */
 @media(max-width:768px) {
-  .container { padding:0 16px; }
   .nav-menu { display:none; }
   .nav-toggle { display:block; }
   .nav-menu.open {
     display:flex; flex-direction:column;
-    position:fixed; top:66px; left:0; right:0;
+    position:fixed; top:58px; left:0; right:0;
     background:rgba(6,10,15,.97);
     backdrop-filter:blur(20px);
-    padding:20px 24px 28px;
+    padding:16px clamp(16px,4vw,24px) 24px;
     border-bottom:1px solid var(--card-border);
-    gap:4px; z-index:99;
+    gap:2px; z-index:99;
   }
-  .nav-menu.open a { padding:12px 16px; width:100%; }
-  .nav-menu.open .nav-cta { margin-top:8px; text-align:center; }
-  section, .benefits-section, .portfolio-section, .problem-section,
-  .founder-section, .terminal-section, .testi-section, .faq-section,
-  .cta-section, .signal-section { padding:72px 0; }
+  .nav-menu.open a { padding:11px 14px; width:100%; }
+  .nav-menu.open .nav-cta { margin-top:8px; text-align:center; justify-content:center; }
+
+  .hero h1 { font-size:clamp(30px,8vw,42px); }
+  .hero-pills .pill { max-width:100%; }
+  .hero-btns { gap:10px; }
+  .hero-btns .btn-primary,
+  .hero-btns .btn-ghost { flex:1; justify-content:center; min-width:140px; }
+
   .benefits-grid { grid-template-columns:1fr; }
   .testi-grid { grid-template-columns:1fr; }
-  .footer-grid { grid-template-columns:1fr; gap:32px; }
+  .footer-grid { grid-template-columns:1fr 1fr; gap:24px; }
   .cta-form { flex-direction:column; align-items:center; }
   .cta-input { width:100%; max-width:320px; }
   .signal-header { flex-direction:column; align-items:flex-start; }
   .tg-strip { flex-direction:column; }
-  .sig-price-grid { grid-template-columns:1fr; }
-  .sig-price-item.full { grid-column:1; }
-  .sig-table { font-size:10px; }
-  .sig-table th, .sig-table td { padding:7px 10px; }
+  .sig-price-grid { grid-template-columns:1fr 1fr; }
+  .tv-row { grid-template-columns:1fr; }
+  .founder-metrics { grid-template-columns:repeat(3,1fr); }
+}
+
+/* Mobile small: ≤480px */
+@media(max-width:480px) {
+  .signal-cards-row { grid-template-columns:1fr; }
+  .problem-grid { grid-template-columns:1fr; }
+  .portfolio-grid { grid-template-columns:repeat(2,1fr); }
+  .founder-metrics { grid-template-columns:repeat(3,1fr); gap:8px; }
+  .fm-n { font-size:20px; }
+  .fm-l { font-size:9px; }
+  .footer-grid { grid-template-columns:1fr; gap:20px; }
+  .footer-desc { max-width:100%; }
+  .hero-btns { flex-direction:column; }
+  .hero-btns .btn-primary,
+  .hero-btns .btn-ghost { width:100%; justify-content:center; }
+  .sig-table { font-size:9px; }
+  .sig-table th, .sig-table td { padding:6px 8px; }
+  .panel-stats { grid-template-columns:1fr 1fr; }
+  .tg-strip { gap:12px; }
+  .btn-tg { width:100%; justify-content:center; }
 }
 </style>
 </head>
 <body>
 
-<!-- ============================
-     TOP TICKER
-============================= -->
+<!-- TICKER -->
 <div class="ticker-bar">
   <div class="tradingview-widget-container" style="height:100%">
     <div class="tradingview-widget-container__widget"></div>
@@ -846,9 +879,7 @@ nav {
   </div>
 </div>
 
-<!-- ============================
-     NAVBAR
-============================= -->
+<!-- NAVBAR -->
 <nav>
   <div class="container nav-inner">
     <a href="#home" class="nav-logo">
@@ -871,9 +902,7 @@ nav {
   </div>
 </nav>
 
-<!-- ============================
-     HERO
-============================= -->
+<!-- HERO -->
 <section id="home" class="hero">
   <div class="container" style="width:100%">
     <div class="hero-inner">
@@ -883,7 +912,7 @@ nav {
           2.000+ trader sudah bergabung &amp; profit
         </div>
         <h1 class="reveal reveal-d1">
-          Capek<br>Boncos?<br>
+          Capek Boncos?<br>
           Waktunya<br><em>Breakout Tekan.</em>
         </h1>
         <p class="hero-desc reveal reveal-d2">
@@ -910,14 +939,14 @@ nav {
           <a href="#testimoni" class="btn-ghost">Lihat Bukti Nyata</a>
         </div>
       </div>
-      
-      <!-- REVISI 1: PANEL STATS DIUBAH JADI DINAMIS -->
+
+      <!-- Hero Panel (hidden on mobile via CSS) -->
       <div class="hero-panel reveal reveal-d1">
         <div class="panel-title">
           Live Account Overview
-          <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
-             <div style="width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;"></div>
-             <span style="font-family:var(--font-mono);font-size:9px;color:var(--text-3);letter-spacing:1px;" id="stat-time">Menghubungkan...</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <div style="width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 2s infinite;"></div>
+            <span style="font-family:var(--font-mono);font-size:8px;color:var(--text-3);letter-spacing:1px;" id="stat-time">Menghubungkan...</span>
           </div>
         </div>
         <div class="panel-stats">
@@ -928,8 +957,8 @@ nav {
         </div>
         <div class="panel-bar"></div>
         <div class="panel-results">
-          <div class="pr-row"><div class="pr-dot"></div><span>Balance saat ini: <strong class="pr-val" id="stat-balance">$0.00</strong></span></div>
-          <div class="pr-row"><div class="pr-dot"></div><span>Equity saat ini: <strong class="pr-val" id="stat-equity">$0.00</strong></span></div>
+          <div class="pr-row"><div class="pr-dot"></div><span>Balance: <strong class="pr-val" id="stat-balance">$0.00</strong></span></div>
+          <div class="pr-row"><div class="pr-dot"></div><span>Equity: <strong class="pr-val" id="stat-equity">$0.00</strong></span></div>
         </div>
       </div>
     </div>
@@ -938,15 +967,13 @@ nav {
 
 <div class="gold-line"></div>
 
-<!-- ============================
-     PROBLEM
-============================= -->
-<section class="problem-section" id="problem">
+<!-- PROBLEM -->
+<section class="sec sec-alt" id="problem">
   <div class="container">
-    <div class="problem-header">
+    <div class="sec-head reveal">
       <div class="tag">Ini Bukan Salah Kamu</div>
       <h2 class="section-title">Kenapa Trader Pintar pun<br>Masih Terus Rugi?</h2>
-      <p class="section-sub">Bukan karena pasar tidak bisa diprediksi. Bukan karena modal kamu kurang. Tapi karena <strong style="color:var(--text-1)">sistem yang kamu pakai memang tidak dirancang untuk menang.</strong></p>
+      <p class="section-sub">Bukan karena pasar tidak bisa diprediksi. Tapi karena <strong style="color:var(--text-1)">sistem yang kamu pakai memang tidak dirancang untuk menang.</strong></p>
     </div>
     <div class="problem-grid reveal">
       <div class="problem-card"><div class="x-icon">✕</div><h4>Ikut signal gratisan yang tidak jelas sumbernya</h4><p>Admin-nya sendiri belum tentu trading. Kamu yang rugi, dia yang hilang.</p></div>
@@ -955,23 +982,21 @@ nav {
       <div class="problem-card"><div class="x-icon">✕</div><h4>Trading sendirian, tidak ada yang bisa diajak diskusi</h4><p>Salah entry pun tidak tahu kenapa salah. Lingkaran yang sama terus berulang.</p></div>
     </div>
     <div class="quote-strip reveal">"Satu hal yang membedakan trader yang profit dan yang tidak: mereka punya <em>sistem yang terbukti</em> dan <em>orang yang pernah lewati jalan yang sama.</em>"</div>
-    <p style="font-size:16px;color:var(--text-2);line-height:1.85;margin-bottom:28px;max-width:640px;">Farid sudah 7 tahun di market. Pernah boncos, pernah frustasi, pernah hampir berhenti. Tapi dia tidak berhenti — dan sekarang dia bawa lebih dari 2.000 orang keluar dari lubang yang sama.</p>
-    <div class="tag" style="margin-top:32px;">Hasil Nyata Member</div>
+    <p class="reveal" style="font-size:14px;color:var(--text-2);line-height:1.8;margin-bottom:24px;max-width:600px;">Farid sudah 7 tahun di market. Pernah boncos, pernah frustasi, pernah hampir berhenti. Tapi dia tidak berhenti — dan sekarang dia bawa lebih dari 2.000 orang keluar dari lubang yang sama.</p>
+    <div class="tag" style="margin-top:28px;">Hasil Nyata Member</div>
     <div class="result-list reveal">
       <div class="rl-item"><div class="rl-bullet"></div><span><strong>+59% profit</strong> di hari pertama bergabung</span></div>
       <div class="rl-item"><div class="rl-bullet"></div><span><strong>$12 → $60</strong> oleh member yang baru mulai</span></div>
       <div class="rl-item"><div class="rl-bullet"></div><span><strong>$1.070+</strong> dalam satu sesi trading</span></div>
     </div>
-    <div style="margin-top:28px;" class="reveal"><a href="#cta" class="btn-primary">Saya Mau Keluar dari Lingkaran Ini →</a></div>
+    <div style="margin-top:24px;" class="reveal"><a href="#cta" class="btn-primary">Saya Mau Keluar dari Lingkaran Ini →</a></div>
   </div>
 </section>
 
-<!-- ============================
-     FOUNDER
-============================= -->
-<section class="founder-section" id="founder">
+<!-- FOUNDER -->
+<section class="sec" id="founder">
   <div class="container">
-    <div class="tag">Kenalan Dulu</div>
+    <div class="tag reveal">Kenalan Dulu</div>
     <div class="founder-grid">
       <div class="founder-card reveal">
         <div class="founder-img">🥇</div>
@@ -987,7 +1012,7 @@ nav {
         </div>
       </div>
       <div class="founder-right reveal reveal-d1">
-        <h2 class="section-title" style="margin-bottom:24px;">Trader Yang<br>Sudah <em class="accent">Lewati Jalan Itu.</em></h2>
+        <h2 class="section-title" style="margin-bottom:20px;">Trader Yang<br>Sudah <em class="accent">Lewati Jalan Itu.</em></h2>
         <p class="founder-bio">Farid bukan trader teori. Dia turun langsung ke market sejak 2017, merasakan pahitnya boncos sebelum akhirnya menemukan sistem yang konsisten. Kini, metode <strong>Breakout Tekan</strong> miliknya sudah diikuti lebih dari 2.000 trader aktif di seluruh Indonesia.</p>
         <p class="founder-bio">Spesialisasi di XAU/USD (Gold), Farid mengembangkan teknik breakout presisi yang simpel namun powerful — memungkinkan siapapun, bahkan pemula, untuk mengikuti setup trading dengan win rate tinggi.</p>
         <p class="founder-bio">Misi satu: <strong>tidak ada lagi trader Indonesia yang rugi karena salah sistem.</strong></p>
@@ -1001,17 +1026,17 @@ nav {
   </div>
 </section>
 
-<!-- ============================
-     BENEFITS
-============================= -->
-<section class="benefits-section" id="benefits">
+<!-- BENEFITS -->
+<section class="sec sec-alt" id="benefits">
   <div class="container">
-    <div class="tag">Yang Kamu Dapat</div>
-    <h2 class="section-title">Semua Gratis.<br>Semua <em class="accent">Terbukti.</em></h2>
-    <p class="section-sub">Gabung ke komunitas Farid Gold Killer dan dapatkan akses ke semua tools, edukasi, dan support yang kamu butuhkan untuk profit konsisten.</p>
+    <div class="sec-head reveal">
+      <div class="tag">Yang Kamu Dapat</div>
+      <h2 class="section-title">Semua Gratis.<br>Semua <em class="accent">Terbukti.</em></h2>
+      <p class="section-sub">Gabung ke komunitas Farid Gold Killer dan dapatkan akses ke semua tools, edukasi, dan support yang kamu butuhkan untuk profit konsisten.</p>
+    </div>
     <div class="benefits-grid">
       <div class="benefit-card reveal"><div class="b-icon">⚡</div><h3>Signal XAU/USD Premium</h3><p>Signal gold harian dengan entry, TP, dan SL yang jelas. Dianalisis langsung oleh Farid dengan akurasi rata-rata 83%.</p><span class="b-free">GRATIS</span></div>
-      <div class="benefit-card reveal reveal-d1"><div class="b-icon">🎯</div><h3>Metode Breakout Tekan</h3><p>Sistem trading eksklusif yang hanya ada di komunitas ini. Simpel, terstruktur, bisa dipelajari bahkan oleh pemula tanpa pengalaman apapun.</p><span class="b-free">EKSKLUSIF</span></div>
+      <div class="benefit-card reveal reveal-d1"><div class="b-icon">🎯</div><h3>Metode Breakout Tekan</h3><p>Sistem trading eksklusif yang hanya ada di komunitas ini. Simpel, terstruktur, bisa dipelajari bahkan oleh pemula.</p><span class="b-free">EKSKLUSIF</span></div>
       <div class="benefit-card reveal reveal-d2"><div class="b-icon">📊</div><h3>Analisa Market Harian</h3><p>Video analisa setiap pagi sebelum market buka. Kamu tahu arah market sebelum candle terbentuk.</p><span class="b-free">GRATIS</span></div>
       <div class="benefit-card reveal"><div class="b-icon">💬</div><h3>Komunitas Aktif 24/7</h3><p>Grup Telegram aktif dengan 2.000+ member. Diskusi, tanya jawab, dan saling support setiap saat.</p><span class="b-free">GRATIS</span></div>
       <div class="benefit-card reveal reveal-d1"><div class="b-icon">🧠</div><h3>Edukasi Trading Lengkap</h3><p>Materi dari dasar hingga advanced. Cara baca chart, money management, sampai psikologi trading.</p><span class="b-free">GRATIS</span></div>
@@ -1020,14 +1045,14 @@ nav {
   </div>
 </section>
 
-<!-- ============================
-     PORTFOLIO
-============================= -->
-<section class="portfolio-section" id="portfolio">
+<!-- PORTFOLIO -->
+<section class="sec" id="portfolio">
   <div class="container">
-    <div class="tag">Track Record</div>
-    <h2 class="section-title">Portofolio Nyata.<br><em class="accent">Bukan Backtesting.</em></h2>
-    <p class="section-sub">Semua hasil di bawah ini adalah live trade yang didokumentasikan secara transparan. Bukan demo. Bukan rekayasa.</p>
+    <div class="sec-head reveal">
+      <div class="tag">Track Record</div>
+      <h2 class="section-title">Portofolio Nyata.<br><em class="accent">Bukan Backtesting.</em></h2>
+      <p class="section-sub">Semua hasil di bawah ini adalah live trade yang didokumentasikan secara transparan. Bukan demo. Bukan rekayasa.</p>
+    </div>
     <div class="portfolio-grid reveal">
       <div class="port-card"><div class="port-num">+$1,070</div><div class="port-inst">XAU/USD</div><div class="port-ctx">Satu Sesi Trading</div></div>
       <div class="port-card"><div class="port-num">+59%</div><div class="port-inst">Akun Live</div><div class="port-ctx">Hari Pertama Member</div></div>
@@ -1039,25 +1064,20 @@ nav {
   </div>
 </section>
 
-<!-- ============================================================
-     ██████  SIGNAL REALTIME SECTION  ██████
-============================================================= -->
+<!-- SIGNAL REALTIME -->
 <section class="signal-section" id="signal">
   <div class="container">
-
-    <!-- Header -->
     <div class="signal-header">
       <div class="signal-header-left">
         <div class="tag">Live Signal · MT5 EA Driven</div>
         <h2 class="section-title">Sinyal Otomatis<br><em class="accent">Langsung dari EA.</em></h2>
-        <p class="section-sub" style="max-width:480px;">Sinyal di bawah dikirim secara otomatis oleh Expert Advisor MetaTrader 5 kami setiap kali ada entry, close, atau pergerakan SL signifikan. Update setiap 15 detik.</p>
+        <p class="section-sub" style="max-width:440px;">Sinyal dikirim otomatis oleh Expert Advisor MetaTrader 5 setiap ada entry, close, atau pergerakan SL signifikan. Update setiap 15 detik.</p>
         <div class="signal-meta">
           <div class="sig-live-dot"></div>
           <span id="sig-status-text">MENGHUBUNGKAN...</span>
           <span style="color:var(--text-3);">·</span>
           <span id="sig-last-update" style="color:var(--text-3);">——</span>
-          <!-- REVISI 2: TOMBOL REFRESH DITAMBAHKAN -->
-          <button id="btn-manual-refresh" style="margin-left:10px; background:var(--bg-3); border:1px solid var(--card-border); color:var(--text-2); padding:4px 10px; border-radius:4px; font-family:var(--font-mono); font-size:9px; cursor:pointer; transition:0.2s;">↻ REFRESH</button>
+          <button id="btn-manual-refresh">↻ REFRESH</button>
         </div>
         <div class="sig-progress-wrap">
           <div id="sig-progress-fill"></div>
@@ -1065,7 +1085,6 @@ nav {
       </div>
     </div>
 
-    <!-- Two signal cards -->
     <div class="signal-cards-row reveal">
       <!-- Latest -->
       <div class="sig-card" id="sig-card-latest">
@@ -1086,7 +1105,6 @@ nav {
           <span class="sig-lots" id="sig-lots-latest"></span>
         </div>
       </div>
-
       <!-- Previous -->
       <div class="sig-card" id="sig-card-prev">
         <div class="sig-card-head">
@@ -1109,35 +1127,26 @@ nav {
       </div>
     </div>
 
-    <!-- History table -->
-    <div class="sig-history-wrap reveal" style="margin-top:20px;">
-      <div class="sig-history-head">
-        <span>Signal History</span>
-      </div>
+    <!-- History -->
+    <div class="sig-history-wrap reveal" style="margin-top:16px;">
+      <div class="sig-history-head"><span>Signal History</span></div>
       <div class="sig-table-scroll">
         <table class="sig-table">
           <thead>
             <tr>
-              <th>Waktu</th>
-              <th>Symbol</th>
-              <th>Aksi</th>
-              <th>Mode</th>
-              <th>Entry</th>
-              <th>SL</th>
-              <th>TP</th>
-              <th>Lot</th>
-              <th>Profit</th>
-              <th>Keterangan</th>
+              <th>Waktu</th><th>Symbol</th><th>Aksi</th><th>Mode</th>
+              <th>Entry</th><th>SL</th><th>TP</th><th>Lot</th>
+              <th>Profit</th><th>Keterangan</th>
             </tr>
           </thead>
           <tbody id="sig-history-tbody">
-            <tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-3);letter-spacing:.1em;font-size:10px;">// MENUNGGU DATA SINYAL...</td></tr>
+            <tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text-3);letter-spacing:.08em;font-size:9px;">// MENUNGGU DATA SINYAL...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Telegram join strip -->
+    <!-- Telegram strip -->
     <div class="tg-strip reveal">
       <div class="tg-strip-left">
         <div class="tg-icon">✈️</div>
@@ -1150,16 +1159,13 @@ nav {
         <span>✈️</span> Join Telegram Gratis
       </a>
     </div>
-
   </div>
 </section>
 
-<!-- ============================
-     F-TERMINAL — LIVE MARKET
-============================= -->
+<!-- TERMINAL - LIVE MARKET -->
 <section class="terminal-section" id="terminal">
   <div class="container">
-    <div class="terminal-header">
+    <div class="sec-head reveal">
       <div class="tag">F-Terminal · Live</div>
       <h2 class="section-title">Live Market<br><em class="accent">Dashboard</em></h2>
       <p class="section-sub">Pantau grafik harga, analisa teknikal, kalender ekonomi, dan berita market secara real-time langsung dari halaman ini.</p>
@@ -1188,7 +1194,7 @@ nav {
         </div>
       </div>
     </div>
-    <div class="tv-row reveal" style="margin-top:16px;">
+    <div class="tv-row reveal" style="margin-top:14px;">
       <div class="tv-card tv-sm">
         <div class="tv-head"><div class="dot-live"></div><span>Crypto Heatmap</span></div>
         <div class="tv-body">
@@ -1226,14 +1232,14 @@ nav {
   </div>
 </section>
 
-<!-- ============================
-     TESTIMONIALS
-============================= -->
-<section class="testi-section" id="testimoni">
+<!-- TESTIMONIALS -->
+<section class="sec" id="testimoni">
   <div class="container">
-    <div class="tag">Kata Mereka</div>
-    <h2 class="section-title">2.000+ Trader<br><em class="accent">Sudah Merasakannya.</em></h2>
-    <p class="section-sub">Bukan testimoni palsu. Bukan screenshot editan. Ini cerita nyata dari member komunitas Farid Gold Killer.</p>
+    <div class="sec-head reveal">
+      <div class="tag">Kata Mereka</div>
+      <h2 class="section-title">2.000+ Trader<br><em class="accent">Sudah Merasakannya.</em></h2>
+      <p class="section-sub">Bukan testimoni palsu. Ini cerita nyata dari member komunitas Farid Gold Killer.</p>
+    </div>
     <div class="testi-grid">
       <div class="testi-card reveal">
         <div class="testi-top"><div class="testi-ava">V</div><div><div class="testi-nm">Vio</div><div class="testi-loc">Member Aktif · Surabaya</div></div><div class="testi-badge-v">Verified</div></div>
@@ -1275,12 +1281,10 @@ nav {
   </div>
 </section>
 
-<!-- ============================
-     FAQ
-============================= -->
-<section class="faq-section" id="faq">
+<!-- FAQ -->
+<section class="sec sec-alt" id="faq">
   <div class="container">
-    <div style="text-align:center;">
+    <div style="text-align:center;" class="reveal">
       <div class="tag" style="justify-content:center;">Ada Pertanyaan?</div>
       <h2 class="section-title" style="text-align:center;">Yang Sering<br><em class="accent">Ditanyakan</em></h2>
     </div>
@@ -1291,14 +1295,12 @@ nav {
       <div class="faq-item"><div class="faq-q">Bagaimana cara bergabung?<div class="ico">+</div></div><div class="faq-a"><p>Cukup masukkan nomor WhatsApp kamu di form di bawah dan klik "Gabung Gratis Sekarang". Kamu akan langsung diarahkan ke grup Telegram komunitas Farid Gold Killer dan bisa langsung akses semua konten.</p></div></div>
       <div class="faq-item"><div class="faq-q">Berapa lama sampai bisa profit?<div class="ico">+</div></div><div class="faq-a"><p>Banyak member yang sudah profit di hari pertama bergabung. Namun hasilnya tergantung pada seberapa serius kamu belajar dan menjalankan sistem. Dengan konsistensi, kebanyakan member mulai profit konsisten dalam 1–4 minggu pertama.</p></div></div>
       <div class="faq-item"><div class="faq-q">Instrumen apa saja yang diajarkan?<div class="ico">+</div></div><div class="faq-a"><p>Fokus utama adalah XAU/USD (Gold) karena itu spesialisasi Farid. Namun sistem ini juga bisa diterapkan di EUR/USD, GBP/USD, dan pair forex major lainnya dengan penyesuaian minor.</p></div></div>
-      <div class="faq-item"><div class="faq-q">Sinyal live di website dari mana asalnya?<div class="ico">+</div></div><div class="faq-a"><p>Sinyal dikirim otomatis oleh Expert Advisor (EA) MetaTrader 5 yang berjalan di server kami 24/5. Setiap kali EA membuka atau menutup posisi, data sinyal langsung dikirim via webhook ke website ini secara realtime. Kamu bisa pantau langsung di section "Live Signal" di atas.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Sinyal live di website dari mana asalnya?<div class="ico">+</div></div><div class="faq-a"><p>Sinyal dikirim otomatis oleh Expert Advisor (EA) MetaTrader 5 yang berjalan di server kami 24/5. Setiap kali EA membuka atau menutup posisi, data sinyal langsung dikirim via webhook ke website ini secara realtime.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============================
-     CTA
-============================= -->
+<!-- CTA -->
 <section class="cta-section" id="cta">
   <div class="container cta-inner">
     <div class="cta-pill">✓ Gratis Selamanya · Tanpa Syarat Apapun</div>
@@ -1312,9 +1314,7 @@ nav {
   </div>
 </section>
 
-<!-- ============================
-     FOOTER
-============================= -->
+<!-- FOOTER -->
 <footer>
   <div class="container">
     <div class="footer-grid">
@@ -1334,31 +1334,30 @@ nav {
   </div>
 </footer>
 
-<!-- ============================================================
-     JAVASCRIPT
-============================================================= -->
+<!-- JAVASCRIPT -->
 <script>
 /* ======================================================
-   ██  SIGNAL CONFIG — GANTI INI  ██
+   SIGNAL CONFIG
 ======================================================= */
 const SIGNAL_CONFIG = {
-  jsonbinId:     '69f6caf536566621a81bc334',
-  jsonbinKey:    '$2a$10$tcKHEWwuz2sqRoMCKJfga.1xxTFW0RxpXUPnP.NI4YbivtlK1xxau',
-  refreshMs:     15000,   // REVISI 3: Diubah ke 15 detik agar aman limit
-  maxHistory:    30,
-  telegramUrl:   'https://t.me/faridgoldkiller',
-  apiUrl:        '/api/webhook' // REVISI 3: Fetch ke Vercel untuk memanfaatkan Cache
+  jsonbinId:   '69f6caf536566621a81bc334',
+  jsonbinKey:  '$2a$10$tcKHEWwuz2sqRoMCKJfga.1xxTFW0RxpXUPnP.NI4YbivtlK1xxau',
+  refreshMs:   15000,
+  maxHistory:  30,
+  telegramUrl: 'https://t.me/faridgoldkiller',
+  apiUrl:      '/api/webhook'
 };
-/* ===================================================== */
 
-// ── Nav toggle (mobile) ──
+// ── Nav toggle ──
 const navToggle = document.getElementById('navToggle');
 const navMenu   = document.getElementById('navMenu');
 navToggle.addEventListener('click', () => {
   navMenu.classList.toggle('open');
-  navToggle.querySelectorAll('span')[0].style.transform = navMenu.classList.contains('open') ? 'rotate(45deg) translate(5px,5px)' : '';
-  navToggle.querySelectorAll('span')[1].style.opacity  = navMenu.classList.contains('open') ? '0' : '';
-  navToggle.querySelectorAll('span')[2].style.transform = navMenu.classList.contains('open') ? 'rotate(-45deg) translate(5px,-5px)' : '';
+  const spans = navToggle.querySelectorAll('span');
+  const open  = navMenu.classList.contains('open');
+  spans[0].style.transform = open ? 'rotate(45deg) translate(5px,5px)' : '';
+  spans[1].style.opacity   = open ? '0' : '';
+  spans[2].style.transform = open ? 'rotate(-45deg) translate(5px,-5px)' : '';
 });
 navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   navMenu.classList.remove('open');
@@ -1369,42 +1368,36 @@ navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
 document.querySelectorAll('.faq-q').forEach(q => {
   q.addEventListener('click', () => {
     const item = q.parentElement;
-    const wasOpen = item.classList.contains('open');
+    const was  = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!wasOpen) item.classList.add('open');
+    if (!was) item.classList.add('open');
   });
 });
 
 // ── Scroll Reveal ──
-const revObs = new IntersectionObserver((entries) => {
+const revObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); revObs.unobserve(e.target); } });
-}, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+}, { threshold:0.07, rootMargin:'0px 0px -30px 0px' });
 document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 window.addEventListener('load', () => {
   setTimeout(() => document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('show')), 100);
 });
 
-// ── Telegram button update ──
+// ── Telegram URL ──
 document.querySelector('.btn-tg').href = SIGNAL_CONFIG.telegramUrl;
 
 /* ======================================================
-   ██  SIGNAL REALTIME ENGINE  ██
+   SIGNAL REALTIME ENGINE
 ======================================================= */
-const API_URL = SIGNAL_CONFIG.apiUrl;
-
-// Event Button Refresh Manual
-document.getElementById('btn-manual-refresh').addEventListener('click', () => {
-  document.getElementById('btn-manual-refresh').style.opacity = '0.5';
+document.getElementById('btn-manual-refresh').addEventListener('click', function() {
+  this.style.opacity = '.5';
   startProgress();
-  fetchSignals().then(() => {
-    document.getElementById('btn-manual-refresh').style.opacity = '1';
-  });
+  fetchSignals().finally(() => { this.style.opacity = '1'; });
 });
 
 function startProgress() {
   const f = document.getElementById('sig-progress-fill');
-  f.style.transition = 'none';
-  f.style.width = '0%';
+  f.style.transition = 'none'; f.style.width = '0%';
   requestAnimationFrame(() => {
     f.style.transition = `width ${SIGNAL_CONFIG.refreshMs}ms linear`;
     f.style.width = '100%';
@@ -1413,22 +1406,16 @@ function startProgress() {
 
 function setStatus(state, msg) {
   const el = document.getElementById('sig-status-text');
-  el.textContent = msg;
-  el.className = state; // 'live' | 'error' | ''
+  el.textContent = msg; el.className = state;
 }
 
 async function fetchSignals() {
   try {
-    const r = await fetch(API_URL);
+    const r = await fetch(SIGNAL_CONFIG.apiUrl);
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const record = await r.json();
-    
-    // Render History
     renderAll(record);
-
-    // REVISI 1: Render Stats Panel Hero
-    if(record.stats) renderStats(record.stats);
-
+    if (record.stats) renderStats(record.stats);
     setStatus('live', 'LIVE · AUTO-UPDATE');
   } catch(e) {
     console.warn('[FaridFX Signal]', e.message);
@@ -1440,25 +1427,21 @@ async function fetchSignals() {
 }
 
 function renderStats(stats) {
-  if(!stats) return;
+  if (!stats) return;
   const rPnl = parseFloat(stats.realized_pnl || 0);
   const uPnl = parseFloat(stats.unrealized_pnl || 0);
-  
   const elRp = document.getElementById('stat-realized');
   elRp.textContent = (rPnl >= 0 ? '+' : '') + '$' + rPnl.toFixed(2);
   elRp.style.color = rPnl >= 0 ? 'var(--teal)' : 'var(--red)';
-
   const elUp = document.getElementById('stat-unrealized');
   elUp.textContent = (uPnl >= 0 ? '+' : '') + '$' + uPnl.toFixed(2);
   elUp.style.color = uPnl > 0 ? 'var(--green)' : (uPnl < 0 ? 'var(--red)' : 'var(--text-3)');
-
-  document.getElementById('stat-dd').textContent = parseFloat(stats.drawdown || 0).toFixed(2) + '%';
+  document.getElementById('stat-dd').textContent   = parseFloat(stats.drawdown || 0).toFixed(2) + '%';
   document.getElementById('stat-balance').textContent = '$' + parseFloat(stats.balance || 0).toFixed(2);
-  document.getElementById('stat-equity').textContent = '$' + parseFloat(stats.equity || 0).toFixed(2);
-
-  if(stats.timestamp) {
-     const d = new Date(stats.timestamp);
-     document.getElementById('stat-time').textContent = 'Sync: ' + d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+  document.getElementById('stat-equity').textContent  = '$' + parseFloat(stats.equity  || 0).toFixed(2);
+  if (stats.timestamp) {
+    const d = new Date(stats.timestamp);
+    document.getElementById('stat-time').textContent = 'Sync: ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
   }
 }
 
@@ -1470,27 +1453,22 @@ function renderAll(data) {
 }
 
 function renderCard(slot, sig) {
-  const card   = document.getElementById('sig-card-' + slot);
-  const body   = document.getElementById('sig-body-' + slot);
-  const symEl  = document.getElementById('sig-sym-' + slot);
-  const modeEl = document.getElementById('sig-mode-' + slot);
-  const tsEl   = document.getElementById('sig-ts-' + slot);
-  const lotsEl = document.getElementById('sig-lots-' + slot);
-
-  card.classList.remove('sig-flash');
-  void card.offsetWidth;
-  card.classList.add('sig-flash');
-
-  // clear direction classes
-  card.classList.remove('is-buy', 'is-sell', 'is-close');
+  const card   = document.getElementById('sig-card-'  + slot);
+  const body   = document.getElementById('sig-body-'  + slot);
+  const symEl  = document.getElementById('sig-sym-'   + slot);
+  const modeEl = document.getElementById('sig-mode-'  + slot);
+  const tsEl   = document.getElementById('sig-ts-'    + slot);
+  const lotsEl = document.getElementById('sig-lots-'  + slot);
+  card.classList.remove('sig-flash'); void card.offsetWidth; card.classList.add('sig-flash');
+  card.classList.remove('is-buy','is-sell','is-close','is-pending');
+  card.style.borderColor = '';
 
   if (!sig) {
     symEl.textContent  = '——';
     modeEl.textContent = slot === 'prev' ? '——' : 'LATEST';
     modeEl.className   = 'sig-mode-badge normal';
-    tsEl.textContent   = '——';
-    lotsEl.textContent = '';
-    body.innerHTML     = `<div class="sig-waiting"><div class="sig-waiting-label">STANDBY</div><div class="sig-waiting-sub">// menunggu sinyal dari EA</div></div>`;
+    tsEl.textContent   = '——'; lotsEl.textContent = '';
+    body.innerHTML = `<div class="sig-waiting"><div class="sig-waiting-label">STANDBY</div><div class="sig-waiting-sub">// menunggu sinyal dari EA</div></div>`;
     return;
   }
 
@@ -1501,13 +1479,7 @@ function renderCard(slot, sig) {
   if (action === 'BUY')   card.classList.add('is-buy');
   if (action === 'SELL')  card.classList.add('is-sell');
   if (action === 'CLOSE') card.classList.add('is-close');
-  // REVISI 3: Tambahkan style khusus untuk PENDING/Limit Order
-  if (status === 'PLACED' || action === 'PENDING') {
-      card.classList.remove('is-buy', 'is-sell', 'is-close');
-      card.style.borderColor = 'rgba(26,139,255,.25)';
-  } else {
-      card.style.borderColor = ''; 
-  }
+  if (status === 'PLACED' || action === 'PENDING') card.classList.add('is-pending');
 
   symEl.textContent  = sig.symbol || '——';
   modeEl.textContent = sig.mode   || '——';
@@ -1515,43 +1487,33 @@ function renderCard(slot, sig) {
   tsEl.textContent   = fmtTime(sig.timestamp);
   lotsEl.textContent = sig.lots ? 'LOT ' + (+sig.lots).toFixed(2) : '';
 
-  let arrow = '↔';
-  if(action === 'BUY') arrow = '↑';
-  if(action === 'SELL') arrow = '↓';
-
+  const arrow   = action === 'BUY' ? '↑' : action === 'SELL' ? '↓' : '↔';
   const isClose = action === 'CLOSE';
+  const isPend  = status === 'PLACED' || action === 'PENDING';
 
   const profitHtml = isClose && sig.profit != null
-    ? `<div class="sig-price-item full">
-        <div class="sig-price-label">P&amp;L</div>
-        <div class="sig-price-value ${+sig.profit >= 0 ? 'profit-pos' : 'profit-neg'}">${+sig.profit >= 0 ? '+' : ''}${(+sig.profit).toFixed(2)} USD</div>
-       </div>`
-    : `<div class="sig-price-item">
-        <div class="sig-price-label">Pips Risk</div>
-        <div class="sig-price-value">${sig.pips && +sig.pips > 0 ? (+sig.pips).toFixed(1) + ' pip' : '——'}</div>
-       </div>`;
+    ? `<div class="sig-price-item full"><div class="sig-price-label">P&amp;L</div><div class="sig-price-value ${+sig.profit >= 0 ? 'profit-pos':'profit-neg'}">${+sig.profit >= 0?'+':''}${(+sig.profit).toFixed(2)} USD</div></div>`
+    : `<div class="sig-price-item"><div class="sig-price-label">Pips Risk</div><div class="sig-price-value">${sig.pips && +sig.pips > 0 ? (+sig.pips).toFixed(1)+' pip':'——'}</div></div>`;
 
-  // Ubah warna text Action untuk Limit Order
-  let actionColorStyle = "";
-  if(status === 'PLACED' || action === 'PENDING') actionColorStyle = "color:var(--blue);text-shadow:0 0 28px rgba(26,139,255,.4);";
+  const dirStyle = isPend ? 'color:var(--blue);text-shadow:0 0 20px rgba(26,139,255,.35);' : '';
 
   body.innerHTML = `
-    <div class="sig-direction" style="${actionColorStyle}">
-      ${(status === 'PLACED' || action === 'PENDING') ? action + ' LIMIT' : action}
+    <div class="sig-direction" style="${dirStyle}">
+      ${isPend ? action+' LIMIT' : action}
       <span class="sig-dir-arrow">${arrow}</span>
     </div>
     <div class="sig-price-grid">
       <div class="sig-price-item full">
         <div class="sig-price-label">Entry Price</div>
-        <div class="sig-price-value entry-price">${fp(sig.price, 5)}</div>
+        <div class="sig-price-value entry-price">${fp(sig.price,5)}</div>
       </div>
       <div class="sig-price-item">
         <div class="sig-price-label">Stop Loss</div>
-        <div class="sig-price-value sl-price">${fp(sig.sl, 5)}</div>
+        <div class="sig-price-value sl-price">${fp(sig.sl,5)}</div>
       </div>
       <div class="sig-price-item">
         <div class="sig-price-label">Take Profit</div>
-        <div class="sig-price-value tp-price">${fp(sig.tp, 5)}</div>
+        <div class="sig-price-value tp-price">${fp(sig.tp,5)}</div>
       </div>
       ${profitHtml}
     </div>
@@ -1562,45 +1524,43 @@ function renderCard(slot, sig) {
 function renderHistoryTable(hist) {
   const tbody = document.getElementById('sig-history-tbody');
   if (!hist.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-3);letter-spacing:.1em;font-size:10px;">// BELUM ADA HISTORY SINYAL</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text-3);letter-spacing:.08em;font-size:9px;">// BELUM ADA HISTORY SINYAL</td></tr>`;
     return;
   }
   tbody.innerHTML = hist.slice(0, SIGNAL_CONFIG.maxHistory).map(s => {
     const a   = (s.action || '').toUpperCase();
     const cls = a === 'BUY' ? 'buy-cell' : a === 'SELL' ? 'sell-cell' : 'close-cell';
     const profitTd = s.profit != null && s.profit !== 0
-      ? `<td class="${+s.profit >= 0 ? 'profit-pos' : 'profit-neg'}">${+s.profit >= 0 ? '+' : ''}${(+s.profit).toFixed(2)}</td>`
+      ? `<td class="${+s.profit >= 0 ? 'profit-pos':'profit-neg'}">${+s.profit >= 0?'+':''}${(+s.profit).toFixed(2)}</td>`
       : `<td style="color:var(--text-3)">—</td>`;
     return `<tr>
       <td>${fmtTime(s.timestamp)}</td>
-      <td style="color:var(--teal);font-weight:700">${s.symbol || '—'}</td>
+      <td style="color:var(--teal);font-weight:700">${s.symbol||'—'}</td>
       <td class="${cls}">${a}</td>
-      <td>${s.mode || '—'}</td>
-      <td class="entry-cell">${fp(s.price, 5)}</td>
-      <td style="color:var(--red)">${fp(s.sl, 5)}</td>
-      <td style="color:var(--green)">${fp(s.tp, 5)}</td>
-      <td>${s.lots ? (+s.lots).toFixed(2) : '—'}</td>
+      <td>${s.mode||'—'}</td>
+      <td class="entry-cell">${fp(s.price,5)}</td>
+      <td style="color:var(--red)">${fp(s.sl,5)}</td>
+      <td style="color:var(--green)">${fp(s.tp,5)}</td>
+      <td>${s.lots ? (+s.lots).toFixed(2):'—'}</td>
       ${profitTd}
-      <td style="color:var(--text-3);font-size:10px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.comment || '')}</td>
+      <td style="color:var(--text-3);font-size:9px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.comment||'')}</td>
     </tr>`;
   }).join('');
 }
 
-// Helpers
 function fp(v, dec) {
   if (v == null || v === 0 || v === '') return '——';
   return (+v).toFixed(dec || 5);
 }
 function fmtTime(ts) {
   if (!ts) return '——';
-  try { return new Date(ts).toLocaleString('id-ID', { dateStyle:'short', timeStyle:'short', hour12:false }); }
+  try { return new Date(ts).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short',hour12:false}); }
   catch(e) { return ts; }
 }
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Boot ──
 fetchSignals();
 setInterval(fetchSignals, SIGNAL_CONFIG.refreshMs);
 startProgress();
