@@ -10,9 +10,9 @@
  */
 
 // ──────────────────────────────────────────────────
-define('WEBHOOK_SECRET',    'farid_fx_secret_2024');
-define('JSONBIN_BIN_ID',    'GANTI_BIN_ID_ANDA');
-define('JSONBIN_MASTER_KEY','$2a$10$GANTI_MASTER_KEY');
+define('WEBHOOK_SECRET',    'farid_1124');
+define('JSONBIN_BIN_ID',    '69f6caf536566621a81bc334');
+define('JSONBIN_MASTER_KEY','$2a$10$tcKHEWwuz2sqRoMCKJfga.1xxTFW0RxpXUPnP.NI4YbivtlK1xxau');
 define('MAX_HISTORY',        50);
 // ──────────────────────────────────────────────────
 
