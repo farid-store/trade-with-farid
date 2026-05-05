@@ -159,9 +159,10 @@ nav {
 }
 .hero-inner {
   display:grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap:clamp(32px,5vw,60px);
+  grid-template-columns: 1fr 1.15fr; /* Disesuaikan agar panel tidak terpotong */
+  gap:clamp(32px,4vw,48px);
   align-items:center;
+  max-width: 100%;
 }
 .hero-kicker {
   display:inline-flex; align-items:center; gap:8px;
@@ -180,7 +181,7 @@ nav {
 }
 .hero h1 {
   font-family:var(--font-head);
-  font-size:clamp(34px,5.5vw,62px);
+  font-size:clamp(34px,4.5vw,62px);
   font-weight:800; line-height:1.06;
   letter-spacing:-0.04em; margin-bottom:18px;
 }
@@ -188,7 +189,7 @@ nav {
 .hero-desc {
   font-size:clamp(14px,1.5vw,16px);
   color:var(--text-2); line-height:1.8;
-  max-width:500px; margin-bottom:28px;
+  max-width:480px; margin-bottom:28px;
 }
 .hero-desc strong { color:var(--text-1); font-weight:600; }
 
@@ -226,38 +227,61 @@ nav {
 }
 .btn-ghost:hover { border-color:var(--teal); color:var(--teal); }
 
-/* Hero Panel */
+/* Hero Panel & Animations */
 .hero-panel {
   background:var(--bg-2); border:1px solid var(--card-border);
-  border-radius:var(--r-lg); padding:clamp(20px,3vw,28px);
+  border-radius:var(--r-lg); padding:clamp(24px,3.5vw,36px);
   position:relative; overflow:hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  width: 100%; box-sizing: border-box;
 }
 .hero-panel::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
   background:linear-gradient(90deg,var(--teal),var(--blue));
 }
 .panel-title {
-  font-family:var(--font-mono); font-size:9px;
-  letter-spacing:.15em; text-transform:uppercase;
-  color:var(--text-3); margin-bottom:16px;
-  display:flex; align-items:center; gap:8px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 16px; margin-bottom:20px;
 }
-.panel-title::after { content:''; flex:1; height:1px; background:var(--card-border); }
-.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+.pt-left {
+  font-family:var(--font-mono); font-size:10px;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--text-3); display:flex; align-items:center; gap:8px;
+}
+.tf-select {
+  background: rgba(255,255,255,0.05); color: var(--text-1);
+  border: 1px solid rgba(13,207,180,0.3); border-radius: 6px;
+  padding: 6px 10px; font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  outline: none; cursor: pointer; transition: all 0.2s;
+}
+.tf-select:hover { border-color: var(--teal); background: rgba(13,207,180,0.1); }
+.tf-select option { background: var(--bg-2); color: var(--text-1); }
+
+.stats-anim-container {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 1; transform: translateY(0);
+}
+.stats-anim-container.fade-out {
+  opacity: 0; transform: translateY(5px);
+}
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
 .p-stat {
   background:var(--bg-3); border:1px solid var(--card-border);
-  border-radius:var(--r-md); padding:clamp(12px,2vw,16px);
+  border-radius:var(--r-md); padding:clamp(14px,2vw,18px); min-width: 0;
 }
 .p-stat .n {
-  font-family:var(--font-head); font-size:clamp(22px,3vw,30px);
-  font-weight:800; color:var(--teal); line-height:1;
+  font-family:var(--font-head); font-size:clamp(24px,3vw,34px);
+  font-weight:800; color:var(--teal); line-height:1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.p-stat .l { font-size:10px; color:var(--text-3); margin-top:4px; font-family:var(--font-mono); letter-spacing:.04em; }
-.panel-bar { height:1px; background:var(--card-border); margin:16px 0; }
-.panel-results { display:flex; flex-direction:column; gap:8px; }
-.pr-row { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); }
-.pr-dot { width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
-.pr-val { font-weight:700; color:var(--text-1); }
+.p-stat .l { font-size:10.5px; color:var(--text-3); margin-top:6px; font-family:var(--font-mono); letter-spacing:.04em; }
+.p-stat .l strong { color: var(--text-2); font-weight: normal; }
+.panel-bar { height:1px; background:var(--card-border); margin:20px 0; }
+.panel-results { display:flex; flex-direction:column; gap:10px; }
+.pr-row { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-2); }
+.pr-dot { width:6px; height:6px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+.pr-val { font-weight:700; color:var(--text-1); font-family: var(--font-mono); font-size: 14px;}
 
 /* ============================
    SECTION WRAPPER (shared)
@@ -790,8 +814,7 @@ footer {
 
 /* Tablet: ≤1024px */
 @media(max-width:1024px) {
-  .hero-inner { grid-template-columns:1fr; gap:28px; }
-  .hero-panel { display:block; }
+  .hero-inner { grid-template-columns:1fr; gap:36px; }
   .panel-stats { grid-template-columns:repeat(3,1fr); }
   .founder-grid { grid-template-columns:1fr; gap:32px; }
   .founder-card { max-width:320px; }
@@ -855,6 +878,8 @@ footer {
   .sig-table { font-size:9px; }
   .sig-table th, .sig-table td { padding:6px 8px; }
   .panel-stats { grid-template-columns:1fr 1fr; }
+  .panel-title { flex-direction: column; align-items: flex-start; }
+  .tf-select { width: 100%; }
   .tg-strip { gap:12px; }
   .btn-tg { width:100%; justify-content:center; }
 }
@@ -945,28 +970,48 @@ footer {
         </div>
       </div>
 
-      <!-- Hero Panel -->
+      <!-- HERO PANEL DENGAN ANIMASI TIMEFRAME -->
       <div class="hero-panel reveal reveal-d1">
+        
         <div class="panel-title">
-          Live Account Overview
-          <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+          <div class="pt-left">
+            <span>Live Account Overview</span>
             <div style="width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 2s infinite;"></div>
-            <span style="font-family:var(--font-mono);font-size:8px;color:var(--text-3);letter-spacing:1px;" id="stat-time">Menghubungkan...</span>
+          </div>
+          <!-- Selector Timeframe -->
+          <select id="tf-select" class="tf-select">
+            <option value="auto">Rotasi Otomatis (Hari Ini ⇌ Minggu)</option>
+            <option value="today">Hari Ini</option>
+            <option value="week">1 Minggu</option>
+            <option value="month1">1 Bulan</option>
+            <option value="month3">3 Bulan</option>
+            <option value="month6">6 Bulan</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
+
+        <!-- Container yang di-animasikan saat berubah -->
+        <div id="stats-anim-container" class="stats-anim-container">
+          <div class="panel-stats">
+            <div class="p-stat"><div class="n" id="stat-realized">$0.00</div><div class="l">Realized PnL <strong id="lbl-tf-realized"></strong></div></div>
+            <div class="p-stat"><div class="n" id="stat-unrealized">$0.00</div><div class="l">Floating PnL <strong>(Live)</strong></div></div>
+            <div class="p-stat"><div class="n" id="stat-dd">0.00%</div><div class="l">Max Drawdown <strong id="lbl-tf-dd"></strong></div></div>
+            <div class="p-stat"><div class="n" id="stat-winrate">0%</div><div class="l">Win Rate <strong id="lbl-tf-wr"></strong></div></div>
+            <div class="p-stat"><div class="n" id="stat-rr">1:0</div><div class="l">Risk Ratio <strong id="lbl-tf-rr"></strong></div></div>
+            <div class="p-stat"><div class="n" id="stat-sltp">0/0</div><div class="l">Avg SL/TP <strong id="lbl-tf-sltp"></strong></div></div>
+          </div>
+          
+          <div class="panel-bar"></div>
+          
+          <div class="panel-results">
+            <div class="pr-row"><div class="pr-dot"></div><span>Balance (Live): <strong class="pr-val" id="stat-balance">$0.00</strong></span></div>
+            <div class="pr-row"><div class="pr-dot"></div><span>Equity (Live): <strong class="pr-val" id="stat-equity">$0.00</strong></span></div>
+            <div class="pr-row" style="justify-content:space-between; width:100%; margin-top:8px;">
+               <span style="font-size:10px; color:var(--text-3); font-family:var(--font-mono)" id="stat-time">Menghubungkan...</span>
+            </div>
           </div>
         </div>
-        <div class="panel-stats">
-          <div class="p-stat"><div class="n" id="stat-realized">$0.00</div><div class="l">Realized PnL</div></div>
-          <div class="p-stat"><div class="n" id="stat-unrealized">$0.00</div><div class="l">Floating PnL</div></div>
-          <div class="p-stat"><div class="n" id="stat-dd">0.00%</div><div class="l">Max Drawdown</div></div>
-          <div class="p-stat"><div class="n" id="stat-winrate">83%</div><div class="l">Win Rate (Avg)</div></div>
-          <div class="p-stat"><div class="n" id="stat-rr">1:2.0</div><div class="l">Risk Ratio (avg)</div></div>
-          <div class="p-stat"><div class="n" id="stat-sltp">25/50</div><div class="l">SL / TP (pip)</div></div>
-        </div>
-        <div class="panel-bar"></div>
-        <div class="panel-results">
-          <div class="pr-row"><div class="pr-dot"></div><span>Balance: <strong class="pr-val" id="stat-balance">$0.00</strong></span></div>
-          <div class="pr-row"><div class="pr-dot"></div><span>Equity: <strong class="pr-val" id="stat-equity">$0.00</strong></span></div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -1340,7 +1385,7 @@ footer {
       <div class="footer-col"><h5>Legal</h5><ul><li><a href="#">Disclaimer</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">Syarat &amp; Ketentuan</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">© 2025 Farid Gold Killer. All rights reserved.</p>
+      <p class="footer-copy">© 2026 Farid Gold Killer. All rights reserved.</p>
       <p class="footer-disc">⚠️ Trading forex dan komoditas memiliki risiko tinggi. Hasil yang ditampilkan bukan jaminan profit di masa depan. Pastikan kamu memahami risiko sebelum trading.</p>
     </div>
   </div>
@@ -1398,6 +1443,97 @@ window.addEventListener('load', () => {
 // ── Telegram URL ──
 document.querySelector('.btn-tg').href = SIGNAL_CONFIG.telegramUrl;
 
+
+/* ======================================================
+   HERO PANEL ANIMATION & DATA LOGIC
+======================================================= */
+// Mock data animasi timeframe
+const MOCK_TF_STATS = {
+  today:  { label: "(Hari Ini)", realized: 24.50, wr: 85, dd: 1.2, rr: "1:2.0", sltp: "20/40" },
+  week:   { label: "(1 Minggu)", realized: 145.80, wr: 82, dd: 2.8, rr: "1:1.8", sltp: "25/45" },
+  month1: { label: "(1 Bulan)", realized: 620.00, wr: 80, dd: 4.5, rr: "1:2.1", sltp: "22/44" },
+  month3: { label: "(3 Bulan)", realized: 1850.50, wr: 78, dd: 5.8, rr: "1:2.0", sltp: "24/48" },
+  month6: { label: "(6 Bulan)", realized: 4120.00, wr: 81, dd: 6.2, rr: "1:2.2", sltp: "28/56" },
+  all:    { label: "(All Time)", realized: 7850.00, wr: 83, dd: 8.0, rr: "1:2.0", sltp: "25/50" }
+};
+
+// Data Realtime (Selalu update)
+let liveState = {
+  balance: 0.00,
+  equity: 0.00,
+  unrealized: 0.00,
+  syncTime: "Menghubungkan..."
+};
+
+let autoToggleKey = 'today';
+let autoInterval = null;
+let currentTfSelection = 'auto'; 
+const animContainer = document.getElementById('stats-anim-container');
+
+function renderPanelUI(tfKey) {
+  const data = MOCK_TF_STATS[tfKey];
+  if (!data) return;
+
+  if (animContainer) animContainer.classList.add('fade-out');
+
+  setTimeout(() => {
+    // 1. Timeframe Data
+    const rPnl = data.realized;
+    const elRp = document.getElementById('stat-realized');
+    elRp.textContent = (rPnl >= 0 ? '+' : '') + '$' + rPnl.toFixed(2);
+    elRp.style.color = rPnl >= 0 ? 'var(--teal)' : 'var(--red)';
+    
+    document.getElementById('stat-dd').textContent = data.dd.toFixed(2) + '%';
+    document.getElementById('stat-winrate').textContent = data.wr + '%';
+    document.getElementById('stat-rr').textContent = data.rr;
+    document.getElementById('stat-sltp').textContent = data.sltp;
+
+    // 2. Labels
+    document.getElementById('lbl-tf-realized').textContent = data.label;
+    document.getElementById('lbl-tf-dd').textContent = data.label;
+    document.getElementById('lbl-tf-wr').textContent = data.label;
+    document.getElementById('lbl-tf-rr').textContent = data.label;
+    document.getElementById('lbl-tf-sltp').textContent = data.label;
+
+    // 3. Live Data
+    const uPnl = liveState.unrealized;
+    const elUp = document.getElementById('stat-unrealized');
+    elUp.textContent = (uPnl >= 0 ? '+' : '') + '$' + uPnl.toFixed(2);
+    elUp.style.color = uPnl > 0 ? 'var(--green)' : (uPnl < 0 ? 'var(--red)' : 'var(--text-3)');
+
+    document.getElementById('stat-balance').textContent = '$' + liveState.balance.toFixed(2);
+    document.getElementById('stat-equity').textContent  = '$' + liveState.equity.toFixed(2);
+    document.getElementById('stat-time').textContent = 'Sync: ' + liveState.syncTime;
+
+    if (animContainer) animContainer.classList.remove('fade-out');
+  }, 400); 
+}
+
+function startAutoRotation() {
+  if (autoInterval) clearInterval(autoInterval);
+  renderPanelUI(autoToggleKey); 
+  
+  autoInterval = setInterval(() => {
+    autoToggleKey = (autoToggleKey === 'today') ? 'week' : 'today';
+    renderPanelUI(autoToggleKey);
+  }, 5000); 
+}
+
+function stopAutoRotation() {
+  if (autoInterval) clearInterval(autoInterval);
+}
+
+document.getElementById('tf-select').addEventListener('change', function(e) {
+  currentTfSelection = e.target.value;
+  if (currentTfSelection === 'auto') {
+    startAutoRotation();
+  } else {
+    stopAutoRotation();
+    renderPanelUI(currentTfSelection);
+  }
+});
+
+
 /* ======================================================
    SIGNAL REALTIME ENGINE
 ======================================================= */
@@ -1440,38 +1576,29 @@ async function fetchSignals() {
 
 function renderStats(stats) {
   if (!stats) return;
-  const rPnl = parseFloat(stats.realized_pnl || 0);
-  const uPnl = parseFloat(stats.unrealized_pnl || 0);
-  const elRp = document.getElementById('stat-realized');
-  elRp.textContent = (rPnl >= 0 ? '+' : '') + '$' + rPnl.toFixed(2);
-  elRp.style.color = rPnl >= 0 ? 'var(--teal)' : 'var(--red)';
+  
+  // Update State Live 
+  liveState.unrealized = parseFloat(stats.unrealized_pnl || 0);
+  liveState.balance = parseFloat(stats.balance || 0);
+  liveState.equity = parseFloat(stats.equity || 0);
+  
+  if (stats.timestamp) {
+    const d = new Date(stats.timestamp);
+    liveState.syncTime = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+
+  // Update langsung elemen UI Live agar tidak perlu menunggu animasi panel rotation
+  const uPnl = liveState.unrealized;
   const elUp = document.getElementById('stat-unrealized');
   elUp.textContent = (uPnl >= 0 ? '+' : '') + '$' + uPnl.toFixed(2);
   elUp.style.color = uPnl > 0 ? 'var(--green)' : (uPnl < 0 ? 'var(--red)' : 'var(--text-3)');
-  document.getElementById('stat-dd').textContent   = parseFloat(stats.drawdown || 0).toFixed(2) + '%';
-  document.getElementById('stat-balance').textContent = '$' + parseFloat(stats.balance || 0).toFixed(2);
-  document.getElementById('stat-equity').textContent  = '$' + parseFloat(stats.equity  || 0).toFixed(2);
+  document.getElementById('stat-balance').textContent = '$' + liveState.balance.toFixed(2);
+  document.getElementById('stat-equity').textContent  = '$' + liveState.equity.toFixed(2);
+  document.getElementById('stat-time').textContent = 'Sync: ' + liveState.syncTime;
 
-  // Risk Ratio
-  const rrEl = document.getElementById('stat-rr');
-  if (stats.risk_ratio) {
-    rrEl.textContent = '1:' + parseFloat(stats.risk_ratio).toFixed(1);
-  } else {
-    // hitung dari history jika ada
-    rrEl.textContent = '1:2.0';
-  }
-
-  // SL / TP average pips
-  const slTpEl = document.getElementById('stat-sltp');
-  if (stats.avg_sl && stats.avg_tp) {
-    slTpEl.textContent = Math.round(stats.avg_sl) + '/' + Math.round(stats.avg_tp);
-  } else {
-    slTpEl.textContent = '—/—';
-  }
-
-  if (stats.timestamp) {
-    const d = new Date(stats.timestamp);
-    document.getElementById('stat-time').textContent = 'Sync: ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  // Update paksa UI jika dalam mode manual (tidak animasi rotasi)
+  if(currentTfSelection !== 'auto') {
+    renderPanelUI(currentTfSelection);
   }
 }
 
@@ -1609,9 +1736,13 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-fetchSignals();
-setInterval(fetchSignals, SIGNAL_CONFIG.refreshMs);
-startProgress();
+// Mulai
+window.addEventListener('DOMContentLoaded', () => {
+  startAutoRotation();
+  fetchSignals();
+  setInterval(fetchSignals, SIGNAL_CONFIG.refreshMs);
+  startProgress();
+});
 </script>
 </body>
 </html>
