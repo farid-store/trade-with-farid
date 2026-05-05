@@ -36,7 +36,6 @@
   --r-sm:        8px;
   --r-md:        12px;
   --r-lg:        16px;
-  /* Spacing scale */
   --sp-xs: 8px;
   --sp-sm: 12px;
   --sp-md: 16px;
@@ -65,7 +64,6 @@ img { max-width:100%; display:block; }
    UTILITY
 ============================= */
 .container { max-width:1120px; margin:0 auto; padding:0 clamp(16px, 4vw, 32px); }
-
 .tag {
   display:inline-flex; align-items:center; gap:6px;
   font-family:var(--font-mono); font-size:10px; font-weight:600;
@@ -73,7 +71,6 @@ img { max-width:100%; display:block; }
   color:var(--teal); margin-bottom:12px;
 }
 .tag::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
-
 .section-title {
   font-family:var(--font-head);
   font-size:clamp(26px, 4.5vw, 48px);
@@ -229,7 +226,7 @@ nav {
 }
 .btn-ghost:hover { border-color:var(--teal); color:var(--teal); }
 
-/* Hero Panel (Right side) */
+/* Hero Panel */
 .hero-panel {
   background:var(--bg-2); border:1px solid var(--card-border);
   border-radius:var(--r-lg); padding:clamp(20px,3vw,28px);
@@ -501,11 +498,15 @@ nav {
 .sig-mode-badge.war    { background:rgba(255,215,0,.08); border-color:rgba(255,215,0,.22); color:#FFD700; }
 .sig-mode-badge.layer  { background:rgba(255,165,0,.08); border-color:rgba(255,165,0,.18); color:#FFA500; }
 .sig-mode-badge.normal { background:rgba(13,207,180,.08); border-color:rgba(13,207,180,.18); color:var(--teal); }
-.sig-prev-label {
+
+/* Label Column Header Styling */
+.column-label {
   font-family:var(--font-mono); font-size:8px;
   color:var(--text-3); letter-spacing:.12em; text-transform:uppercase;
   padding:2px 7px; border:1px solid var(--card-border); border-radius:4px;
 }
+.column-label.running { border-color:rgba(0,230,118,.3); color:var(--green); background:rgba(0,230,118,.05); }
+.column-label.pending { border-color:rgba(26,139,255,.3); color:var(--blue); background:rgba(26,139,255,.05); }
 
 .sig-card-body { padding:14px 16px; }
 .sig-direction {
@@ -790,7 +791,6 @@ footer {
 /* Tablet: ≤1024px */
 @media(max-width:1024px) {
   .hero-inner { grid-template-columns:1fr; gap:28px; }
-  /* Panel tampil full width di bawah hero text */
   .hero-panel { display:block; }
   .panel-stats { grid-template-columns:repeat(3,1fr); }
   .founder-grid { grid-template-columns:1fr; gap:32px; }
@@ -824,7 +824,6 @@ footer {
   .hero-btns .btn-primary,
   .hero-btns .btn-ghost { flex:1; justify-content:center; min-width:140px; }
 
-  /* Panel di mobile: tetap tampil, stats 2x2 */
   .hero-panel { display:block; }
   .panel-stats { grid-template-columns:1fr 1fr; }
 
@@ -946,7 +945,7 @@ footer {
         </div>
       </div>
 
-      <!-- Hero Panel (hidden on mobile via CSS) -->
+      <!-- Hero Panel -->
       <div class="hero-panel reveal reveal-d1">
         <div class="panel-title">
           Live Account Overview
@@ -1093,46 +1092,51 @@ footer {
       </div>
     </div>
 
+    <!-- PENGELOMPOKAN KOLOM RUNNING & PENDING -->
     <div class="signal-cards-row reveal">
-      <!-- Latest -->
-      <div class="sig-card" id="sig-card-latest">
+      
+      <!-- Kolom Running / Executed -->
+      <div class="sig-card" id="sig-card-running">
         <div class="sig-card-head">
-          <span class="sig-symbol" id="sig-sym-latest">——</span>
+          <span class="sig-symbol" id="sig-sym-running">——</span>
           <div class="sig-badges">
-            <span class="sig-mode-badge normal" id="sig-mode-latest">LATEST</span>
+            <span class="column-label running">EKSEKUSI / RUNNING</span>
+            <span class="sig-mode-badge normal" id="sig-mode-running">——</span>
           </div>
         </div>
-        <div class="sig-card-body" id="sig-body-latest">
+        <div class="sig-card-body" id="sig-body-running">
           <div class="sig-waiting">
             <div class="sig-waiting-label">STANDBY</div>
-            <div class="sig-waiting-sub">// menunggu sinyal dari EA</div>
+            <div class="sig-waiting-sub">// menunggu posisi masuk market</div>
           </div>
         </div>
         <div class="sig-card-foot">
-          <span class="sig-timestamp" id="sig-ts-latest">——</span>
-          <span class="sig-lots" id="sig-lots-latest"></span>
+          <span class="sig-timestamp" id="sig-ts-running">——</span>
+          <span class="sig-lots" id="sig-lots-running"></span>
         </div>
       </div>
-      <!-- Previous -->
-      <div class="sig-card" id="sig-card-prev">
+
+      <!-- Kolom Pending / Limit -->
+      <div class="sig-card" id="sig-card-pending">
         <div class="sig-card-head">
-          <span class="sig-symbol" id="sig-sym-prev">——</span>
+          <span class="sig-symbol" id="sig-sym-pending">——</span>
           <div class="sig-badges">
-            <span class="sig-prev-label">SEBELUMNYA</span>
-            <span class="sig-mode-badge normal" id="sig-mode-prev">——</span>
+            <span class="column-label pending">PENDING ORDER</span>
+            <span class="sig-mode-badge normal" id="sig-mode-pending">——</span>
           </div>
         </div>
-        <div class="sig-card-body" id="sig-body-prev">
+        <div class="sig-card-body" id="sig-body-pending">
           <div class="sig-waiting">
-            <div class="sig-waiting-label">——</div>
-            <div class="sig-waiting-sub">// sinyal sebelumnya</div>
+            <div class="sig-waiting-label" style="color:var(--text-3);opacity:0.5;">KOSONG</div>
+            <div class="sig-waiting-sub">// tidak ada limit/stop order aktif</div>
           </div>
         </div>
         <div class="sig-card-foot">
-          <span class="sig-timestamp" id="sig-ts-prev">——</span>
-          <span class="sig-lots" id="sig-lots-prev"></span>
+          <span class="sig-timestamp" id="sig-ts-pending">——</span>
+          <span class="sig-lots" id="sig-lots-pending"></span>
         </div>
       </div>
+
     </div>
 
     <!-- History -->
@@ -1473,28 +1477,45 @@ function renderStats(stats) {
 
 function renderAll(data) {
   const hist = Array.isArray(data?.history) ? data.history : [];
-  renderCard('latest', hist[0] || null);
-  renderCard('prev',   hist[1] || null);
+  
+  // Memisahkan Logika untuk Kolom Running/Eksekusi & Kolom Pending
+  const runningEvent = hist.find(s => 
+    s.status === 'EXECUTED' || s.status === 'CLOSED' || s.status === 'MODIFIED' || 
+    (s.action === 'BUY' && s.status !== 'PLACED') || (s.action === 'SELL' && s.status !== 'PLACED') || s.action === 'CLOSE'
+  );
+  
+  const pendingEvent = hist.find(s => 
+    s.status === 'PLACED' || s.action === 'PENDING'
+  );
+
+  renderCard('running', runningEvent || null, 'running');
+  renderCard('pending', pendingEvent || null, 'pending');
   renderHistoryTable(hist);
 }
 
-function renderCard(slot, sig) {
+function renderCard(slot, sig, slotType) {
   const card   = document.getElementById('sig-card-'  + slot);
   const body   = document.getElementById('sig-body-'  + slot);
   const symEl  = document.getElementById('sig-sym-'   + slot);
   const modeEl = document.getElementById('sig-mode-'  + slot);
   const tsEl   = document.getElementById('sig-ts-'    + slot);
   const lotsEl = document.getElementById('sig-lots-'  + slot);
+  
   card.classList.remove('sig-flash'); void card.offsetWidth; card.classList.add('sig-flash');
   card.classList.remove('is-buy','is-sell','is-close','is-pending');
   card.style.borderColor = '';
 
   if (!sig) {
     symEl.textContent  = '——';
-    modeEl.textContent = slot === 'prev' ? '——' : 'LATEST';
+    modeEl.textContent = '——';
     modeEl.className   = 'sig-mode-badge normal';
     tsEl.textContent   = '——'; lotsEl.textContent = '';
-    body.innerHTML = `<div class="sig-waiting"><div class="sig-waiting-label">STANDBY</div><div class="sig-waiting-sub">// menunggu sinyal dari EA</div></div>`;
+    
+    if (slotType === 'running') {
+      body.innerHTML = `<div class="sig-waiting"><div class="sig-waiting-label">STANDBY</div><div class="sig-waiting-sub">// menunggu posisi masuk market</div></div>`;
+    } else {
+      body.innerHTML = `<div class="sig-waiting"><div class="sig-waiting-label" style="color:var(--text-3);opacity:0.5;">KOSONG</div><div class="sig-waiting-sub">// tidak ada limit/stop order aktif</div></div>`;
+    }
     return;
   }
 
@@ -1522,15 +1543,16 @@ function renderCard(slot, sig) {
     : `<div class="sig-price-item"><div class="sig-price-label">Pips Risk</div><div class="sig-price-value">${sig.pips && +sig.pips > 0 ? (+sig.pips).toFixed(1)+' pip':'——'}</div></div>`;
 
   const dirStyle = isPend ? 'color:var(--blue);text-shadow:0 0 20px rgba(26,139,255,.35);' : '';
+  const actionText = isPend ? (sig.comment.toUpperCase().includes('BUY') ? 'BUY LIMIT' : sig.comment.toUpperCase().includes('SELL') ? 'SELL LIMIT' : 'PENDING') : action;
 
   body.innerHTML = `
     <div class="sig-direction" style="${dirStyle}">
-      ${isPend ? action+' LIMIT' : action}
+      ${actionText}
       <span class="sig-dir-arrow">${arrow}</span>
     </div>
     <div class="sig-price-grid">
       <div class="sig-price-item full">
-        <div class="sig-price-label">Entry Price</div>
+        <div class="sig-price-label">${isPend ? 'Target Entry' : 'Entry Price'}</div>
         <div class="sig-price-value entry-price">${fp(sig.price,5)}</div>
       </div>
       <div class="sig-price-item">
