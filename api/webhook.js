@@ -1,120 +1,106 @@
-<?php
 /**
- * webhook.php
+ * api/webhook.js
  * ------------------------------------------------------------
+ * Versi Node.js (Vercel Serverless Function) dari webhook.php.
  * Jembatan antara EA MetaTrader 5 dan halaman web Farid Gold Killer.
  *
  * - EA MT5 kirim POST ke sini setiap ada entry/close/pending/modify + stats akun
  * - Halaman web (fetchSignals) kirim GET ke sini untuk ambil data terbaru
- * - Data disimpan di JSONBin (bin yang sama seperti jsonbinId di HTML)
+ * - Data disimpan di JSONBin
  *
- * Upload file ini ke hosting/VPS kamu, lalu isi konfigurasi di bawah.
- * Contoh URL akhir: https://domainkamu.com/webhook.php
+ * DEPLOY:
+ *   1. Taruh file ini di:  /api/webhook.js  (root project Vercel)
+ *   2. Di Vercel dashboard -> Project -> Settings -> Environment Variables, tambahkan:
+ *        JSONBIN_ID    = 69f6caf536566621a81bc334
+ *        JSONBIN_KEY   = (X-Master-Key JSONBin kamu)
+ *        EA_SECRET     = (kata sandi rahasia bebas, buat sendiri)
+ *   3. Deploy (vercel --prod atau lewat Vercel:deploy_to_vercel).
+ *   4. URL akhir otomatis jadi: https://nama-project-kamu.vercel.app/api/webhook
  * ------------------------------------------------------------
  */
 
-// ====== KONFIGURASI ======
-define('JSONBIN_ID',  '69f6caf536566621a81bc334');           // sama dengan jsonbinId di HTML
-define('JSONBIN_KEY', '$2a$10$tcKHEWwuz2sqRoMCKJfga.1xxTFW0RxpXUPnP.NI4YbivtlK1xxau'); // X-Master-Key JSONBin
-define('EA_SECRET',   'GANTI-DENGAN-KATA-SANDI-RAHASIA-EA');  // wajib diisi, dicek dari EA
-define('MAX_HISTORY', 50);
+const MAX_HISTORY = 50;
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-EA-Secret');
-header('Content-Type: application/json');
+const JSONBIN_ID  = process.env.JSONBIN_ID;
+const JSONBIN_KEY = process.env.JSONBIN_KEY;
+const EA_SECRET   = process.env.EA_SECRET;
+const BIN_URL     = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
-
-$binUrl = 'https://api.jsonbin.io/v3/b/' . JSONBIN_ID;
-
-function jsonbin_get($binUrl) {
-    $ch = curl_init($binUrl . '/latest');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => ['X-Master-Key: ' . JSONBIN_KEY],
-    ]);
-    $res = curl_exec($ch);
-    curl_close($ch);
-    $decoded = json_decode($res, true);
-    return $decoded['record'] ?? ['history' => [], 'stats' => new stdClass()];
+async function jsonbinGet() {
+  const r = await fetch(`${BIN_URL}/latest`, {
+    headers: { 'X-Master-Key': JSONBIN_KEY },
+  });
+  const data = await r.json();
+  return data.record || { history: [], stats: {} };
 }
 
-function jsonbin_put($binUrl, $data) {
-    $ch = curl_init($binUrl);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_CUSTOMREQUEST  => 'PUT',
-        CURLOPT_POSTFIELDS     => json_encode($data),
-        CURLOPT_HTTPHEADER     => [
-            'Content-Type: application/json',
-            'X-Master-Key: ' . JSONBIN_KEY,
-        ],
-    ]);
-    curl_exec($ch);
-    curl_close($ch);
+async function jsonbinPut(record) {
+  await fetch(BIN_URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': JSONBIN_KEY,
+    },
+    body: JSON.stringify(record),
+  });
 }
 
-// ====== GET: halaman web minta data terbaru ======
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    echo json_encode(jsonbin_get($binUrl));
-    exit;
-}
+export default async function handler(req, res) {
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-EA-Secret');
 
-// ====== POST: EA MT5 kirim event baru ======
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $raw = file_get_contents('php://input');
-    $payload = json_decode($raw, true);
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
-    // Validasi kata sandi EA (WAJIB, biar orang lain tidak bisa kirim data palsu)
-    $secret = $_SERVER['HTTP_X_EA_SECRET'] ?? '';
-    if ($secret !== EA_SECRET) {
-        http_response_code(401);
-        echo json_encode(['error' => 'unauthorized']);
-        exit;
+  // ====== GET: halaman web minta data terbaru ======
+  if (req.method === 'GET') {
+    const record = await jsonbinGet();
+    return res.status(200).json(record);
+  }
+
+  // ====== POST: EA MT5 kirim event baru ======
+  if (req.method === 'POST') {
+    const secret = req.headers['x-ea-secret'];
+    if (secret !== EA_SECRET) {
+      return res.status(401).json({ error: 'unauthorized' });
     }
 
-    if (!$payload) {
-        http_response_code(400);
-        echo json_encode(['error' => 'invalid json']);
-        exit;
-    }
+    const payload = req.body;
+    if (!payload) return res.status(400).json({ error: 'invalid json' });
 
-    $record = jsonbin_get($binUrl);
-    if (!isset($record['history']) || !is_array($record['history'])) $record['history'] = [];
+    const record = await jsonbinGet();
+    if (!Array.isArray(record.history)) record.history = [];
 
-    // Jika payload berisi "type: stats" -> update stats akun (balance/equity/floating)
-    if (($payload['type'] ?? '') === 'stats') {
-        $record['stats'] = [
-            'balance'        => $payload['balance']        ?? 0,
-            'equity'         => $payload['equity']          ?? 0,
-            'unrealized_pnl' => $payload['unrealized_pnl']  ?? 0,
-            'timestamp'      => $payload['timestamp']       ?? date('c'),
-        ];
+    if (payload.type === 'stats') {
+      record.stats = {
+        balance: payload.balance ?? 0,
+        equity: payload.equity ?? 0,
+        unrealized_pnl: payload.unrealized_pnl ?? 0,
+        timestamp: payload.timestamp ?? new Date().toISOString(),
+      };
     } else {
-        // Ini event sinyal (BUY/SELL/CLOSE/PENDING)
-        $entry = [
-            'symbol'    => $payload['symbol']    ?? '',
-            'action'    => $payload['action']    ?? '',     // BUY / SELL / CLOSE / PENDING
-            'status'    => $payload['status']    ?? '',     // PLACED / EXECUTED / MODIFIED / CLOSED
-            'mode'      => $payload['mode']       ?? 'Normal',
-            'price'     => $payload['price']     ?? 0,
-            'sl'        => $payload['sl']        ?? 0,
-            'tp'        => $payload['tp']        ?? 0,
-            'lots'      => $payload['lots']      ?? 0,
-            'pips'      => $payload['pips']      ?? 0,
-            'profit'    => $payload['profit']    ?? null,
-            'comment'   => $payload['comment']   ?? '',
-            'timestamp' => $payload['timestamp'] ?? date('c'),
-        ];
-        array_unshift($record['history'], $entry);
-        $record['history'] = array_slice($record['history'], 0, MAX_HISTORY);
+      const entry = {
+        symbol: payload.symbol ?? '',
+        action: payload.action ?? '',      // BUY / SELL / CLOSE / PENDING
+        status: payload.status ?? '',      // PLACED / EXECUTED / MODIFIED / CLOSED
+        mode: payload.mode ?? 'Normal',
+        price: payload.price ?? 0,
+        sl: payload.sl ?? 0,
+        tp: payload.tp ?? 0,
+        lots: payload.lots ?? 0,
+        pips: payload.pips ?? 0,
+        profit: payload.profit ?? null,
+        comment: payload.comment ?? '',
+        timestamp: payload.timestamp ?? new Date().toISOString(),
+      };
+      record.history.unshift(entry);
+      record.history = record.history.slice(0, MAX_HISTORY);
     }
 
-    jsonbin_put($binUrl, $record);
-    echo json_encode(['success' => true]);
-    exit;
-}
+    await jsonbinPut(record);
+    return res.status(200).json({ success: true });
+  }
 
-http_response_code(405);
-echo json_encode(['error' => 'method not allowed']);
+  return res.status(405).json({ error: 'method not allowed' });
+}
