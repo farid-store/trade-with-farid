@@ -464,7 +464,7 @@ nav {
 .broker-banner p { font-size:13px; color:var(--text-2); max-width:560px; line-height:1.7; }
 .broker-banner p strong { color:var(--teal); }
 .broker-grid {
-  display:grid; grid-template-columns:repeat(4,1fr);
+  display:grid; grid-template-columns:repeat(5,1fr);
   gap:14px;
 }
 .broker-card {
@@ -472,26 +472,45 @@ nav {
   border-radius:var(--r-lg); padding:clamp(18px,2.5vw,22px);
   display:flex; flex-direction:column; gap:14px;
   position:relative; overflow:hidden;
-  transition:border-color .25s, transform .25s;
+  transition:border-color .25s, transform .25s, box-shadow .25s;
 }
 .broker-card::before {
   content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background:linear-gradient(90deg,var(--teal),var(--blue));
   opacity:0; transition:opacity .25s;
 }
-.broker-card:hover { border-color:rgba(13,207,180,.3); transform:translateY(-4px); }
+.broker-card:hover { border-color:rgba(13,207,180,.3); transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,.35); }
 .broker-card:hover::before { opacity:1; }
+
+/* Featured / recommended partner emphasis */
+.broker-card.featured { border-color:rgba(13,207,180,.35); background:linear-gradient(180deg,rgba(13,207,180,.05),var(--bg-2) 40%); box-shadow:0 0 0 1px rgba(13,207,180,.12), 0 12px 28px rgba(13,207,180,.08); }
+.broker-card.featured::before { opacity:1; }
+.broker-card.featured:hover { transform:translateY(-6px); }
+
 .broker-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
 .broker-logo {
   width:42px; height:42px; border-radius:10px;
   background:rgba(13,207,180,.09); border:1px solid rgba(13,207,180,.18);
   display:flex; align-items:center; justify-content:center;
-  font-size:19px; flex-shrink:0;
+  font-family:var(--font-head); font-size:14px; font-weight:800; letter-spacing:-0.02em;
+  color:var(--teal); flex-shrink:0;
 }
+.broker-logo.c-blue    { background:rgba(26,139,255,.09); border-color:rgba(26,139,255,.22); color:var(--blue); }
+.broker-logo.c-amber   { background:rgba(255,180,0,.09); border-color:rgba(255,180,0,.24); color:#FFB800; }
+.broker-logo.c-violet  { background:rgba(155,110,255,.1); border-color:rgba(155,110,255,.26); color:#9B6EFF; }
+.broker-logo.c-mono    { background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.14); color:var(--text-1); }
+
+.broker-badges { display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
 .broker-vvip {
   font-family:var(--font-mono); font-size:8px; font-weight:700;
   letter-spacing:.1em; color:#FFD700;
   background:rgba(255,215,0,.08); border:1px solid rgba(255,215,0,.22);
+  padding:3px 8px; border-radius:100px; white-space:nowrap;
+}
+.broker-featured-tag {
+  font-family:var(--font-mono); font-size:8px; font-weight:700;
+  letter-spacing:.1em; color:var(--teal);
+  background:rgba(13,207,180,.1); border:1px solid rgba(13,207,180,.28);
   padding:3px 8px; border-radius:100px; white-space:nowrap;
 }
 .broker-name { font-family:var(--font-head); font-size:15px; font-weight:800; }
@@ -900,7 +919,7 @@ footer {
   .footer-grid { grid-template-columns:1fr 1fr; }
   .tv-grid { grid-template-columns:1fr; }
   .tv-row  { grid-template-columns:1fr 1fr; }
-  .broker-grid { grid-template-columns:1fr 1fr; }
+  .broker-grid { grid-template-columns:repeat(3,1fr); }
 }
 
 /* Mobile large: ≤768px */
@@ -1213,7 +1232,7 @@ footer {
     <div class="broker-grid reveal">
       <div class="broker-card">
         <div class="broker-head">
-          <div class="broker-logo">🟡</div>
+          <div class="broker-logo c-amber">HF</div>
           <span class="broker-vvip">VVIP IB</span>
         </div>
         <div>
@@ -1230,7 +1249,7 @@ footer {
 
       <div class="broker-card">
         <div class="broker-head">
-          <div class="broker-logo">🔵</div>
+          <div class="broker-logo c-blue">FX</div>
           <span class="broker-vvip">VVIP IB</span>
         </div>
         <div>
@@ -1245,9 +1264,29 @@ footer {
         <a href="https://direct.fxpro.solutions/id/partner/2b2EhitnH?platform=web" target="_blank" rel="noopener" class="btn-broker">Daftar via IB →</a>
       </div>
 
+      <div class="broker-card featured">
+        <div class="broker-head">
+          <div class="broker-logo c-violet">PU</div>
+          <div class="broker-badges">
+            <span class="broker-featured-tag">★ Rekomendasi</span>
+            <span class="broker-vvip">VVIP IB</span>
+          </div>
+        </div>
+        <div>
+          <div class="broker-name">PU Prime</div>
+          <div class="broker-tag">Regulated · Tight Raw Spread</div>
+        </div>
+        <div class="broker-perks">
+          <div class="broker-perk"><div class="dot"></div>Prioritas review akun oleh Farid</div>
+          <div class="broker-perk"><div class="dot"></div>Akses grup sinyal VVIP terpisah</div>
+          <div class="broker-perk"><div class="dot"></div>Support onboarding EA MT5</div>
+        </div>
+        <a href="https://id.puprime.partners/forex-trading-account/?affid=MjkwNzExNTk=" target="_blank" rel="noopener" class="btn-broker">Daftar via IB →</a>
+      </div>
+
       <div class="broker-card">
         <div class="broker-head">
-          <div class="broker-logo">🟢</div>
+          <div class="broker-logo">VX</div>
           <span class="broker-vvip">VVIP IB</span>
         </div>
         <div>
@@ -1264,7 +1303,7 @@ footer {
 
       <div class="broker-card">
         <div class="broker-head">
-          <div class="broker-logo">⚪</div>
+          <div class="broker-logo c-mono">EX</div>
           <span class="broker-vvip">VVIP IB</span>
         </div>
         <div>
@@ -1518,7 +1557,7 @@ footer {
       <div class="faq-item"><div class="faq-q">Apakah cocok untuk pemula yang belum pernah trading sama sekali?<div class="ico">+</div></div><div class="faq-a"><p>Sangat cocok! Metode Breakout Tekan dirancang agar bisa dipelajari siapapun termasuk pemula tanpa background trading. Materi dimulai dari dasar dan dilengkapi dengan panduan langkah demi langkah.</p></div></div>
       <div class="faq-item"><div class="faq-q">Berapa modal minimal untuk mulai trading menggunakan sistem ini?<div class="ico">+</div></div><div class="faq-a"><p>Tidak ada batasan modal minimal. Ada member yang mulai dengan modal $12 dan berhasil mengembangkannya. Yang penting adalah konsistensi dalam menjalankan sistem, bukan besarnya modal awal.</p></div></div>
       <div class="faq-item"><div class="faq-q">Bagaimana cara bergabung?<div class="ico">+</div></div><div class="faq-a"><p>Cukup masukkan nomor WhatsApp kamu di form di bawah dan klik "Gabung Gratis Sekarang". Kamu akan langsung diarahkan ke grup Telegram komunitas Farid Gold Killer dan bisa langsung akses semua konten.</p></div></div>
-      <div class="faq-item"><div class="faq-q">Bagaimana cara dapat akses VVIP?<div class="ico">+</div></div><div class="faq-a"><p>Buka akun trading baru di salah satu broker partner (HFM, FxPro, Valetax, atau Exness) melalui link IB resmi di bagian "Broker VVIP" pada halaman ini, lalu kirim nomor akunmu ke admin Telegram untuk diverifikasi dan mendapatkan akses grup VVIP.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Bagaimana cara dapat akses VVIP?<div class="ico">+</div></div><div class="faq-a"><p>Buka akun trading baru di salah satu broker partner (HFM, FxPro, PU Prime, Valetax, atau Exness) melalui link IB resmi di bagian "Broker VVIP" pada halaman ini, lalu kirim nomor akunmu ke admin Telegram untuk diverifikasi dan mendapatkan akses grup VVIP.</p></div></div>
       <div class="faq-item"><div class="faq-q">Berapa lama sampai bisa profit?<div class="ico">+</div></div><div class="faq-a"><p>Banyak member yang sudah profit di hari pertama bergabung. Namun hasilnya tergantung pada seberapa serius kamu belajar dan menjalankan sistem. Dengan konsistensi, kebanyakan member mulai profit konsisten dalam 1–4 minggu pertama.</p></div></div>
       <div class="faq-item"><div class="faq-q">Instrumen apa saja yang diajarkan?<div class="ico">+</div></div><div class="faq-a"><p>Fokus utama adalah XAU/USD (Gold) karena itu spesialisasi Farid. Namun sistem ini juga bisa diterapkan di EUR/USD, GBP/USD, dan pair forex major lainnya dengan penyesuaian minor.</p></div></div>
       <div class="faq-item"><div class="faq-q">Sinyal live di website dari mana asalnya?<div class="ico">+</div></div><div class="faq-a"><p>Sinyal dikirim otomatis oleh Expert Advisor (EA) MetaTrader 5 yang berjalan di server kami 24/5. Setiap kali EA membuka atau menutup posisi, data sinyal langsung dikirim via webhook ke website ini secara realtime.</p></div></div>
